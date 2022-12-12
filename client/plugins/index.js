@@ -9,7 +9,7 @@ import RectangleBorder from './rectangle-border'
 import Iframe from './iframe'
 import Button from './button'
 import bgMusic from './bg-music'
-
+import Video from './video'
 // 所有组件列表
 const components = [
 	Text,
@@ -18,7 +18,8 @@ const components = [
 	RectangleBorder,
 	Iframe,
 	Button,
-	bgMusic
+	bgMusic,
+	Video
 ]
 // 定义 install 方法，接收 Vue 作为参数
 const install = function (Vue) {
@@ -48,6 +49,7 @@ export {
 	Iframe,
 	Button,
 	bgMusic,
+	Video,
 	_qk_register_components_object
 }
 

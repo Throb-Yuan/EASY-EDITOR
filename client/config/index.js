@@ -21,8 +21,10 @@ const configObj = {
 	isDevelop: (isDev || isTest),
 	...configDict[currentConfigKey],
 	// h5模式宽高
-	canvasH5Width: 375,
-	canvasH5Height: 644,
+	// canvasH5Width: 375,
+	// canvasH5Height: 644,
+	canvasH5Width: 800,
+	canvasH5Height: 450,
 	pageModeList: [{
 		value: 'h5',
 		label: 'H5',

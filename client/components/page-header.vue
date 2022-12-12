@@ -2,7 +2,12 @@
   <div class="components-page-header">
     <div class="page-header-inner" :class="{'layout-container': !fullWidth, fullWidth: fullWidth}">
       <div class="inline-block logo-wrapper">
-        <img class="cursor-pointer" @click="goHome" src="../common/images/logo.jpg" alt="">
+        <!-- <img class="cursor-pointer" @click="goHome" src="../common/images/logo.jpg" alt=""> -->
+        <div style="display:flex;align-items: center;">
+          <img class="cursor-pointer" @click="goHome" src="../common/images/logos.png" alt="">
+        <div style="padding-left: 12px;">慧集互联</div>
+      </div>
+        
         <slot name="left-slot"></slot>
       </div>
       <div class="header-center-wrapper">

@@ -79,6 +79,7 @@
       <div class="foot-btn-wrapper">
         <el-button type="primary" @click="publishFn">保存并发布</el-button>
         <el-button @click="saveFn">保 存</el-button>
+        <el-button @click="saveHtmlFn">复制HTML</el-button>
         <el-button @click="closePreview">取 消</el-button>
       </div>
     </div>
@@ -116,6 +117,9 @@
 			},
 			saveFn() {
 				this.$emit('saveFn')
+			},
+			saveHtmlFn() {
+				this.$emit('saveHtmlFn')
 			}
 		}
 	}

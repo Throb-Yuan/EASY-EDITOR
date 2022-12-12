@@ -2,7 +2,8 @@
 切换图片，提供图片选择，图片上传等功能
 */
 <template>
-  <div class="image-select-wrapper">
+  <div>
+    <div class="image-select-wrapper">
     <div class="image-select-l">
       <div class="component-image-select" @click="handleClick">
         <img :src="url" alt="" v-if="url">
@@ -21,6 +22,14 @@
       </el-input>
     </div>
   </div>
+  
+  <!-- <el-input
+              type="text"
+              placeholder="请输入资源主键"
+              v-model="androidId">
+      </el-input> -->
+  </div>
+
 </template>
 
 <script>
@@ -33,7 +42,8 @@
 			return {
 				// 唯一得id用于选择图片后事件通知
 				selectId: +new Date(),
-				tempValue: ''
+				tempValue: '',
+        androidId:""
 			}
 		},
 		created() {
@@ -55,6 +65,7 @@
 				}
 				this.$emit('update:url', url)
 				this.$emit('change', url)
+        // this.$emit('changeAndroidId', androidId)
 			},
 			/**
 			 * 点击弹出选择图片弹窗

@@ -98,7 +98,7 @@ export default [
 				}
 			},
 			{
-				elName: 'video',
+				elName: 'qk-video',
 				title: '视频',
 				icon: 'iconfont iconshipin',
 				valueType: '',

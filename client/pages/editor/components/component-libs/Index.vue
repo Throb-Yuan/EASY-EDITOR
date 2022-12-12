@@ -28,7 +28,7 @@
 	import eleConfig from '../../ele-config'
 	import {_qk_register_components_object} from '@client/plugins/index'
   window._qk_register_components_object=_qk_register_components_object;
-  console.log(_qk_register_components_object)
+  console.log("组件注册===",_qk_register_components_object)
 	export default {
 		name: "component-libs",
 		data() {
@@ -38,7 +38,7 @@
 		},
 		methods: {
 			/**
-			 * 点击事件, 向父组件派发add-element事件，参数： 当前组件对象
+			 * 点击事件, 向父组件派发add-element事件，参数：
 			 * @param item
 			 */
 			handleClick(item) {

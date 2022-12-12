@@ -26,6 +26,10 @@
         <p>导入psd</p>
       </div>
     </UploadPsd>
+    <div class="button-item" @click="returnHtml">
+      <i class="iconfont iconyulan"></i>
+      <p>复制HTML</p>
+    </div>
     <div class="button-item" @click="showPreview">
       <i class="iconfont iconyulan"></i>
       <p>预览保存</p>
@@ -114,6 +118,12 @@
 			 */
 			showPreview(){
 				this.$emit('showPreview')
+      },
+      /**
+       * 输出复制HTML
+			 */
+			returnHtml(){
+				this.$emit('returnHtml')
       },
 			/**
 			 * 发布
