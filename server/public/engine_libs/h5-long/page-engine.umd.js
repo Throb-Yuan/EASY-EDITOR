@@ -23337,8 +23337,8 @@ var pageConfig = {
 
 var projectConfig = {
   name: '',
-  title: '未命名场景',
-  description: '我用夸克可视化编辑器做了一个超酷炫的H5，快来看看吧。',
+  title: '未命名节目',
+  description: '这是曜的菜园子，快来看看吧。',
   coverImage: '',
   auther: '',
   script: '',

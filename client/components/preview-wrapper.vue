@@ -2,9 +2,9 @@
   <div class="components-preview">
     <div class="setting-bg"></div>
     <div class="left-panel">
-      <div class="iframe-wrapper" :style="{width: $config.canvasH5Width + 'px', height: $config.canvasH5Height + 'px'}">
+      <!-- <div class="iframe-wrapper" :style="{width: $config.canvasH5Width + 'px', height: $config.canvasH5Height + 'px'}">
         <iframe :src="$config.baseURL + '/quark/view/' + pageId" frameborder="0" style="background-color:transparent;width: 100%; height: 100%;"></iframe>
-      </div>
+      </div> -->
     </div>
     <div class="right-panel">
       <slot></slot>

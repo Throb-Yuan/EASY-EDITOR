@@ -3,14 +3,14 @@ module.exports = app => {
 	const Schema = mongoose.Schema
 	// Schema
 	const schema = new Schema({
-		title:  { type: String, default: '未命名场景' },
+		title:  { type: String, default: '未命名节目' },
 		coverImage: { type: String, default: '' },
-		description: { type: String, default: '我用夸克可视化编辑器做了一个超酷炫的H5，快来看看吧。' },
+		description: { type: String, default: '这是曜的菜园子，快来看看吧。' },
 		shareConfig: {
 			shareWx: false,
 			coverImage: { type: String, default: '' },
-			title:  { type: String, default: '这是#分享者#的大力推荐' },
-			description: { type: String, default: '这是#分享者#大力推荐的H5' },
+			title:  { type: String, default: '慧集互联' },
+			description: { type: String, default: '这是曜的菜园子' },
 		},
 		pages: Schema.Types.Mixed, //用于原始数据存储
 		script:  { type: String, default: '' }, // 第三方脚本插件

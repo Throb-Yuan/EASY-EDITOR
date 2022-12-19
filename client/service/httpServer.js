@@ -20,9 +20,12 @@ axios.interceptors.request.use(config => {
 }, error => {
 	return Promise.reject(error)
 });
-//响应拦截器即异常处理
+//响应拦截器即异常处理  status==200为blob数据类型
 axios.interceptors.response.use(response => {
-	if (response.data.status) {
+	if(response.request.responseType ===  'blob' || response.request.responseType ===  'arraybuffer'){
+		return Promise.resolve(response.data)
+	  }
+	if (response.data.status||response.status==200) {
 		return Promise.resolve(response.data)
 	} else {
 		store.dispatch('showMassage', {

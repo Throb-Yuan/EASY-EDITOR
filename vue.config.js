@@ -4,11 +4,22 @@ const fs = require('fs')
 
 let devServer = {
 	proxy: { // 代理
-		'/': {
-			target: 'http://localhost:4000',//设置你调用的接口域名和端口号 别忘了加http
+		'/quark': {
+			// target: 'http://localhost:4000',//设置你调用的接口域名和端口号 别忘了加http192.168.101.250:9205
+			target: 'http://192.168.101.250:4000',//接口域名和端口号，后端测试环境接口路径
 			ws: false,
 			changeOrigin: true,               // needed for virtual hosted sites
-			pathRewrite: {},
+			pathRewrite: {
+				"^/quark": "/quark",
+			},
+		},
+		'/api': {
+			target: 'http://192.168.101.250:9205',//设置你调用的接口域名和端口号 别忘了加http
+			ws: false,
+			changeOrigin: true,               // needed for virtual hosted sites
+			pathRewrite: {
+				"^/api": "",
+			},
 		}
 	}
 }

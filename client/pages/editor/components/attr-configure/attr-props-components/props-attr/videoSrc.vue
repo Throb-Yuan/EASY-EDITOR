@@ -8,10 +8,17 @@
             v-model="tempValue">
     </el-input>
   </el-form-item>
-  <el-switch
-  v-model="videoControls"
+  <div style="display: flex;align-items: center;justify-content: space-between;padding-right: 30px;">
+	<el-switch
+  v-model="tempConytols"
   inactive-text="播放控件">
 </el-switch>
+<el-switch
+  v-model="tempAutoPlay"
+  inactive-text="自动播放">
+</el-switch>
+</div>
+
   </div>
 </template>
 
@@ -19,18 +26,22 @@
 	export default {
 		name: "attr-qk-videoSrc",
 		props: {
+			// prop只读
 			videoSrc: String,
-			videoControls:Boolean
+			videoControls:Boolean,
+			videoAutoPlay:Boolean
 		},
 		data() {
 			return {
 				tempValue: '',
-				tempConytols:true
+				tempConytols:true,
+				tempAutoPlay:true
 			}
 		},
 		mounted() {
 			this.tempValue = this.videoSrc;
 			this.tempConytols = this.videoControls;
+			this.tempAutoPlay = this.videoAutoPlay;
 		},
 		watch: {
 			videoControls(val){
@@ -44,6 +55,9 @@
 			},
 			tempConytols() {
 				this.$emit('update:videoControls', this.tempConytols);
+			},
+			tempAutoPlay() {
+				this.$emit('update:videoAutoPlay', this.tempAutoPlay);
 			}
 		}
 	}

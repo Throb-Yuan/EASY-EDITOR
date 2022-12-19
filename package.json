@@ -11,6 +11,7 @@
     "lib:h5-swiper": "vue-cli-service build --target lib --name page-engine --dest server/public/engine_libs/h5-swiper engine-template/engine-h5-swiper/index.js"
   },
   "dependencies": {
+    "@riophae/vue-treeselect": "0.4.0",
     "ali-oss": "^6.1.1",
     "animate.css": "^3.7.2",
     "axios": "^0.19.0",

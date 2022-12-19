@@ -11,7 +11,7 @@
 		props: {
 			imageSrc: {
 				type: String,
-        default: 'http://seopic.699pic.com/photo/50051/4111.jpg_wh1200.jpg'
+        default: 'https://dss2.bdstatic.com/8_V1bjqh_Q23odCf/pacific/1993944121.jpg'
       }
 		}
 	}

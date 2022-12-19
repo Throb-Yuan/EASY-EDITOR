@@ -1,6 +1,6 @@
 <template>
   <previewWrapper :pageId="pageId" @closePreview="closePreview">
-    <p class="page-title paddingL30">页面基础设置</p>
+    <p class="page-title paddingL30">节目基础设置</p>
     <div class="preview-info-wrapper">
       <div class="page-info">
         <div class="page-cover">
@@ -8,13 +8,13 @@
         </div>
         <div class="page-title-des">
           <div class="info-form-wrapper">
-            <div class="info-form-l">标题：</div>
+            <div class="info-form-l">节目名称：</div>
             <div class="info-form-r">
               <el-input v-model="pageData.title"/>
             </div>
           </div>
           <div class="info-form-wrapper">
-            <div class="info-form-l">描述：</div>
+            <div class="info-form-l">节目描述：</div>
             <div class="info-form-r">
               <el-input type="textarea" :rows="2" v-model="pageData.description"/>
             </div>
@@ -22,7 +22,7 @@
         </div>
       </div>
       <!--翻页方式-->
-      <div class="info-form-wrapper">
+      <!-- <div class="info-form-wrapper">
         <div class="info-form-l">
           <el-checkbox v-model="pageData.shareConfig.shareWx">设置微信分享样式</el-checkbox>
         </div>
@@ -47,9 +47,9 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       <!--翻页方式-->
-      <div class="info-form-wrapper">
+      <!-- <div class="info-form-wrapper">
         <div class="info-form-l com-width">翻页方式：</div>
         <div class="info-form-r">
           <el-select v-model="pageData.flipType">
@@ -58,16 +58,16 @@
             <el-option label="翻书效果" :value="2"/>
           </el-select>
         </div>
-      </div>
+      </div> -->
       <!--翻页方式-->
-      <div class="info-form-wrapper">
+      <!-- <div class="info-form-wrapper">
         <div class="info-form-l com-width"></div>
         <div class="info-form-r">
           <el-checkbox v-model="pageData.slideNumber">显示页码</el-checkbox>
         </div>
-      </div>
+      </div> -->
       <!--作品访问状态-->
-      <div class="info-form-wrapper">
+      <!-- <div class="info-form-wrapper">
         <div class="info-form-l com-width">作品访问状态：</div>
         <div class="info-form-r">
           <el-select v-model="pageData.status">
@@ -75,11 +75,21 @@
             <el-option label="不允许访问" :value="0"/>
           </el-select>
         </div>
-      </div>
+      </div> -->
+      <!--节目场景-->
+      <div class="info-form-wrapper">
+        <div class="info-form-l com-width">节目场景：</div>
+        <div class="info-form-r">
+          <el-select v-model="pageData.sceneId" placeholder="请选择场景" clearable>
+            <el-option v-for="(dict, index) in sceneList" :key="dict.sceneId" :label="dict.sceneName"
+              :value="dict.sceneId" />
+          </el-select>
+        </div>
+      </div> 
       <div class="foot-btn-wrapper">
-        <el-button type="primary" @click="publishFn">保存并发布</el-button>
-        <el-button @click="saveFn">保 存</el-button>
-        <el-button @click="saveHtmlFn">复制HTML</el-button>
+        <el-button type="primary" @click="publishFn">保存节目</el-button>
+        <!-- <el-button @click="saveFn">保 存</el-button> -->
+        <!-- <el-button @click="saveHtmlFn">复制HTML</el-button> -->
         <el-button @click="closePreview">取 消</el-button>
       </div>
     </div>
@@ -97,6 +107,10 @@
 		},
 		props: {
 			pageId: String,
+      sceneList: {
+        type: Array,
+        require: true
+      },
 			pageData: {
 				type: Object,
 				require: true
@@ -105,6 +119,8 @@
 		data() {
 			return {}
 		},
+    created(){
+    },
 		methods: {
 			/**
 			 * 关闭弹窗事件

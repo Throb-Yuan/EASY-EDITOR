@@ -4,20 +4,40 @@
       <el-menu default-active="/page-list" router>
         <el-menu-item index="/home/page-list">
           <i class="el-icon-mobile"></i>
-          <span slot="title">我的作品</span>
+          <span slot="title">我的节目</span>
         </el-menu-item>
         <el-menu-item index="/home/my-template">
           <i class="el-icon-document"></i>
           <span slot="title">我的模板</span>
         </el-menu-item>
-        <el-menu-item index="/home/page-data">
+        <!-- <el-menu-item index="/home/page-data">
           <i class="el-icon-menu"></i>
           <span slot="title">我的数据</span>
         </el-menu-item>
         <el-menu-item index="/home/template-list">
           <i class="el-icon-s-shop"></i>
           <span slot="title">创意模板</span>
+        </el-menu-item> -->
+        <el-menu-item index="/home/terminal-list">
+          <i class="el-icon-s-shop"></i>
+          <span slot="title">终端管理</span>
         </el-menu-item>
+        <el-menu-item index="/home/scene-list">
+          <i class="el-icon-s-shop"></i>
+          <span slot="title">场景管理</span>
+        </el-menu-item> 
+        <el-menu-item index="/home/program-list">
+          <i class="el-icon-s-shop"></i>
+          <span slot="title">节目管理</span>
+        </el-menu-item> 
+        <!-- <el-menu-item index="/home/resourcetype-list">
+          <i class="el-icon-s-shop"></i>
+          <span slot="title">资源类型</span>
+        </el-menu-item>  -->
+        <!-- <el-menu-item index="/home/resource-list">
+          <i class="el-icon-s-shop"></i>
+          <span slot="title">资源列表</span>
+        </el-menu-item>  -->
       </el-menu>
     </div>
     <div class="clearfix my-page-list">

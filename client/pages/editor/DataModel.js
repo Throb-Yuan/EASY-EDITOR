@@ -57,7 +57,7 @@ let pageConfig = {
 let projectConfig = {
 	name: '',
 	title: '未命名场景',
-	description: '我用夸克可视化编辑器做了一个超酷炫的H5，快来看看吧。',
+	description: '慧集互联的节目，快来看看吧。',
 	coverImage: '',
 	auther: '',
 	script: '',

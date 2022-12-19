@@ -103,10 +103,10 @@ export default [
 				icon: 'iconfont iconshipin',
 				valueType: '',
 				defaultStyle: {
-					width: $config.canvasH5Width,
-					height: 300,
-					paddingTop: 10,
-					paddingBottom: 10
+					width: $config.canvasH5Width/2,
+					height: 225,
+					paddingTop: 0,
+					paddingBottom: 0
 				}
 			},
 		]

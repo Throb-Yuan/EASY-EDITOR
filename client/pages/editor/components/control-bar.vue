@@ -20,16 +20,16 @@
       <i class="iconfont iconredo1"></i>
       <p>重做</p>
     </div>
-    <UploadPsd @upload-success="uploadSuccessPsd">
+    <!-- <UploadPsd @upload-success="uploadSuccessPsd">
       <div class="button-item">
         <i class="iconfont iconps"></i>
         <p>导入psd</p>
       </div>
-    </UploadPsd>
-    <div class="button-item" @click="returnHtml">
-      <i class="iconfont iconyulan"></i>
-      <p>复制HTML</p>
-    </div>
+    </UploadPsd> -->
+    <!-- <div class="button-item" @click="returnHtml">
+      <i class="el-icon-upload2"></i>
+      <p>上传HTML</p>
+    </div> -->
     <div class="button-item" @click="showPreview">
       <i class="iconfont iconyulan"></i>
       <p>预览保存</p>
