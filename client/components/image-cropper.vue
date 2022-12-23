@@ -3,7 +3,7 @@
     <div class="inline-block cropper-res-img">
       <img :src="url || defaultCoverImage" alt="">
       <el-upload
-              action="https://jsonplaceholder.typicode.com/posts/"
+              action="http://192.168.101.250:9205/file/upload"
               :before-upload="beforeUpload"
               accept="image/gif, image/jpeg, image/png, image/bmp"
               :show-file-list="false">

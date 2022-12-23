@@ -2,14 +2,6 @@
   <div>
     <p class="page-title fontBold">基础样式</p>
     <el-collapse v-model="activeNames">
-      <el-collapse-item title="资源主键：">
-    <el-input
-            type="text"
-            placeholder="请输入资源主键"
-            v-model="activeElement.androidId">
-    </el-input>
-  </el-collapse-item>
-
       <el-collapse-item title="尺寸与位置：" name="1">
         <div class="attr-item-edit-wrapper marginB15">
           <p class="attr-item-title">快捷定位：</p>

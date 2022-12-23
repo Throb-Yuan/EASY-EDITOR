@@ -54,7 +54,7 @@ export const addProgram = p => $axios.post('/api/program/add', p)
 // 删除节目管理
 export const delProgram = p => $axios.delete('/api/program/'+p, {})
 // 修改增节目管理
-export const updateProgram = p => $axios.put('/api/program', p)
+export const updateProgram = p => $axios.put('/api/program/update', p)
 // 获取节目管理详细信息
 export const getProgram = p => $axios.get('/api/program/'+p, {})
 // 查询节目管理列表
@@ -105,6 +105,16 @@ export const terminalGroupUpdate = p => $axios.post('/api/terminal/group/update'
 export const terminalGroupAppListGet = p => $axios.post('/api/terminal/group/app/list/get', p)
 // 添加终端组与应用的关系
 export const terminalGroupAppAdd = p => $axios.post('/api/terminal/group/app/add', p)
+// 新增终端控制记录
+export const addControl = p => $axios.post('/api/control', p)
+// 修改终端控制记录
+export const updateControl = p => $axios.put('/api/control', p)
+// 删除终端控制记录
+export const delControl = p => $axios.delete('/api/control/'+p, {})
+// 查询终端控制记录列表
+export const listControl = p => $axios.get('/api/control/list', p)
+// 查询终端控制记录详细
+export const getControl = p => $axios.get('/api/control/'+p, {})
 /**
  * 节目终端 
 */
@@ -113,7 +123,7 @@ export const addProgramterminal = p => $axios.post('/api/programterminal/add', p
 // 删除节目终端
 export const delProgramterminal = p => $axios.delete('/api/programterminal/'+p, {})
 // 修改节目终端
-export const updateProgramterminal = p => $axios.put('/api/programterminal', p)
+export const updateProgramterminal = p => $axios.put('/api/programterminal/update', p)
 // 查询节目终端详细
 export const getProgramterminal = p => $axios.get('/api/programterminal/'+p, {})
 // 查询节目终端列表

@@ -16,7 +16,7 @@ router.beforeEach(async (to, from, next) => {
 	// 用户登录状态拦截
 	let loginStatus = await userModel.checkLoginState();
 	if (!loginStatus) {
-		userModel.goLogin();
+		// userModel.goLogin();
 		return false;
 	}
 

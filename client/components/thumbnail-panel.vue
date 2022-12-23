@@ -19,12 +19,9 @@
 			<div class="btn-wrapper" v-if="btnList.includes('edit')">
 				<el-button type="text" size="mini" @click="edit">编辑</el-button>
 			</div>
-			<div class="btn-wrapper" v-if="btnList.includes('useTemplate')">
+			<!-- <div class="btn-wrapper" v-if="btnList.includes('useTemplate')">
 				<el-button type="text" size="mini" @click="copyPage">使用模板</el-button>
-			</div>
-			<!-- <div class="btn-wrapper" v-if="btnList.includes('copyTemplate')">
-        <el-button type="text" size="mini" @click="copyPage">复制</el-button>
-      </div> -->
+			</div> -->
 			<div class="btn-wrapper" v-if="btnList.includes('copyTemplate')">
 				<el-button type="text" size="mini" @click="terminal">下发节目</el-button>
 			</div>
@@ -278,7 +275,7 @@ export default {
 					const link = window.document.createElement("a")
 					link.style.display = "none"
 					link.href = url
-					link.setAttribute("download", this.pageData.programName + "-unzip.zip")
+					link.setAttribute("download", this.pageData.programName + ".zip")
 					document.body.appendChild(link)
 					this.$modal.msgSuccess("正在下载节目，请勿关闭页面");
 					link.click()

@@ -34,10 +34,12 @@ export default [
 					height: 40,
 					paddingTop: 10,
 					paddingBottom: 10,
-					borderColor: "#999999",
+					borderColor: "#409EFF",
 					borderStyle: 'solid',
 					borderWidth: 1,
-					borderRadius: 4
+					borderRadius: 4,
+					backgroundColor: '#409EFF',
+					color:"#FFF"
 				}
 			},
 			{
@@ -70,6 +72,7 @@ export default [
 				icon: 'iconfont iconshouyelunbotu',
 				valueType: '', // 标识数据类型，用于表单组件,
 				defaultStyle: {
+					width: $config.canvasH5Width/2,
 					height: 210
 				}
 			},
@@ -79,24 +82,24 @@ export default [
 				icon: 'iconfont iconiframetianjia',
 				valueType: '',
 				defaultStyle: {
-					width: $config.canvasH5Width,
+					width: $config.canvasH5Width/2,
 					height: 300,
 					paddingTop: 10,
 					paddingBottom: 10
 				}
 			},
-			{
-				elName: 'map',
-				title: '地图',
-				icon: 'iconfont iconditu',
-				valueType: '',
-				defaultStyle: {
-					width: 300,
-					height: 200,
-					paddingTop: 10,
-					paddingBottom: 10
-				}
-			},
+			// {
+			// 	elName: 'map',
+			// 	title: '地图',
+			// 	icon: 'iconfont iconditu',
+			// 	valueType: '',
+			// 	defaultStyle: {
+			// 		width: 300,
+			// 		height: 200,
+			// 		paddingTop: 10,
+			// 		paddingBottom: 10
+			// 	}
+			// },
 			{
 				elName: 'qk-video',
 				title: '视频',
@@ -111,41 +114,41 @@ export default [
 			},
 		]
 	},
-	{
-		title: '表单组件',
-		components: [
-			{
-				elName: 'input',
-				title: '文本框',
-				icon: 'iconfont iconwenbenkuang'
-			},
-			{
-				elName: 'radio',
-				title: '单选框',
-				icon: 'iconfont iconplus-radio'
-			},
-			{
-				elName: 'checkbox',
-				title: '复选框',
-				icon: 'iconfont iconduoxuan'
-			},
-			{
-				elName: 'date',
-				title: '日期选择器',
-				icon: 'iconfont iconriqi'
-			},
-			{
-				elName: 'time',
-				title: '时间选择器',
-				icon: 'iconfont iconshijian'
-			},
-			{
-				elName: 'datetime',
-				title: '日期时间',
-				icon: 'iconfont iconriqishijian'
-			}
-		]
-	},
+	// {
+	// 	title: '表单组件',
+	// 	components: [
+	// 		{
+	// 			elName: 'input',
+	// 			title: '文本框',
+	// 			icon: 'iconfont iconwenbenkuang'
+	// 		},
+	// 		{
+	// 			elName: 'radio',
+	// 			title: '单选框',
+	// 			icon: 'iconfont iconplus-radio'
+	// 		},
+	// 		{
+	// 			elName: 'checkbox',
+	// 			title: '复选框',
+	// 			icon: 'iconfont iconduoxuan'
+	// 		},
+	// 		{
+	// 			elName: 'date',
+	// 			title: '日期选择器',
+	// 			icon: 'iconfont iconriqi'
+	// 		},
+	// 		{
+	// 			elName: 'time',
+	// 			title: '时间选择器',
+	// 			icon: 'iconfont iconshijian'
+	// 		},
+	// 		{
+	// 			elName: 'datetime',
+	// 			title: '日期时间',
+	// 			icon: 'iconfont iconriqishijian'
+	// 		}
+	// 	]
+	// },
 	{
 		title: '功能组件',
 		components: [
@@ -161,8 +164,5 @@ export default [
 			},
 		]
 	},
-	{
-		title: '业务组件',
-		components: []
-	}
+
 ]

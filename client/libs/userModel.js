@@ -96,6 +96,7 @@ let userModel = {
 		let url = window.sessionStorage.getItem('beforeLoginUrl');
 		if (!url || url.indexOf('/login') != -1) {
 			router.push('/');
+			// router.push(url);
 		} else {
 			router.push(url);
 			window.sessionStorage.setItem('beforeLoginUrl', '');

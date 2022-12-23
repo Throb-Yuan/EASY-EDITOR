@@ -275,12 +275,16 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      this.$modal.confirm('是否确认删除资源类型为"' + row.resourceTypeName + '"的数据项？').then(function() {
-        return this.$API.delResourcetype(row.resourceTypeId);
-      }).then(() => {
-        this.getList();
-        this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+      this.$alert('是否确认删除资源类型为"' + row.resourceTypeName + '"的数据项？', '操作提示', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				type: 'warning',
+			}).then(() => {
+				this.$API.delResourcetype(row.resourceTypeId).then(() => {
+					this.$message.success('删除成功！');
+					this.getList();
+				})
+			})
     }
   }
 };

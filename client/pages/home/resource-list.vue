@@ -228,7 +228,7 @@
 
 <script>
 
-const baseURL = 'http://192.168.101.250:9205/api'
+const baseURL = 'http://192.168.101.250:9205'
 
 export default {
   name: "Resource",
@@ -453,12 +453,16 @@ export default {
     handleDelete(row) {
       const resourceIds = row.resourceId || this.ids;
       let message = row.resourceName ? '是否确认删除资源为"' + row.resourceName + '"的数据项？' :'是否确认删除资源列表编号为"' + resourceIds + '"的数据项？';
-      this.$modal.confirm(message).then(function() {
-        return this.$API.delResource(resourceIds);
-      }).then(() => {
-        this.getList();
-        this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+      this.$alert(message, '操作提示', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				type: 'warning',
+			}).then(() => {
+				this.$API.delResource(resourceIds).then(() => {
+					this.$message.success('删除成功！');
+					this.getList();
+				})
+			})
     },
     /** 导出按钮操作 */
     handleExport() {

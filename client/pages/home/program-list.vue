@@ -338,12 +338,16 @@ export default {
     handleDelete(row) {
       const programIds = row.programId || this.ids;
       let message = row.programName ? '是否确认删除节目为"' + row.programName + '"的数据项？' : '是否确认删除节目管理编号为"' + programIds + '"的数据项？'
-      this.$modal.confirm(message).then(function () {
-        return this.$API.delProgram(programIds);
-      }).then(() => {
-        this.getList();
-        this.$modal.msgSuccess("删除成功");
-      }).catch(() => { });
+      this.$alert(message, '操作提示', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				type: 'warning',
+			}).then(() => {
+				this.$API.delProgram(programIds).then(() => {
+					this.$message.success('删除成功！');
+					this.getList();
+				})
+			})
     },
     /** 导出按钮操作 */
     handleExport() {

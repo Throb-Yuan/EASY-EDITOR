@@ -14,16 +14,18 @@
 		<div class="editor-page-edit-wrapper">
 			<componentLibs v-if="activeSideBar === 'componentLibs'" />
 			<pageManage v-if="activeSideBar === 'pageManage'" />
-			<templateLibs v-if="activeSideBar === 'templateLibs'" />
+			<resourceLibs v-if="activeSideBar === 'resourceLibs'" />
 		</div>
 		<!--页面编辑区域-->
 		<div class="editor-main">
 			<div class="control-bar-wrapper">
 				<controlBar :scale.sync="canvasConfig.scale" @import-psd-data="importPsdData"
-					@showPreview="showPreviewFn" @returnHtml="returnHtmlFn" @cancel="cancelFn" @publish="publishFn"
-					@save="saveFn" />
+					@showPreview="showPreviewFn" @cancel="cancelFn" @publish="publishFn" @save="saveFn" @changeRatio="changeRatioFn" />
 			</div>
-			<editorPan :scale.sync="canvasConfig.scale" />
+			<div id="div1" @drop="drop($event)" @dragover="allowDrop($event)">
+				<editorPan :scale.sync="canvasConfig.scale" />
+			</div>
+
 		</div>
 		<!--属性编辑区域-->
 		<div class="el-attr-edit-wrapper scrollbar-wrapper">
@@ -47,7 +49,7 @@
 		</div>
 		<!--预览-->
 		<previewPage v-if="showPreview" :pageData="projectData" :sceneList="sceneList" :pageId="id"
-			@closePreview="showPreview = false" @publishFn="publishFn" @saveHtmlFn="saveHtmlFn" @saveFn="saveFn">
+			@closePreview="showPreview = false" @publishFn="publishFn" @saveFn="saveFn">
 		</previewPage>
 		<!--我的图片-->
 		<imageLibs />
@@ -57,7 +59,7 @@
 <script>
 import componentLibs from './components/component-libs/Index'
 import pageManage from './components/page-manage'
-import templateLibs from './components/template-libs'
+import resourceLibs from './components/resource-libs'
 import editorPan from './components/editor-panel/Index'
 // 属性编辑相关组件
 import attrEdit from './components/attr-configure/attr-edit'
@@ -78,7 +80,7 @@ export default {
 	components: {
 		componentLibs,
 		pageManage,
-		templateLibs,
+		resourceLibs,
 		imageLibs,
 		editorPan,
 		attrEdit,
@@ -91,7 +93,7 @@ export default {
 	},
 	data() {
 		return {
-			putProjects:{},
+			putProjects: {},
 			id: '', // 当前页面id
 			programId: '',
 			loading: false,
@@ -105,14 +107,14 @@ export default {
 					value: 'componentLibs',
 					elementUiIcon: 'el-icon-s-operation'
 				},
+				// {
+				// 	label: '页面管理',
+				// 	value: 'pageManage',
+				// 	elementUiIcon: 'el-icon-document'
+				// },
 				{
-					label: '页面管理',
-					value: 'pageManage',
-					elementUiIcon: 'el-icon-document'
-				},
-				{
-					label: '模板库',
-					value: 'templateLibs',
+					label: '资源库',
+					value: 'resourceLibs',
 					elementUiIcon: 'el-icon-files'
 				}
 			],
@@ -137,6 +139,68 @@ export default {
 	},
 	methods: {
 		/**
+ 		* 更改画布大小，更新editorPan组件大小与projectData数据
+ 		* @param objs.e   所选比例值
+		* @param objs.arr 数组
+ 		*/
+		changeRatioFn(objs){
+			let checkData = objs.arr.find(v=>v.value == objs.e)
+			// let case = objs.arr.find(v=> {return v.value==objs.e})
+			// console.log('button click',checkData);
+			// this.projectData.width = checkData.toWidth
+			// this.projectData.height = checkData.toHeight
+		},
+		/**
+ 		* 资源列表拖拽联动，生成对应标签添加至画布
+ 		* @param ev 承载node节点数据
+ 		*/
+		allowDrop(ev) {
+			// console.log("allowDrop函数移动时", ev);
+			ev.preventDefault();
+		},
+		drop(ev) {
+			// nodeData：获取拖拽节点数据信息
+			let nodeStr = ev.dataTransfer.getData("node")
+			let nodeData = JSON.parse(nodeStr)
+			// 节点基础信息写入
+			let a = {
+				defaultStyle: {
+					height: 225, paddingBottom: 0, paddingTop: 0, width: 400,
+				},
+				elName: nodeData.fileType == 'I' ? "qk-image" : "qk-video",
+				icon: "iconfont iconshipin",
+				title: nodeData.fileType == 'I' ? "图片" : "视频",
+				valueType: "",
+
+			}
+			let b = {} //节点信息带入
+			// 判断节点类型，添加至画布
+			if (nodeData.resourceTypeName === "图片") {
+				b.localPath = nodeData.filePath
+				b.imageSrc = nodeData.fileUrl
+				b.androidId = nodeData.resourceId
+			} else if (nodeData.resourceTypeName === "视频") {
+				b.localPath = nodeData.filePath
+				b.videoSrc = nodeData.fileUrl
+				b.androidId = nodeData.resourceId
+				b.videoAutoPlay = true
+				b.videoControls = true
+			} else if (nodeData.resourceTypeName === "音乐") {
+				b.localPath = nodeData.filePath
+				b.musicSrc = nodeData.fileUrl
+				b.androidId = nodeData.resourceId
+				b.musicAutoPlay = true
+				b.musicControls = true
+				// 调整大小与模板名称
+				a.defaultStyle.width = 60
+				a.defaultStyle.height = 60
+				a.elName = "qk-bg-music"
+				a.title = "音乐"
+			}
+			this.$store.dispatch('addElement', { ...a, needProps: b })
+			ev.preventDefault();
+		},
+		/**
 		 * 初始化页面数据
 		 */
 		getSceneList() {
@@ -158,6 +222,7 @@ export default {
 			this.$API.getProgram(this.id).then(res => {
 				this.loading = false;
 				let jsonProjects = JSON.parse(res.data.afterHtml)
+				jsonProjects.notDevs = false
 				this.putProjects = res.data
 				console.log("res.body==", jsonProjects);
 				this.$store.dispatch('setPrjectData', {
@@ -169,18 +234,17 @@ export default {
 			})
 		},
 		/**
-		 * 保存HTMl
+		 * 保存HTMl（驼峰转换）
 		 */
 		getKebabCase(str) {
 			return str.replace(/[A-Z]/g, function (i) {
 				return '-' + i.toLowerCase();
 			})
 		},
-
-		isEmpty(obj) {
-			/**
-		 * 过滤对象的空值，节省性能
+		/**
+		 * 过滤对象的空值
 		 */
+		isEmpty(obj) {
 			if (typeof obj === 'undefined' || obj === null || obj === '') return true;
 			return false
 		},
@@ -191,53 +255,6 @@ export default {
 				}
 			})
 			return formData;
-		},
-		async saveHtmlFn() {
-			// await this.screenshots()
-			// 提交数据再预览
-			let projectDataEles = JSON.parse(JSON.stringify(this.projectData.pages[0].elements))
-			let needRate = ["width", "height", "top", "left", 'padding', 'fontSize', 'margin', "paddingBottom", "paddingLeft", "paddingRight", "paddingTop", "borderRadius"]
-			// let regs = 'yuanRenJun'.replace(/[A-Z]/g, '-$&').toLowerCase()
-			let htmlStart = '<html dir="ltr" lang="zh"> <head><meta charset="utf-8"><title>quarkTest</body></body></title><style>body { background: #FFFFFF; margin: 0;max-width:100vw;}</style></head><body>'
-			let htmlEnd = '  </body></html>'
-			let bodyIns = ''
-			console.log("页面数据==》", projectDataEles);
-			// let tagsArr = this.projectData.pages[0].elements
-			let getTags = projectDataEles.map(cur => {
-				// if(cur.elName=="qk-text"){
-				// 	bodyIns =`${bodyIns}<div type=>${cur.propsValue.text}</div>`
-				// }
-				let cssData = this.preProcessData(cur.commonStyle)
-
-				let cssString = ''
-				Object.keys(cssData).forEach(key => {
-					if (needRate.includes(key)) {
-						cssData[key] = cssData[key] / 800 * 100
-						cssString = cssString + key.replace(/[A-Z]/g, '-$&').toLowerCase() + ':' + cssData[key] + 'vw;'
-					} else {
-						cssString = cssString + key.replace(/[A-Z]/g, '-$&').toLowerCase() + ':' + cssData[key] + ';'
-					}
-				})
-				let androidId = ''
-				if (cur.androidId) androidId = cur.androidId
-				if (cur.elName == "qk-image") {
-					bodyIns = `${bodyIns}<div type='2cse_pic' id='${androidId}'> <image style='${cssString}' src='${cur.propsValue.imageSrc}'></image> </div>`
-				}
-				// if (cur.elName == "qk-text") {
-				// 	bodyIns = `${bodyIns}<div type='2cse_text' style='${cssString}'> ${cur.propsValue.text}</div>`
-				// }
-				if (cur.elName == "qk-rectangle-border") {//分割线
-					bodyIns = `${bodyIns}<div type='2cse_rectangle-border' style='${cssString}'></div>`
-				}
-			})
-			let htmlAlls = htmlStart + bodyIns + htmlEnd
-			// 在那些黎明将至的山谷里 我急促的甚至奔跑起来 生命穿越苏醒的花丛 让我带走这里躁动的希望
-			// 在那些炙热潮湿的喧嚣里 我急促的甚至奔跑起来 汗水渗透城市的睡梦 让我带走这里欢快的舞蹈
-			// 在那些插着稻草人的田野里 我急促的甚至奔跑起来 风吹拂金黄颜色的麦地 让我带走这里成熟的消息
-			// 在那些雪花绽放的日子里 我急促的甚至奔跑起来 冰雪的花粉在脸上融化 让我带走这里所有的回忆
-			this.$copyText(htmlAlls).then(() => {
-				this.$message.success('复制成功!');
-			})
 		},
 		/**
 		 * 保存
@@ -251,31 +268,50 @@ export default {
 			})
 		},
 		/**
-		 * 保存
+		 * 保存 生成节目
+		 * @niceHtml 拼接完整的html字符串
+		 * @postIds 资源主键集合
 		 */
 		async publishFn() {
 			// 提交数据再预览 后台新增节目管理
-			let startHtml = '\x3C!DOCTYPE html>\x3Chtml lang="en">\x3Chead>\x3Cmeta charset="UTF-8">\x3Ctitle>\x3C/title>\x3Clink rel="shortcut icon" href="./public/favicon.ico" type="image/x-icon">\x3Cmeta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">\x3Cmeta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">\x3Cmeta name="keywords" content="">\x3Cmeta name="description" content="">\x3Cmeta name="renderer" content="webkit">\x3Cmeta name="robots" content="index, follow">\x3Cmeta name="format-detection" content="telephone=no">\x3Cscript src="./public/third-libs/vue.js">\x3C/script>\x3Clink rel="stylesheet" href="./public/third-libs/animate.min.css">\x3Clink rel="stylesheet" href="./public/third-libs/swiper.min.css">\x3Cscript src="./public/third-libs/swiper.min.js">\x3C/script>\x3C!--引入模板-->\x3Cscript src="./public/engine_libs/h5-swiper/page-engine.umd.js">\x3C/script>\x3Clink rel="stylesheet" href="./public/engine_libs/h5-swiper/page-engine.css">\x3Cstyle>* {padding: 0;margin: 0;box-sizing: border-box;}html, body, #app{position: relative;width: 100%;height: 100%;}\x3C/style>\x3Cscript>window._pageData = '
+			let startHtml = '\x3C!DOCTYPE html>\x3Chtml lang="en">\x3Chead>\x3Cmeta charset="UTF-8">\x3Ctitle>\x3C/title>\x3Clink rel="shortcut icon" href=" ../../assets/public/favicon.ico" type="image/x-icon">\x3Cmeta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">\x3Cmeta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">\x3Cmeta name="keywords" content="">\x3Cmeta name="description" content="">\x3Cmeta name="renderer" content="webkit">\x3Cmeta name="robots" content="index, follow">\x3Cmeta name="format-detection" content="telephone=no">\x3Cscript src=" ../../assets/public/third-libs/vue.js">\x3C/script>\x3Clink rel="stylesheet" href=" ../../assets/public/third-libs/animate.min.css">\x3Clink rel="stylesheet" href=" ../../assets/public/third-libs/swiper.min.css">\x3Cscript src=" ../../assets/public/third-libs/swiper.min.js">\x3C/script>\x3C!--引入模板-->\x3Cscript src=" ../../assets/public/engine_libs/h5-swiper/page-engine.umd.js">\x3C/script>\x3Clink rel="stylesheet" href=" ../../assets/public/engine_libs/h5-swiper/page-engine.css">\x3Cstyle>* {padding: 0;margin: 0;box-sizing: border-box;}html, body, #app{position: relative;width: 100%;height: 100%;}\x3C/style>\x3Cscript>window._pageData = '
 			let endHtmls = '\x3C/script>\x3C/head>\x3Cbody>\x3Cdiv id="app">\x3Cengine-h5-swiper  />\x3C/div>\x3Cscript>new Vue({el:"#app"})\x3C/script>\x3Cscript>eval(window._pageData.script);\x3C/script>\x3C/body>\x3C/html>'
-			let jsonProject = JSON.stringify(this.projectData)
-			let jsonAfter = JSON.stringify(this.projectData)
+			let theProjectData = JSON.parse(JSON.stringify(this.projectData))
+			theProjectData.notDevs = true
+			let jsonProject = JSON.stringify(theProjectData)
+			let jsonAfter = JSON.stringify(theProjectData)
 			let niceHtml = startHtml + jsonProject + endHtmls
-			let postIds = []//资源主键集合
-			this.projectData.pages.map(item => {
+			/**
+			 * get资源主键
+			 * @propsValue ==>图，视频，音频
+			 * @qkImageCarousel ==>轮播图
+			 * @linkLoacl ==>节目
+			 */
+			let postIds = []
+			theProjectData.pages.map(item => {
 				item.elements.map(cur => {
-					if (cur.androidId) postIds.push(cur.androidId)
+					if (cur.propsValue.androidId) postIds.push(cur.propsValue.androidId)
+					if (cur.elName == "qk-image-carousel" && cur.propsValue.imageSrcList.length){
+						cur.propsValue.imageSrcList.map(ele => {
+							if (ele.androidId) postIds.push(ele.androidId)
+						})
+					}
+					if(cur.events.length){
+						cur.events.map(eve => {
+							if (eve.type=="linkLoacl") postIds.push(eve.url.slice(2,34))
+						})
+					}
 				})
 			})
-			
-			console.log("this.projectData==",this.projectData);
+			console.log("theEndProjectData==", theProjectData,postIds);
 			if (!this.putProjects.programId) {
 				let a = {
-				html: niceHtml,//节目html拼接字符串
-				programName: this.projectData.title,//节目名称
-				resourceIdList: postIds,//节目资源主键集合
-				afterHtml:jsonAfter,
-				sceneId: this.projectData.sceneId //节目ID
-			}
+					html: niceHtml,//节目html拼接字符串
+					programName: theProjectData.title,//节目名称
+					resourceIdList: postIds,//节目资源主键集合
+					afterHtml: jsonAfter,//JSON数据
+					sceneId: theProjectData.sceneId //节目ID
+				}
 				this.$API.addProgram(a).then(() => {
 					this.$message.success('已成功保存并发布!');
 					this.showPreview = false
@@ -284,76 +320,26 @@ export default {
 			} else {
 				let b = JSON.parse(JSON.stringify(this.putProjects))
 				b.html = niceHtml
-				b.programName = this.projectData.title
+				b.programName = theProjectData.title
 				b.resourceIdList = postIds
-				b.sceneId = this.projectData.sceneId
+				b.sceneId = theProjectData.sceneId
 				b.afterHtml = jsonAfter
+				
 				this.$API.updateProgram(b).then(() => {
 					this.$message.success('已成功保存并发布!');
 					this.showPreview = false
 					this.$router.push({ name: 'pageList' })
 				})
 			}
-
-			// let data = { ...this.projectData };
-			// data.isPublish = true;
-			// data.programId = "test123456"
-			// this.$API.updatePage({ pageData: data }).then(() => {
-			// 	this.$message.success('已成功保存并发布!');
-			// 	this.showPreview = false
-			// 	this.$router.push({ name: 'pageList' })
-			// })
 		},
 		async showPreviewFn() {
+			console.log("将提交数据===", this.projectData);
 			// await this.screenshots()
 			// 提交数据再预览
-			// console.log("页面数据==》",this.projectData);
-			// return false;
 			this.showPreview = true
 			// this.$API.updatePage({ pageData: this.projectData }).then(() => {
 			// 	this.showPreview = true
 			// })
-		},
-		returnHtmlFn() {
-			console.log("数据提交==", this.projectData);
-			let startHtml = '\x3C!DOCTYPE html>\x3Chtml lang="en">\x3Chead>\x3Cmeta charset="UTF-8">\x3Ctitle>\x3C/title>\x3Clink rel="shortcut icon" href="./public/favicon.ico" type="image/x-icon">\x3Cmeta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">\x3Cmeta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">\x3Cmeta name="keywords" content="">\x3Cmeta name="description" content="">\x3Cmeta name="renderer" content="webkit">\x3Cmeta name="robots" content="index, follow">\x3Cmeta name="format-detection" content="telephone=no">\x3Cscript src="./public/third-libs/vue.js">\x3C/script>\x3Clink rel="stylesheet" href="./public/third-libs/animate.min.css">\x3Clink rel="stylesheet" href="./public/third-libs/swiper.min.css">\x3Cscript src="./public/third-libs/swiper.min.js">\x3C/script>\x3C!--引入模板-->\x3Cscript src="./public/engine_libs/h5-swiper/page-engine.umd.js">\x3C/script>\x3Clink rel="stylesheet" href="./public/engine_libs/h5-swiper/page-engine.css">\x3Cstyle>* {padding: 0;margin: 0;box-sizing: border-box;}html, body, #app{position: relative;width: 100%;height: 100%;}\x3C/style>\x3Cscript>window._pageData = '
-			let endHtmls = '\x3C/script>\x3C/head>\x3Cbody>\x3Cdiv id="app">\x3Cengine-h5-swiper  />\x3C/div>\x3Cscript>new Vue({el:"#app"})\x3C/script>\x3Cscript>eval(window._pageData.script);\x3C/script>\x3C/body>\x3C/html>'
-			// let oldJson = { "shareConfig": { "coverImage": "", "title": "这是#分享者#的大力推荐", "description": "这是#分享者#大力推荐的H5" }, "title": "未命名场景", "coverImage": "", "description": "我用夸克可视化编辑器做了一个超酷炫的H5，快来看看吧。", "script": "", "width": 800, "height": 450, "pageMode": "h5", "flipType": 0, "slideNumber": false, "status": 1, "isPublish": true, "isTemplate": false, "members": [], "version": 1, "_id": "6397d66abb21fe097091e080", "pages": [{ "uuid": "b7df6e4b-1d63-49fe-ba0c-89e7f6b33083", "name": "", "elements": [{ "uuid": "d3a79ae5-97a2-4550-9edf-bce55d39b58b", "elName": "qk-image", "animations": [], "commonStyle": { "position": "absolute", "width": 400, "height": 225, "top": 0, "left": 0, "rotate": 0, "paddingTop": 0, "paddingLeft": 0, "paddingRight": 0, "paddingBottom": 0, "marginTop": 0, "marginLeft": 0, "marginRight": 0, "marginBottom": 0, "borderWidth": 0, "borderColor": "", "borderStyle": "solid", "borderRadius": 0, "boxShadow": "", "fontSize": 16, "fontWeight": 500, "lineHeight": 1.4, "letterSpacing": 0, "textAlign": "center", "color": "#000000", "backgroundColor": "", "backgroundImage": "", "backgroundSize": "cover", "opacity": 1, "zIndex": 1 }, "events": [], "propsValue": { "imageSrc": "\t\nhttp://192.168.101.250:2501/file/download/I52F33273F5634635BE8058A76F96F8F3" }, "valueType": "String", "androidId": "I52F33273F5634635BE8058A76F96F8F3" }, { "uuid": "4f494da5-f0cc-49bf-a197-0d29419cbbba", "elName": "qk-image", "animations": [], "commonStyle": { "position": "absolute", "width": 400, "height": 225, "top": 225, "left": 400, "rotate": 0, "paddingTop": 0, "paddingLeft": 0, "paddingRight": 0, "paddingBottom": 0, "marginTop": 0, "marginLeft": 0, "marginRight": 0, "marginBottom": 0, "borderWidth": 0, "borderColor": "", "borderStyle": "solid", "borderRadius": 10, "boxShadow": "", "fontSize": 16, "fontWeight": 500, "lineHeight": 1.4, "letterSpacing": 0, "textAlign": "center", "color": "#000000", "backgroundColor": "", "backgroundImage": "", "backgroundSize": "cover", "opacity": 1, "zIndex": 2 }, "events": [], "propsValue": { "imageSrc": "\t\nhttp://192.168.101.250:2501/file/download/IF60B18507EA04A75BD6F0615749BEF2E" }, "valueType": "String", "androidId": "IF60B18507EA04A75BD6F0615749BEF2E" }, { "uuid": "155567d9-dfa2-4bec-a424-b8e04ca27ab3", "elName": "qk-text", "animations": [], "commonStyle": { "position": "absolute", "width": 400, "height": 32, "top": 20, "left": 400, "rotate": 0, "paddingTop": 0, "paddingLeft": 0, "paddingRight": 0, "paddingBottom": 0, "marginTop": 0, "marginLeft": 0, "marginRight": 0, "marginBottom": 0, "borderWidth": 0, "borderColor": "", "borderStyle": "solid", "borderRadius": 0, "boxShadow": "", "fontSize": 18, "fontWeight": 500, "lineHeight": 1.5, "letterSpacing": 0, "textAlign": "center", "color": "#000000", "backgroundColor": "", "backgroundImage": "", "backgroundSize": "cover", "opacity": 1, "zIndex": 3 }, "events": [], "propsValue": { "text": "细节决定成败" }, "valueType": "String" }, { "uuid": "131a3a89-b8c8-4bd1-9eb8-637ce49463ab", "elName": "qk-rectangle-border", "animations": [], "commonStyle": { "position": "absolute", "width": 300, "height": 1, "top": 54, "left": 508, "rotate": 0, "paddingTop": 0, "paddingLeft": 0, "paddingRight": 0, "paddingBottom": 0, "marginTop": 0, "marginLeft": 0, "marginRight": 0, "marginBottom": 0, "borderWidth": 0, "borderColor": "", "borderStyle": "solid", "borderRadius": 0, "boxShadow": "", "fontSize": 16, "fontWeight": 500, "lineHeight": 1.4, "letterSpacing": 0, "textAlign": "center", "color": "#000000", "backgroundColor": "#999999", "backgroundImage": "", "backgroundSize": "cover", "opacity": 1, "zIndex": 4 }, "events": [], "valueType": "String" }, { "uuid": "29d41c72-4e0f-49c4-9b2c-ca9e515f8f50", "elName": "qk-text", "animations": [], "commonStyle": { "position": "absolute", "width": 200, "height": 32, "top": 58, "left": 457, "rotate": 0, "paddingTop": 0, "paddingLeft": 0, "paddingRight": 0, "paddingBottom": 0, "marginTop": 0, "marginLeft": 0, "marginRight": 0, "marginBottom": 0, "borderWidth": 0, "borderColor": "", "borderStyle": "solid", "borderRadius": 0, "boxShadow": "", "fontSize": 18, "fontWeight": 500, "lineHeight": 1.5, "letterSpacing": 0, "textAlign": "center", "color": "#000000", "backgroundColor": "", "backgroundImage": "", "backgroundSize": "cover", "opacity": 1, "zIndex": 5 }, "events": [], "propsValue": { "text": "把握细节" }, "valueType": "String" }, { "uuid": "f26fc031-5ed8-454d-8453-7d4a3e1b63cb", "elName": "qk-rectangle-border", "animations": [], "commonStyle": { "position": "absolute", "width": 300, "height": 1, "top": 84, "left": 450, "rotate": 0, "paddingTop": 0, "paddingLeft": 0, "paddingRight": 0, "paddingBottom": 0, "marginTop": 0, "marginLeft": 0, "marginRight": 0, "marginBottom": 0, "borderWidth": 0, "borderColor": "", "borderStyle": "solid", "borderRadius": 0, "boxShadow": "", "fontSize": 16, "fontWeight": 500, "lineHeight": 1.4, "letterSpacing": 0, "textAlign": "center", "color": "#000000", "backgroundColor": "#999999", "backgroundImage": "", "backgroundSize": "cover", "opacity": 1, "zIndex": 6 }, "events": [], "valueType": "String" }, { "uuid": "b0d1636e-7630-4a5f-8065-5076200172b1", "elName": "qk-text", "animations": [], "commonStyle": { "position": "absolute", "width": 200, "height": 32, "top": 89, "left": 426, "rotate": 0, "paddingTop": 0, "paddingLeft": 0, "paddingRight": 0, "paddingBottom": 0, "marginTop": 0, "marginLeft": 0, "marginRight": 0, "marginBottom": 0, "borderWidth": 0, "borderColor": "", "borderStyle": "solid", "borderRadius": 0, "boxShadow": "", "fontSize": 18, "fontWeight": 500, "lineHeight": 1.5, "letterSpacing": 0, "textAlign": "center", "color": "#000000", "backgroundColor": "", "backgroundImage": "", "backgroundSize": "cover", "opacity": 1, "zIndex": 7 }, "events": [], "propsValue": { "text": "小中见大" }, "valueType": "String" }, { "uuid": "61fc7f3f-e514-4aaa-8d0c-5a954a3d62b8", "elName": "qk-rectangle-border", "animations": [], "commonStyle": { "position": "absolute", "width": 300, "height": 1, "top": 115, "left": 419, "rotate": 0, "paddingTop": 0, "paddingLeft": 0, "paddingRight": 0, "paddingBottom": 0, "marginTop": 0, "marginLeft": 0, "marginRight": 0, "marginBottom": 0, "borderWidth": 0, "borderColor": "", "borderStyle": "solid", "borderRadius": 0, "boxShadow": "", "fontSize": 16, "fontWeight": 500, "lineHeight": 1.4, "letterSpacing": 0, "textAlign": "center", "color": "#000000", "backgroundColor": "#999999", "backgroundImage": "", "backgroundSize": "cover", "opacity": 1, "zIndex": 8 }, "events": [], "valueType": "String" }, { "uuid": "6080530d-5a29-4fc4-adc1-0a49a1378e0c", "elName": "qk-text", "animations": [], "commonStyle": { "position": "absolute", "width": 400, "height": 40, "top": 266, "left": 0, "rotate": 0, "paddingTop": 0, "paddingLeft": 0, "paddingRight": 0, "paddingBottom": 0, "marginTop": 0, "marginLeft": 0, "marginRight": 0, "marginBottom": 0, "borderWidth": 0, "borderColor": "", "borderStyle": "solid", "borderRadius": 0, "boxShadow": "", "fontSize": 22, "fontWeight": 500, "lineHeight": 1.5, "letterSpacing": 0, "textAlign": "center", "color": "#E8B910", "backgroundColor": "", "backgroundImage": "", "backgroundSize": "cover", "opacity": 1, "zIndex": 9 }, "events": [], "propsValue": { "text": "细节是灵魂" }, "valueType": "String" }, { "uuid": "c7a4af1e-feb3-4e5b-a839-fe376d8ce5d5", "elName": "qk-image", "animations": [], "commonStyle": { "position": "absolute", "width": 200, "height": 110, "top": 340, "left": 0, "rotate": 0, "paddingTop": 0, "paddingLeft": 0, "paddingRight": 0, "paddingBottom": 0, "marginTop": 0, "marginLeft": 0, "marginRight": 0, "marginBottom": 0, "borderWidth": 0, "borderColor": "", "borderStyle": "solid", "borderRadius": 5, "boxShadow": "", "fontSize": 16, "fontWeight": 500, "lineHeight": 1.4, "letterSpacing": 0, "textAlign": "center", "color": "#000000", "backgroundColor": "", "backgroundImage": "", "backgroundSize": "cover", "opacity": 1, "zIndex": 10 }, "events": [], "propsValue": { "imageSrc": "https://img-baofun.zhhainiao.com/market/5/44de55ff8dd22fc6ee58d96c21edb195.jpg" }, "valueType": "String" }], "commonStyle": { "backgroundColor": "", "backgroundImage": "", "backgroundSize": "cover" } }], "author": "627340f666cf240fd4ad64a8", "created": "2022-12-13T01:33:30.613Z", "updated": "2022-12-13T01:55:58.486Z", "__v": 0 }
-			let jsonProject = JSON.stringify(this.projectData)
-			// let endHtmls = ''
-			let postIds = []//资源主键集合
-			this.projectData.pages.map(item => {
-				item.elements.map(cur => {
-					if (cur.androidId) postIds.push(cur.androidId)
-				})
-			})
-			console.log("数据提交111==", postIds, this.projectData._id);
-			let niceHtml = startHtml + jsonProject + endHtmls
-			let a = {
-				html: niceHtml,//节目html拼接字符串
-				programName: this.projectData.title,//节目名称
-				resourceIdList: postIds,//节目资源主键集合
-				sceneId: this.projectData._id//节目ID
-			}
-			// this.$API.programAdd(a).then(() => {
-			// 	this.$message.success('节目已导出!');
-			// })
-			// this.$API.programDel('3F18690EE1CB4B2A8841B32FB0AE70F2').then(() => {
-			// 	this.$message.success('节目已删除!');
-			// })
-			// this.$API.programDownload('A86323E109C84563ADAD8CACD427022C').then(response => {
-			// 	const url = window.URL.createObjectURL(new Blob([response.data]))
-			// 	const link = window.document.createElement("a")
-			// 	link.style.display = "none"
-			// 	link.href = url
-			// 	link.setAttribute("download", "细节灵魂" + ".zip")
-			// 	document.body.appendChild(link)
-			// 	link.click()
-			// 	console.log("导出完成");
-			// 	this.$message.success('节目已导出!');
-			// })
-			return false;
-			this.saveHtmlFn()
 		},
 		/**
 		 * 退出
@@ -433,6 +419,7 @@ export default {
 
 	.editor-page-edit-wrapper {
 		width: 210px;
+		// width: 230px;
 		padding: 0 1px;
 	}
 
