@@ -17,7 +17,7 @@ router.beforeEach(async (to, from, next) => {
 	let loginStatus = await userModel.checkLoginState();
 	if (!loginStatus) {
 		// userModel.goLogin();
-		return false;
+		// return false;
 	}
 
 	//TODO 黄维 根据加载的资源，更新路由meta属性中的title属性，所有的页面title使用route.meta.title

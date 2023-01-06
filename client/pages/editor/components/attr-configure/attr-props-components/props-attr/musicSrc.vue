@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div @drop="drop($event)" @dragover="allowDrop($event)">
 		<el-form-item label="资源地址：">
 			<el-input type="textarea" :rows="3" placeholder="请输入url地址" v-model="tempValue">
 			</el-input>
@@ -48,6 +48,29 @@ export default {
 		this.tempAndroidId = this.androidId
 		this.tempLocalPath = this.localPath
 	},
+	methods: {
+		/**
+		* 资源列表拖拽联动，将对应图片数据覆盖至拖拽的节点数据
+		* @param ev 承载node节点数据
+		*/
+		allowDrop(ev) {
+			ev.preventDefault();
+		},
+		drop(ev) {
+			// nodeData：获取拖拽节点数据信息
+			let nodeStr = ev.dataTransfer.getData("node")
+			let nodeData = JSON.parse(nodeStr)
+			// 为图片则更改当前轮播项数据
+			if (nodeData.resourceTypeName != "音乐") {
+				this.$message.warning('请选择音乐类型拖入覆盖');
+				return false
+			}
+			this.tempValue = nodeData.fileUrl
+			this.tempLocalPath = nodeData.filePath
+			this.tempAndroidId = nodeData.resourceId
+			ev.preventDefault();
+		}
+	},
 	watch: {
 		/**
 	 * 监听元素值改变，将新值传递给父元素
@@ -70,10 +93,10 @@ export default {
 			this.$emit('update:musicAutoPlay', this.tempAutoPlay);
 		},
 		tempAndroidId() {
-			this.$emit('update:tempAndroidId', this.tempAndroidId);
+			this.$emit('update:androidId', this.tempAndroidId);
 		},
 		tempLocalPath() {
-			this.$emit('update:tempLocalPath', this.tempLocalPath);
+			this.$emit('update:localPath', this.tempLocalPath);
 		}
 	}
 }

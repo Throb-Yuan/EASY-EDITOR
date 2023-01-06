@@ -26,7 +26,7 @@
         <el-form label-width="100px">
           <el-form-item label="昵称：">
             <div v-if="!editName">
-              <span class="inline-block marginR20">{{userData.name}}</span>
+              <span class="inline-block marginR20">{{userInfo.nickName}}</span>
               <el-button v-if="showEdit" size="mini" icon="el-icon-edit" @click="showEditName(true)" circle></el-button>
             </div>
             <div class="edit-name-wrapper" v-else>
@@ -38,13 +38,13 @@
             </div>
           </el-form-item>
           <el-form-item label="用户名：">
-            <div>{{userData.username}}</div>
+            <div>{{userInfo.userName}}</div>
           </el-form-item>
           <el-form-item label="邮箱：">
-            <div>{{userData.email}}</div>
+            <div>{{userInfo.email}}</div>
           </el-form-item>
           <el-form-item label="注册时间：">
-            <div>{{userData.created | formatTime}}</div>
+            <div>{{userInfo.createTime}}</div>
           </el-form-item>
         </el-form>
       </div>
@@ -86,6 +86,7 @@
 		},
 		data() {
 			return {
+        userInfo:{},
 				loading: false,
 				dialogleVisible: false,
 				editName: false,
@@ -94,12 +95,22 @@
 			};
 		},
 		created() {
-			this.userHeadImage = this.userData.avatar || this.userHeadImage;
-			this.name = this.userData.name
+			// this.userHeadImage = this.userData.avatar || this.userHeadImage;
+			// this.name = this.userData.name
+      this.getUserProfile()
 		},
 		methods: {
 			show() {
 				this.dialogleVisible = true;
+			},
+      //获取用户信息
+      getUserProfile() {
+				this.$API.getUserProfile().then(res => {
+					this.userInfo = res.data
+          this.name = this.userInfo.nickName
+          this.userHeadImage =  `${process.env.VUE_APP_BASE_API}/file/download/${res.data.avatar}`
+          this.$emit('changeImg',this.userHeadImage)
+        })
 			},
 			//保存头像
 			saveAvatar(file) {

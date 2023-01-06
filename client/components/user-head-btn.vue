@@ -9,7 +9,7 @@
       </div>
       <el-dropdown-menu v-if="isLogined">
         <el-dropdown-item>
-          <userInfo :userData="userData" :showEdit="true">
+          <userInfo :userData="userData" @changeImg="changeImg" :showEdit="false">
             <i class="el-icon-user"></i> 个人资料
           </userInfo>
         </el-dropdown-item>
@@ -65,7 +65,13 @@
 				return this.$store.state.user.userInfo || {}
 			}
 		},
+    created(){
+    },
 		methods: {
+      changeImg(e) {
+        console.log("改变父组件");
+				this.userHeadImage = e
+			},
 			doLogout() {
 				userModel.doLogout()
 			},

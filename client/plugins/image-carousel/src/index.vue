@@ -1,6 +1,6 @@
 <!--test.vue-->
 <template>
-	<div class="qk-image-carsousel">
+	<div class="qk-image-carsousel" v-if="changeShow">
 		<!--异步加载轮播图的情况;-->
 		<Swiper class="image-carsousel-swiper" v-if="imageSrcList.length > 0" :autoPlay='true' :showIndicator='true'
 			:interval="interval" duration="500">
@@ -23,17 +23,17 @@ export default {
 		imageSrcList: {
 			type: Array,
 			default: () =>  [{
-					urls: 'https://img-baofun.zhhainiao.com/market/133/2d64f9b1d09b9c519b301d4d721adc0c.jpg',
-					localPath: '',
-					androidId: ''
+					urls: 'http://192.168.101.250:2501/file/download/I1516BF5E171E4D1E91F01AD375C53A99',
+					localPath: '../../resource/1aae81ff57e02d9cd7db864926de38d2.jpg',
+					androidId: 'I1516BF5E171E4D1E91F01AD375C53A99'
 				}, {
-					urls: 'https://img-baofun.zhhainiao.com/market/5/44de55ff8dd22fc6ee58d96c21edb195.jpg',
-					localPath: '',
-					androidId: ''
+					urls: 'http://192.168.101.250:2501/file/download/IC58C80056F354F41A64D3899254BFFE6',
+					localPath: '../../resource/c9667eb24ccd6ca0818a0b550752cf80.png',
+					androidId: 'IC58C80056F354F41A64D3899254BFFE6'
 				}, {
-					urls: 'https://img-baofun.zhhainiao.com/pcwallpaper_ugc/live/9f99708b6e5d6c4beb4f6f1a42384183.mp4.jpg',
-					localPath: '',
-					androidId: ''
+					urls: 'http://192.168.101.250:2501/file/download/I0BE3F53A3C9140C286D268D04E2E3768',
+					localPath: '../../resource/db3044531589f6f20d48d42ed8b9f382.jpg',
+					androidId: 'I0BE3F53A3C9140C286D268D04E2E3768'
 				}]
 		},
 		interval: {
@@ -41,14 +41,25 @@ export default {
 			default: 2500
 		}
 	},
+	watch: {
+		imageSrcList() {
+			this.changeShow = false
+			setTimeout(() => {
+				this.changeShow = true
+			}, 100);
+		}
+	},
 	data() {
 		return {
-			notDevs:false
+			notDevs:false,
+			changeShow:true
 		}
 	},
 	created(){
 		// 判断环境赋值不同url
-		process.env.NODE_ENV == 'development' ? "" : this.notDevs = true
+		if(process.env.NODE_ENV == 'development'&&!window.location.href.includes('http')) this.notDevs = true
+		// process.env.NODE_ENV == 'development' ? "" : this.notDevs = true
+		// if(this.notDevs) this.changeShow = true
 	},
 	methods: {
 

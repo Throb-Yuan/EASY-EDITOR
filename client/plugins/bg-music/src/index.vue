@@ -4,7 +4,7 @@
 			<audio ref="audioPlayer" id="video-play-audio" :src="notDevs ? localPath : musicSrc" style="opacity: 0;" :controls="musicControls"
 				:autoplay="musicAutoPlay" loop preload></audio>
 		</div>
-		<img class="yinyue-img" :src="imageSrc" alt="bg">
+		<img class="yinyue-img" :src="muimageSrc" alt="bg">
 	</div>
 </template>
 
@@ -14,9 +14,9 @@ export default {
 	props: {
 		musicSrc: {
 			type: String,
-			default: 'http://gaokao.newhope.cn/static/fly_new_hope.mp3'
+			default: 'http://192.168.101.250:2501/file/download/V5114A7622F774D43B29EA2C7CD85C660'
 		},
-		imageSrc: {
+		muimageSrc: {
 			type: String,
 			default: require('./music.png')
 		},
@@ -30,11 +30,11 @@ export default {
 		},
 		androidId: {
 			type: String,
-			default: '2'
+			default: 'VEB24E7A9AF994CD8AD6C2A7E102EC15B'
 		},
 		localPath: {
 			type: String,
-			default: ''
+			default: '../../resource/7dfe04d852b10ffa052991a9f8aae4d0.mp3'
 		},
 	},
 	data() {
@@ -45,7 +45,8 @@ export default {
 		}
 	},
 	created() {
-		process.env.NODE_ENV == 'development' ? "" : this.notDevs = true
+		// process.env.NODE_ENV == 'development' ? "" : this.notDevs = true
+		if(process.env.NODE_ENV == 'development'&&!window.location.href.includes('http')) this.notDevs = true
 	},
 	mounted() {
 		this.audioEl = document.getElementById('video-play-audio')

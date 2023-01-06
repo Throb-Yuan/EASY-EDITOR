@@ -9,7 +9,7 @@ const configDict = {
 		baseURL: 'http://localhost:4000'
 	},
 	production: {
-		baseURL: $config.baseURL
+		baseURL:  process.env.VUE_APP_BASE_API
 	}
 }
 

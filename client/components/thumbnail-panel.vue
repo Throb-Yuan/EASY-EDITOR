@@ -11,8 +11,8 @@
 		</div>
 		<div class="page-item-title border-T ellipsis">
 			<span class="item-title-i" style="padding-right:10px;" :title="pageData.programName">{{ pageData.programName
-					|| '未命名作品'
-			}}</span>
+		|| '未命名作品'
+}}</span>
 			<el-tag type="success" size="mini" v-if="pageData.sceneName">{{ pageData.sceneName }}</el-tag>
 		</div>
 		<div class="border-T thumbnail-panel-btn" v-if="btnList.length">
@@ -56,7 +56,7 @@ import {
 	DropdownMenu,
 	DropdownItem,
 } from 'element-ui'
-import editorProjectConfig from '@/pages/editor/DataModel'
+// import editorProjectConfig from '@/pages/editor/DataModel'
 
 import addCooperationer from '@/components/add-cooperationer/index.js'
 export default {
@@ -101,7 +101,7 @@ export default {
 				eventType: 'copys',
 				extraClassName: '',
 				iconClass: ''
-			},{
+			}, {
 				title: '复制节目HTML',
 				eventType: 'copysHTML',
 				extraClassName: '',
@@ -116,7 +116,7 @@ export default {
 	},
 	methods: {
 		// 发送到终端
-		terminal(id) {
+		terminal() {
 			this.$emit('terminalFun', this.pageData)
 		},
 		/**
@@ -127,10 +127,13 @@ export default {
 			switch (type) {
 				case 'exports':
 					this.exports()
+					break;
 				case 'copysId':
-					this.copys('节目主键')
+					this.copys('节目主键');
+					break;
 				case 'copysHTML':
-					this.copys('HTML')
+					this.copys('HTML');
+					break;
 				case 'publish':
 					this.publish();
 					break;
@@ -271,7 +274,7 @@ export default {
 					//   })
 					//   return
 					// }
-					const url = window.URL.createObjectURL(new Blob([response.data]))
+					const url = window.URL.createObjectURL(new Blob([response]))
 					const link = window.document.createElement("a")
 					link.style.display = "none"
 					link.href = url
@@ -287,7 +290,7 @@ export default {
 		},
 		// 复制资源主键
 		copys(name) {
-			this.$copyText(name=="节目主键"?this.pageData.programId : this.pageData.afterHtml).then(() => {
+			this.$copyText(name == "节目主键" ? this.pageData.programId : this.pageData.html).then(() => {
 				this.$message.success(`${name}已复制!`);
 			})
 		},
@@ -353,11 +356,14 @@ export default {
 		overflow: hidden;
 		padding: 5px;
 		z-index: 10;
-
+		width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 		img {
 			display: block;
-			width: 100%;
-			height: 100%;
+			width: 60%;
+			height: 45%;
 		}
 	}
 }

@@ -4,6 +4,9 @@ import imageSrcList from './imageSrcList'
 import Url from './url'
 import musicSrc from './musicSrc'
 import videoSrc from './videoSrc'
+import noticeText from './noticeText'
+import qrcodeValue from './qrcodeValue'
+import dateType from './dateType'
 
 export default {
 	[Text.name]: Text,
@@ -12,4 +15,7 @@ export default {
 	[musicSrc.name]: musicSrc,
 	[imageSrcList.name]: imageSrcList,
 	[videoSrc.name]: videoSrc,
+	[noticeText.name]: noticeText,
+	[qrcodeValue.name]: qrcodeValue,
+	[dateType.name]: dateType
 }

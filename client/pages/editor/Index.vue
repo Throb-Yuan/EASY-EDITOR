@@ -75,7 +75,7 @@ import imageLibs from '@client/components/image-libs'
 
 import { mapState } from 'vuex'
 import html2canvas from 'html2canvas'
-
+import eleConfig from './ele-config'
 export default {
 	components: {
 		componentLibs,
@@ -146,9 +146,22 @@ export default {
 		changeRatioFn(objs){
 			let checkData = objs.arr.find(v=>v.value == objs.e)
 			// let case = objs.arr.find(v=> {return v.value==objs.e})
-			// console.log('button click',checkData);
-			// this.projectData.width = checkData.toWidth
-			// this.projectData.height = checkData.toHeight
+			console.log('button click',this.$config);
+			console.log('button configs',eleConfig);
+			this.projectData.width = checkData.toWidth
+			this.projectData.height = checkData.toHeight
+			this.$config.canvasH5Width = checkData.toWidth
+			this.$config.canvasH5Height = checkData.toHeight
+
+			eleConfig[0].components[1].defaultStyle.width = checkData.toWidth
+			eleConfig[1].components[1].defaultStyle.width = checkData.toWidth
+			eleConfig[1].components[2].defaultStyle.width = checkData.toWidth
+			eleConfig[1].components[3].defaultStyle.width = checkData.toWidth
+			// eleConfig[0].components[1].defaultStyle.height = checkData.toHeight
+			// $configs.canvasH5Width = checkData.toWidth
+			// $configs.canvasH5Height = checkData.toHeight
+			console.log('button click',this.$config);
+			console.log('button configs',eleConfig);
 		},
 		/**
  		* 资源列表拖拽联动，生成对应标签添加至画布
@@ -165,7 +178,7 @@ export default {
 			// 节点基础信息写入
 			let a = {
 				defaultStyle: {
-					height: 225, paddingBottom: 0, paddingTop: 0, width: 400,
+					height: 450, paddingBottom: 0, paddingTop: 0, width: 800,top:0,left:0
 				},
 				elName: nodeData.fileType == 'I' ? "qk-image" : "qk-video",
 				icon: "iconfont iconshipin",
@@ -185,17 +198,23 @@ export default {
 				b.androidId = nodeData.resourceId
 				b.videoAutoPlay = true
 				b.videoControls = true
-			} else if (nodeData.resourceTypeName === "音乐") {
+				b.videoLoop = true
+			} else if (nodeData.resourceTypeName === "音乐") {	
 				b.localPath = nodeData.filePath
 				b.musicSrc = nodeData.fileUrl
 				b.androidId = nodeData.resourceId
 				b.musicAutoPlay = true
 				b.musicControls = true
+				b.musicLoop = true
 				// 调整大小与模板名称
 				a.defaultStyle.width = 60
 				a.defaultStyle.height = 60
 				a.elName = "qk-bg-music"
 				a.title = "音乐"
+			}else{
+				console.log("暂未支持的文件==>",nodeData);
+				this.$message.warning('暂未支持的文件格式')
+				return false;
 			}
 			this.$store.dispatch('addElement', { ...a, needProps: b })
 			ev.preventDefault();
@@ -315,6 +334,9 @@ export default {
 				this.$API.addProgram(a).then(() => {
 					this.$message.success('已成功保存并发布!');
 					this.showPreview = false
+					this.$store.dispatch('setPrjectData', {
+					...this.$programInit.body
+				})
 					this.$router.push({ name: 'pageList' })
 				})
 			} else {
@@ -328,6 +350,9 @@ export default {
 				this.$API.updateProgram(b).then(() => {
 					this.$message.success('已成功保存并发布!');
 					this.showPreview = false
+					this.$store.dispatch('setPrjectData', {
+					...this.$programInit.body
+				})
 					this.$router.push({ name: 'pageList' })
 				})
 			}
@@ -359,13 +384,16 @@ export default {
 		screenshots() {
 			const el = document.querySelector("#canvas-panel")
 			return new Promise((resolve, reject) => {
-				html2canvas(el, { proxy: `${this.$config.baseURL}/common/html2canvas/corsproxy` }).then(canvas => {
+				html2canvas(el).then(canvas => {
 					const dataUrl = canvas.toDataURL('image/jpeg', 0.6)
 					const blob = this.$mUtils.dataURItoBlob(dataUrl)
 					const file = new window.File([blob], +new Date() + '.png', { type: 'image/png' })
 					let params = new FormData()
 					params.append('file', file);
-					this.$axios.post('/common/uploadFile', params).then(res => {
+					console.log("file",params);
+					// return
+					this.$axios.post('/file/upload', params).then(res => {
+						console.log("file2",res);
 						// 替换主图链接
 						this.projectData.coverImage = res.body;
 						resolve(res.body)
@@ -374,6 +402,8 @@ export default {
 					})
 				})
 			})
+			// (el, { proxy: `${this.$config.baseURL}/common/html2canvas/corsproxy` })
+	
 		},
 		/**
 		 *

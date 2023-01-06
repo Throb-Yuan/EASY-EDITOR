@@ -5,10 +5,16 @@ import store from '@/store'
 import router from '@/router'
 import {
 	login,
+	remove,
 	register,
 	getUserInfo
 } from '@/api'
-
+import {
+	getToken,
+	setToken,
+	setExpiresIn,
+	removeToken,
+} from '@/common/js/auth'
 let userModel = {
 	/**
 	 * 检测是否登录
@@ -27,9 +33,11 @@ let userModel = {
 	async doLogin(data) {
 		return new Promise((resolve, reject) => {
 			login(data).then(res => {
-				store.commit('UPDATE_ACCESS_TOKEN', res.body.access_token)
-				store.commit('UPDATE_USER_INFO', res.body.userInfo)
-				resolve(res.body)
+				setToken(res.data.access_token)
+				setExpiresIn(res.data.expires_in)
+				store.commit('UPDATE_ACCESS_TOKEN', res.data.access_token)
+				store.commit('UPDATE_USER_INFO', res.data.userInfo)
+				resolve(res.data)
 			})
 				.catch(err => {
 					reject(err)
@@ -74,10 +82,18 @@ let userModel = {
 	 * @returns {Promise<void>}
 	 */
 	async doLogout() {
-		// 清除store user token
-		store.commit('UPDATE_ACCESS_TOKEN', '');
-		window.sessionStorage.setItem('beforeLoginUrl', '');
-		userModel.goLogin()
+		return new Promise((resolve, reject) => {
+			remove({access_token:getToken()}).then(res => {
+				// 清除store user token
+				removeToken()
+				store.commit('UPDATE_ACCESS_TOKEN', '');
+				window.sessionStorage.setItem('beforeLoginUrl', '');
+				userModel.goLogin()
+			}).catch(err => {
+				reject(err)
+			})
+		})
+
 	},
 	/**
 	 * 跳转登录
@@ -89,16 +105,18 @@ let userModel = {
 		let currentUrl = window.location.href.slice(indexOf + 1, window.location.href.length);
 		window.sessionStorage.setItem('beforeLoginUrl', currentUrl);
 		store.commit('UPDATE_ACCESS_TOKEN', '');
-		router.push({name: 'Login'})
+		router.push({ name: 'Login' })
 	},
 
-	async goBeforeLoginUrl(){
+	async goBeforeLoginUrl() {
 		let url = window.sessionStorage.getItem('beforeLoginUrl');
 		if (!url || url.indexOf('/login') != -1) {
-			router.push('/');
+			// router.push('/');
 			// router.push(url);
+			router.push({ name: "Home" });
 		} else {
-			router.push(url);
+			router.push({ name: "pageList" });
+			// router.push(url);
 			window.sessionStorage.setItem('beforeLoginUrl', '');
 		}
 	}

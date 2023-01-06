@@ -20,7 +20,11 @@ export default [
 				icon: 'iconfont icontupian',
 				valueType: '', // 标识数据类型，用于表单组件,
 				defaultStyle: {
-					height: 200
+					width: $config.canvasH5Width,
+					height: $config.canvasH5Height,
+					top: 0,
+					left: 0,
+					borderRadius: 6
 				}
 			},
 			{
@@ -39,7 +43,7 @@ export default [
 					borderWidth: 1,
 					borderRadius: 4,
 					backgroundColor: '#409EFF',
-					color:"#FFF"
+					color: "#FFF"
 				}
 			},
 			{
@@ -67,22 +71,12 @@ export default [
 				}
 			},
 			{
-				elName: 'qk-image-carousel',
-				title: '图片轮播',
-				icon: 'iconfont iconshouyelunbotu',
-				valueType: '', // 标识数据类型，用于表单组件,
-				defaultStyle: {
-					width: $config.canvasH5Width/2,
-					height: 210
-				}
-			},
-			{
 				elName: 'qk-iframe',
 				title: '内嵌iframe',
 				icon: 'iconfont iconiframetianjia',
 				valueType: '',
 				defaultStyle: {
-					width: $config.canvasH5Width/2,
+					width: $config.canvasH5Width / 2,
 					height: 300,
 					paddingTop: 10,
 					paddingBottom: 10
@@ -100,18 +94,7 @@ export default [
 			// 		paddingBottom: 10
 			// 	}
 			// },
-			{
-				elName: 'qk-video',
-				title: '视频',
-				icon: 'iconfont iconshipin',
-				valueType: '',
-				defaultStyle: {
-					width: $config.canvasH5Width/2,
-					height: 225,
-					paddingTop: 0,
-					paddingBottom: 0
-				}
-			},
+
 		]
 	},
 	// {
@@ -153,6 +136,19 @@ export default [
 		title: '功能组件',
 		components: [
 			{
+				elName: 'qk-video',
+				title: '视频',
+				icon: 'iconfont iconshipin',
+				valueType: '',
+				defaultStyle: {
+					width: $config.canvasH5Width,
+					height: $config.canvasH5Height,
+					paddingTop: 0,
+					paddingBottom: 0,
+					top: 0,
+					left: 0
+				}
+			}, {
 				elName: 'qk-bg-music',
 				title: '音乐',
 				icon: 'iconfont iconyinlemusic217',
@@ -162,6 +158,60 @@ export default [
 					width: 52,
 				}
 			},
+			{
+				elName: 'qk-image-carousel',
+				title: '图片轮播',
+				icon: 'iconfont iconshouyelunbotu',
+				valueType: '', // 标识数据类型，用于表单组件,
+				defaultStyle: {
+					width: $config.canvasH5Width,
+					height: $config.canvasH5Height,
+					top: 0,
+					left: 0
+				}
+			},
+			{
+				elName: 'qk-date-time',
+				title: '日期时间',
+				icon: 'iconfont iconriqishijian',
+				// 每个组件设置props来展示哪些显示哪些编辑项
+				valueType: '', // 标识数据类型，用于表单组件
+				defaultStyle: {
+					width: 400,
+					height: 40,
+					color: "#3e8dd3",
+					fontSize: 32,
+					fontWeight: 600
+				}
+			},
+			{
+				elName: 'qk-notice',
+				title: '公告栏',
+				icon: 'iconfont iconwenbenkuang',
+				valueType: '',
+				defaultStyle: {
+					width: $config.canvasH5Width,
+					height: 40,
+					paddingTop: 0,
+					paddingBottom: 0,
+					color: '#f90',
+					backgroundColor: '#fdf6ec',
+					fontSize: 22,
+					fontWeight: 600,
+					top: 400,
+					left: 0
+				}
+			},
+			{
+				elName: 'qk-qrcode',
+				title: '二维码',
+				icon: 'iconfont iconfengexian',
+				valueType: '',
+				defaultStyle: {
+					height: 120,
+					width: 120,
+				}
+			}
 		]
 	},
 

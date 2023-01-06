@@ -11,15 +11,15 @@ export default {
   props: {
     imageSrc: {
       type: String,
-      default: 'https://dss2.bdstatic.com/8_V1bjqh_Q23odCf/pacific/1993944121.jpg'
+      default: 'http://192.168.101.250:2501/file/download/I30B65E69B78D44CEB2D45AB9A78A49AF'
     },
     androidId: {
       type: String,
-      default: ''
+      default: 'I30B65E69B78D44CEB2D45AB9A78A49AF'
     },
     localPath: {
       type: String,
-      default: ''
+      default: '../../resource/86ad8aa90f71d54c1a9dbce8d941eae5.jpg'
     }
   },
   data() {
@@ -28,7 +28,7 @@ export default {
     }
   },
   created() {
-    process.env.NODE_ENV == 'development' ? "" : this.notDevs = true
+    if(process.env.NODE_ENV == 'development'&&!window.location.href.includes('http')) this.notDevs = true
   },
 }
 </script>

@@ -6,11 +6,12 @@ Vue.use(Router)
 
 /**  各个模块 */
 export default new Router({
+	mode: process.env.NODE_ENV == 'development' ? "hash" : 'history',
 	routes: [{
 		path: '/',
 		name: 'Layout',
 		component: () => import('@/pages/layout'),
-		redirect: {name: 'Home'},
+		redirect: {name: 'Login'},
 		children: [
 			{
 				path: 'home',

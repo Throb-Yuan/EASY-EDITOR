@@ -1,30 +1,54 @@
 const path = require('path')
 const fs = require('fs')
 
-
+const port = process.env.port || process.env.npm_config_port || 80 // 端口
 let devServer = {
 	proxy: { // 代理
-		'/quark': {
-			// target: 'http://localhost:4000',//设置你调用的接口域名和端口号 别忘了加http192.168.101.250:9205
-			target: 'http://192.168.101.250:4000',//接口域名和端口号，后端测试环境接口路径
+		// [process.env.VUE_APP_BASE_API]: {
+		// 	target: `http://localhost:8080`,
+		// 	changeOrigin: true,
+		// 	pathRewrite: {
+		// 	  ['^' + process.env.VUE_APP_BASE_API]: ''
+		// 	}
+		//   },
+		//   disableHostCheck: true
+		'/': {
+			target: 'http://192.168.101.250:2501',//设置你调用的接口域名和端口号 别忘了加httphttp://192.168.101.250:2501
 			ws: false,
 			changeOrigin: true,               // needed for virtual hosted sites
 			pathRewrite: {
-				"^/quark": "/quark",
-			},
-		},
-		'/api': {
-			target: 'http://192.168.101.250:9205',//设置你调用的接口域名和端口号 别忘了加http
-			ws: false,
-			changeOrigin: true,               // needed for virtual hosted sites
-			pathRewrite: {
-				"^/api": "",
+				"^/": "",///content
 			},
 		}
 	}
 }
+let devServerPl = {
+	host: '0.0.0.0',
+	port: port,
+	open: true,
+	proxy: {
+		// detail: https://cli.vuejs.org/config/#devserver-proxy
+		[process.env.VUE_APP_BASE_API]: {
+			target: `http://localhost:8080`,
+			changeOrigin: true,
+			pathRewrite: {
+				['^' + process.env.VUE_APP_BASE_API]: ''
+			}
+		}
+	},
+	disableHostCheck: true
+}
 
 module.exports = {
+	publicPath: process.env.NODE_ENV === "production" ? "/" : "/",
+	// 在npm run build 或 yarn build 时 ，生成文件的目录名称（要和baseUrl的生产环境路径一致）（默认dist）
+	outputDir: 'dist',
+	// 用于放置生成的静态资源 (js、css、img、fonts) 的；（项目打包之后，静态资源会放在这个文件夹下）
+	assetsDir: 'static',
+	// 是否开启eslint保存检测，有效值：ture | false | 'error'
+	lintOnSave: process.env.NODE_ENV === 'development',
+	// 如果你不需要生产环境的 source map，可以将其设置为 false 以加速生产环境构建。
+	productionSourceMap: false,
 	devServer: devServer,
 	// 输出文件目录
 	assetsDir: "static",

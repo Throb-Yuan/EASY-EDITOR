@@ -27,6 +27,29 @@ const actions = {
 			message: msg.message || msg.data
 		})
 	},
+	// Login({ commit }, userInfo) {
+	// 	const {username, password, grant_type, scope, client_id, client_secret} = userInfo
+	// 	return new Promise((resolve, reject) => {
+	// 	  login({
+	// 		username: username.trim(),
+	// 		password: RSA(password),
+	// 		grant_type,
+	// 		scope,
+	// 		client_id,
+	// 		client_secret: RSA(client_secret)
+	// 	  }).then(res => {
+	// 		console.log('用户token信息', res)
+	// 		let data = res.data
+	// 		setToken(data.access_token)
+	// 		commit('SET_TOKEN', data.access_token)
+	// 		setExpiresIn(data.expires_in)
+	// 		commit('SET_EXPIRES_IN', data.expires_in)
+	// 		resolve()
+	// 	  }).catch(error => {
+	// 		reject(error)
+	// 	  })
+	// 	})
+	//   },
 };
 const mutations = {};
 const getters = {};

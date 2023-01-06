@@ -4,7 +4,7 @@
 
 
 
-    <el-scrollbar class="scroll-wrapper page-list-wrapper">
+    <el-scrollbar class="scroll-wrapper page-list-wrapper" ref="celia" id="resultScroll">
       <div class="page-content">
         <div class="my-page-nav-list">
           <div class="my-page-nav-item" @click="doSearch('my')" :class="{active: searchParams.type === 'my'}">
@@ -32,7 +32,8 @@
           </el-form>
         </div>
         <!--页面列表-->
-        <div class="page-item-wrapper" v-loading="loading">
+        <div class="yrj_ccc" ref="yrjccc" style="overflow: hidden;">
+          <div class="page-item-wrapper"  ref="content" v-loading="loadingHui">
           <div class="page-item">
             <thumbnailPanel :pageType="searchParams.pageMode" />
           </div>
@@ -41,9 +42,10 @@
               :btnList="operationBtn(item.isPublish)" />
           </div>
         </div>
+        </div>
+    
       </div>
     </el-scrollbar>
-    =
     <!-- 添加或修改节目管理对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
@@ -136,7 +138,7 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 20,
         programName: null,
         sceneId: null,
         delStatus: null
@@ -158,8 +160,28 @@ export default {
     this.getSceneList();
     this.getTreeData();
   },
+  mounted() {
+    let that = this;
+    document
+      .getElementById("resultScroll")
+      .addEventListener("scroll", that.handleScroll, true);
+
+  },
   methods: {
-    copyOther(value, name) {
+    handleScroll() {
+      let high = this.$refs.celia.$refs.wrap.scrollTop;//距离顶部的距离
+      let contentHeight = this.$refs.yrjccc.offsetHeight
+      let crrHeight = this.$refs.yrjccc.clientHeight
+      //.clientHeight - 滚动条外容器的高度
+      //.scrollHeight - 滚动条高度
+      console.log("滚动监听==",high+window.innerHeight-200,contentHeight);
+      if (high+window.innerHeight-200 > contentHeight&&!this.loadingHui&&this.myCount>this.pageList.length) {
+        //自行定义
+        this.queryParams.pageNum++
+        this.getList()
+      }
+    },
+      copyOther(value, name) {
       this.$copyText(value).then(() => {
         this.$message.success(`${name}已复制!`);
       })
@@ -174,7 +196,8 @@ export default {
       this.loadingHui = true;
       this.$API.listProgram(this.queryParams).then(response => {
         // this.programList = response.rows;
-        this.pageList = response.rows || []
+        this.queryParams.pageNum == 1 ? this.pageList = response.rows||[] :this.pageList = this.pageList.concat(response.rows)
+        
         // this.total = response.total;
         this.myCount = response.total;
         this.loadingHui = false;

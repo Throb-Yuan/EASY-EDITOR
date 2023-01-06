@@ -667,6 +667,7 @@ export default {
       });
     },
     addTerminal(item) {
+      console.log("addTerminal",1);
       this.terminalForm = {}
       this.terminalDialogTitle = item.terminalId ? '编辑终端' : '新增终端'
       if (item.terminalId) {
@@ -684,12 +685,14 @@ export default {
       }
       this.terminalVisible = true
       // 重置表单校验
+      console.log("addTerminal",2);
       this.$nextTick(() => {
         this.$refs.terminalForm.resetFields()
       })
 
       this.$request.terminalGroupListGet()
         .then(res => {
+          console.log("addTerminal",3);
           this.terminalGroupList = res.data
         })
         .catch(e => {

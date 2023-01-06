@@ -42,6 +42,7 @@
 			 * @param item
 			 */
 			handleClick(item) {
+        console.log("eleConfig",eleConfig);
 				let props = this.getComponentProps(item.elName);
 				this.$store.dispatch('addElement', {...item, needProps: props})
 			},

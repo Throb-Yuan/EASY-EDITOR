@@ -99,7 +99,8 @@
 					if (valid) {
 						this.loading = true;
 						// 修改密码
-						this.$API.updateUserPass({oldPass: this.form.oldPassword, newPass: this.form.newPass}).then(() => {
+						let stringiPw = `oldPassword=${this.form.oldPassword}&newPassword=${this.form.newPass}`
+						this.$API.updateUserPwd(stringiPw).then(() => {
 							this.loading = false;
 							this.$alert('已修改密码，请重新登录', '提示', {
 								confirmButtonText: '确定',

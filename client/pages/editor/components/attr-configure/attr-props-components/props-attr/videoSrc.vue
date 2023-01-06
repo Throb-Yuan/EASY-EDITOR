@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div @drop="drop($event)" @dragover="allowDrop($event)">
 		<el-form-item label="资源地址：">
 			<el-input type="textarea" :rows="3" placeholder="请输入视频地址" v-model="tempValue">
 			</el-input>
@@ -12,12 +12,13 @@
 			<el-input type="text" placeholder="请输入资源主键" v-model="tempAndroidId">
 			</el-input>
 		</el-form-item>
-		<div style="display: flex;align-items: center;justify-content: space-between;padding-right: 30px;">
+		<div style="display: flex;align-items: center;justify-content: space-between;padding-right: 30px;flex-wrap: wrap; gap: 12px; ">
 			<el-switch v-model="tempConytols" inactive-text="播放控件">
 			</el-switch>
 			<el-switch v-model="tempAutoPlay" inactive-text="自动播放">
 			</el-switch>
-
+			<el-switch v-model="tempVideoLoop" inactive-text="循环播放">
+			</el-switch>
 		</div>
 	</div>
 </template>
@@ -31,15 +32,17 @@ export default {
 		videoControls: Boolean,
 		videoAutoPlay: Boolean,
 		androidId: String,
-		localPath: String
+		localPath: String,
+		videoLoop:Boolean
 	},
 	data() {
 		return {
 			tempValue: '',
-			tempConytols: true,
+			tempConytols: false,
 			tempAutoPlay: true,
 			tempAndroidId: "",
-			tempLocalPath: ""
+			tempLocalPath: "",
+			tempVideoLoop:true
 		}
 	},
 	mounted() {
@@ -48,6 +51,30 @@ export default {
 		this.tempAutoPlay = this.videoAutoPlay;
 		this.tempAndroidId = this.androidId
 		this.tempLocalPath = this.localPath
+		this.tempVideoLoop = this.videoLoop
+	},
+	methods: {
+		/**
+		* 资源列表拖拽联动，将对应图片数据覆盖至拖拽的节点数据
+		* @param ev 承载node节点数据
+		*/
+		allowDrop(ev) {
+			ev.preventDefault();
+		},
+		drop(ev) {
+			// nodeData：获取拖拽节点数据信息
+			let nodeStr = ev.dataTransfer.getData("node")
+			let nodeData = JSON.parse(nodeStr)
+			// 为图片则更改当前轮播项数据
+			if (nodeData.resourceTypeName != "视频") {
+				this.$message.warning('请选择视频类型拖入覆盖');
+				return false
+			}
+			this.tempValue = nodeData.fileUrl
+			this.tempLocalPath = nodeData.filePath
+			this.tempAndroidId = nodeData.resourceId
+			ev.preventDefault();
+		}
 	},
 	watch: {
 				/**
@@ -57,6 +84,7 @@ export default {
 	 * @function tempConytols 视频控制键展示与否
 	 * @function tempAutoPlay 视频自动播放与否
 	 * @function tempAndroidId 视频资源ID
+	 * @function tempVideoLoop 视频循环播放
 	 */
 		videoControls(val) {
 			this.tempConytols = val;
@@ -74,10 +102,13 @@ export default {
 			this.$emit('update:videoAutoPlay', this.tempAutoPlay);
 		},
 		tempAndroidId() {
-			this.$emit('update:tempAndroidId', this.tempAndroidId);
+			this.$emit('update:androidId', this.tempAndroidId);
 		},
 		tempLocalPath() {
-			this.$emit('update:tempLocalPath', this.tempLocalPath);
+			this.$emit('update:localPath', this.tempLocalPath);
+		},
+		tempVideoLoop() {
+			this.$emit('update:videoLoop', this.tempVideoLoop);
 		}
 	}
 }

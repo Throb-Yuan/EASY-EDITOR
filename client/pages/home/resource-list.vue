@@ -228,7 +228,7 @@
 
 <script>
 
-const baseURL = 'http://192.168.101.250:9205'
+const baseURL = 'http://192.168.101.250:2501'
 
 export default {
   name: "Resource",
@@ -466,9 +466,21 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      // this.download('content/resource/export', {
-      //   ...this.queryParams
-      // }, `resource_${new Date().getTime()}.xlsx`)
+      this.$API.programExport(this.queryParams).then(
+        response => {
+          const url = window.URL.createObjectURL(new Blob([response]))
+          const link = window.document.createElement("a")
+          link.style.display = "none"
+          link.href = url
+          link.setAttribute("download", `program_${new Date().getTime()}.xlsx`)
+          document.body.appendChild(link)
+          this.$modal.msgSuccess("正在导出节目，请勿关闭页面");
+          link.click()
+        },
+        err => {
+          this.$message.error(err);
+        }
+      )
     }
   }
 };

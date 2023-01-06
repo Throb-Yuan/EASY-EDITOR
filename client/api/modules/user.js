@@ -3,7 +3,14 @@
 **/
 import $axios from "@/service/httpServer";
 // 登录
-export const login = p => $axios.post('/quark/auth/login', p);
+// export const login = p => $axios.post('/quark/auth/login', p);
+export const login = p => $axios.postFormData('/auth/oauth/token', p);
+// 用户密码重置
+export const updateUserPwd = p => $axios.put('/system/user/profile/updatePwd?'+p, {});
+// 获取用户信息
+export const getUserProfile = () => $axios.get('/system/user/profile');
+// 退出登录
+export const remove = p => $axios.postFormData('/auth/oauth/token/remove',p);
 // 注册
 export const register = p => $axios.post('/quark/auth/register', p);
 // 获取用户信息

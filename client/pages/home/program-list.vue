@@ -353,14 +353,7 @@ export default {
     handleExport() {
       this.$API.programExport(this.queryParams).then(
         response => {
-          // if (!response.data.size) {
-          //   this.$message({
-          //     message: "没有可下载文件",
-          //     type: "warning"
-          //   })
-          //   return
-          // }
-          const url = window.URL.createObjectURL(new Blob([response.data]))
+          const url = window.URL.createObjectURL(new Blob([response]))
           const link = window.document.createElement("a")
           link.style.display = "none"
           link.href = url
@@ -373,9 +366,6 @@ export default {
           this.$message.error(err);
         }
       )
-      // this.download('content/program/export', {
-      //   ...this.queryParams
-      // }, `program_${new Date().getTime()}.xlsx`)
     }
   }
 };

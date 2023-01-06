@@ -8,21 +8,21 @@
                          v-model="activePage.commonStyle.backgroundColor"></el-color-picker>
       </div>
     </div>
-    <div class="attr-item-edit-wrapper">
+    <!-- <div class="attr-item-edit-wrapper">
       <p class="attr-item-title">背景图片：</p>
       <div class="attr-item-edit-input">
         <imageSelect :url.sync="activePage.commonStyle.backgroundImage" />
       </div>
-    </div>
+    </div> -->
   </el-scrollbar>
 </template>
 
 <script>
 	import {mapState, mapGetters} from 'vuex'
-	import imageSelect from '@client/components/image-select'
+	// import imageSelect from '@client/components/image-select'
 	export default {
 		components: {
-			imageSelect
+			// imageSelect
 		},
 		computed: {
 			...mapState({

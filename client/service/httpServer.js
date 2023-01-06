@@ -2,8 +2,9 @@ import axios from 'axios'
 import store from '@/store/index'
 import $config from "@/config/index";
 import userModel from '@/libs/userModel'
-import {Cookie} from '@/common/js/mUtils'
+import { Cookie } from '@/common/js/mUtils'
 import QS from 'qs';
+import { getToken, getTenantId } from '@/common/js/auth'
 
 // 线上环境配置axios.defaults.baseURL，生产环境则用proxy代理
 if (process.env.NODE_ENV !== 'development') {
@@ -14,18 +15,24 @@ axios.defaults.timeout = 30000; // 超时时间
 
 //请求拦截器
 axios.interceptors.request.use(config => {
-	config.headers.Authorization = store.getters.authorization;
-	config.headers['x-csrf-token'] = Cookie.get('x-csrf-token');
+	// config.headers.Authorization = store.getters.authorization;
+	if (getToken()) {
+		// 有token则携带token
+		config.headers['Authorization'] = 'Bearer ' + getToken()
+	}
+	// config.headers['x-csrf-token'] = Cookie.get('x-csrf-token');
 	return config
 }, error => {
 	return Promise.reject(error)
 });
+
 //响应拦截器即异常处理  status==200为blob数据类型
 axios.interceptors.response.use(response => {
-	if(response.request.responseType ===  'blob' || response.request.responseType ===  'arraybuffer'){
+
+	if (response.request.responseType === 'blob' || response.request.responseType === 'arraybuffer') {
 		return Promise.resolve(response.data)
-	  }
-	if (response.data.status||response.status==200) {
+	}
+	if (response.data.status || response.status == 200) {
 		return Promise.resolve(response.data)
 	} else {
 		store.dispatch('showMassage', {
@@ -34,6 +41,7 @@ axios.interceptors.response.use(response => {
 		});
 		return Promise.reject(response)
 	}
+
 }, err => {
 	if (err && err.response) {
 		switch (err.response.status) {
@@ -90,6 +98,18 @@ let downloadFile = (url) => {
 	window.open(url)
 };
 export default {
+	download(url, params, responseType,header) {
+		return axios({
+			method: 'post',
+			url,
+			responseType:responseType,
+			headers: {
+				...(header || {}),
+				'Content-Type': 'application/x-www-form-urlencoded'
+			},
+			data: QS.stringify(params) || {},
+		})
+	  },
 	//get请求
 	get(url, param, responseType, header) {
 		return axios({
