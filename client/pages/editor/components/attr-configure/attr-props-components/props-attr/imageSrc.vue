@@ -1,22 +1,18 @@
 <template>
-	<div>
-		<div @drop="drop($event)" @dragover="allowDrop($event)">
-			<el-form-item label="图片：">
-				<imageSelect :url.sync="tempValue" />
-			</el-form-item>
-			<el-form-item label="本地路径：">
-				<el-input type="textarea" :rows="2" placeholder="请输入图片本地路径" v-model="tempLocalPath">
-				</el-input>
-			</el-form-item>
-			<el-form-item label="资源主键：">
-				<el-input type="text" placeholder="请输入资源主键" v-model="tempAndroidId">
-				</el-input>
-			</el-form-item>
-		</div>
-
+	<div @drop="drop($event)" @dragover="allowDrop($event)">
+		<div class="tip-drop">可将媒体资源拖拽至下方替换</div>
+		<el-form-item label="图片：">
+			<imageSelect :url.sync="tempValue" />
+		</el-form-item>
+		<el-form-item label="本地路径：">
+			<el-input type="textarea" :rows="2" placeholder="请输入图片本地路径" v-model="tempLocalPath">
+			</el-input>
+		</el-form-item>
+		<el-form-item label="资源主键：">
+			<el-input type="text" placeholder="请输入资源主键" v-model="tempAndroidId">
+			</el-input>
+		</el-form-item>
 	</div>
-
-
 </template>
 
 <script>

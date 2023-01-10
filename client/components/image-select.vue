@@ -1,11 +1,12 @@
 /**
-切换图片，提供图片选择，图片上传等功能
+*切换图片，提供图片选择，图片上传等功能
+*class="component-image-select" @click="handleClick"0109去除
 */
 <template>
   <div>
     <div class="image-select-wrapper">
     <div class="image-select-l">
-      <div class="component-image-select" @click="handleClick">
+      <div class="component-image-select">
         <img :src="url" alt="" v-if="url">
         <div class="image-preview-null" v-else>
           <p><i class="el-icon-plus"></i></p>
@@ -86,7 +87,7 @@
     margin-bottom: 18px;
     text-align: center;
     font-size: 12px;
-    cursor: pointer;
+    // cursor: pointer;
     transition: all 0.28s;
     position: relative;
     background: #eee 50%/contain no-repeat;

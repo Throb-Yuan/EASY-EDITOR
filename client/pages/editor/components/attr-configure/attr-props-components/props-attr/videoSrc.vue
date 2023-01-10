@@ -1,5 +1,6 @@
 <template>
 	<div @drop="drop($event)" @dragover="allowDrop($event)">
+		<div class="tip-drop">可将媒体资源拖拽至下方替换</div>
 		<el-form-item label="资源地址：">
 			<el-input type="textarea" :rows="3" placeholder="请输入视频地址" v-model="tempValue">
 			</el-input>
@@ -19,6 +20,8 @@
 			</el-switch>
 			<el-switch v-model="tempVideoLoop" inactive-text="循环播放">
 			</el-switch>
+			<el-switch v-model="tempVideoMuted" inactive-text="静音播放">
+			</el-switch>
 		</div>
 	</div>
 </template>
@@ -33,7 +36,8 @@ export default {
 		videoAutoPlay: Boolean,
 		androidId: String,
 		localPath: String,
-		videoLoop:Boolean
+		videoLoop:Boolean,
+		videoMuted:Boolean
 	},
 	data() {
 		return {
@@ -42,7 +46,8 @@ export default {
 			tempAutoPlay: true,
 			tempAndroidId: "",
 			tempLocalPath: "",
-			tempVideoLoop:true
+			tempVideoLoop:true,
+			tempVideoMuted:false
 		}
 	},
 	mounted() {
@@ -52,6 +57,7 @@ export default {
 		this.tempAndroidId = this.androidId
 		this.tempLocalPath = this.localPath
 		this.tempVideoLoop = this.videoLoop
+		this.tempVideoMuted = this.videoMuted
 	},
 	methods: {
 		/**
@@ -109,6 +115,9 @@ export default {
 		},
 		tempVideoLoop() {
 			this.$emit('update:videoLoop', this.tempVideoLoop);
+		},
+		tempVideoMuted() {
+			this.$emit('update:videoMuted', this.tempVideoMuted);
 		}
 	}
 }

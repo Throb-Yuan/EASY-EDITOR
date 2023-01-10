@@ -29,7 +29,7 @@ export default {
   },
   created() {
     if(process.env.NODE_ENV == 'development'&&!window.location.href.includes('http')) this.notDevs = true
-  },
+  }
 }
 </script>
 

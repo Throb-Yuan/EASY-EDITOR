@@ -23,7 +23,6 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['content:group:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -34,7 +33,6 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['content:group:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -45,7 +43,6 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['content:group:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -55,7 +52,6 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['content:group:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
@@ -79,7 +75,6 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['content:group:edit']"
           >修改</el-button>
           <el-button
             size="mini"
@@ -92,7 +87,6 @@
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['content:group:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -253,13 +247,13 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.programScheduleGroupId != null) {
-            this.$API.updateGroup(this.form).then(response => {
+            this.$API.updateGroup(this.form).then(() => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            this.$API.addGroup(this.form).then(response => {
+            this.$API.addGroup(this.form).then(() => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -272,12 +266,12 @@ export default {
     handleDelete(row) {
       const programScheduleGroupIds = row.programScheduleGroupId || this.ids;
       let message = row.programScheduleName ? '是否确认删除排程组为"' + row.programScheduleName + '"的数据项？删除排程组会同步删除组下所有的排程。' :'是否确认删除排程组主键为"' + programScheduleGroupIds + '"的数据项？删除排程组会同步删除组下所有的排程。';
-      this.$modal.confirm(message).then(function() {
-        return this.$API.delGroup(programScheduleGroupIds);
-      }).then(() => {
-        this.getList();
-        this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+      this.$modal.confirm(message).then(() => {
+        this.$API.delGroup(programScheduleGroupIds).then(() => {
+            this.getList();
+            this.$modal.msgSuccess("删除成功");
+        })
+      });
     },
     /** 导出按钮操作 */
     handleExport() {

@@ -20,20 +20,16 @@
 
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
-          <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
-            v-hasPermi="['content:program:add']">新增</el-button>
+          <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate"
-            v-hasPermi="['content:program:edit']">修改</el-button>
+          <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate">修改</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
-            v-hasPermi="['content:program:remove']">删除</el-button>
+          <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete">删除</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
-            v-hasPermi="['content:program:export']">导出</el-button>
+          <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
         </el-col>
         <!-- <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
       </el-row>
@@ -53,7 +49,7 @@
         <el-table-column label="节目内容HTML" align="center" width="500px" prop="html">
           <template slot-scope="scope">
             <el-button-group>
-              <el-button type="primary" icon="el-icon-view">预览</el-button>
+              <el-button type="primary" icon="el-icon-view" @click="preview(scope.row.afterHtml)">预览</el-button>
               <el-button type="primary" @click="copyOther(scope.row.html, 'HTML代码')">复制<i class="el-icon-copy-document el-icon--right"></i></el-button>
             </el-button-group>
           </template>
@@ -64,10 +60,8 @@
               @click="handlePull(scope.row)">下发到终端</el-button>
             <el-button size="mini" type="text" icon="el-icon-download"
               @click="handleExportProgram(scope.row)">导出节目</el-button>
-            <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
-              v-hasPermi="['content:program:edit']">修改</el-button>
-            <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
-              v-hasPermi="['content:program:remove']">删除</el-button>
+            <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
+            <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -366,7 +360,20 @@ export default {
           this.$message.error(err);
         }
       )
-    }
+    },
+    // 预览
+		preview(afterHtml) {
+			// this.$emit('showPreview', id)
+			
+			if (process.env.NODE_ENV == 'production') {
+				// 暂只支持测试环境
+				localStorage.setItem("previewPageData",afterHtml)
+				window.open('http://192.168.101.250:8887/previews/html/index/preview.html')
+			}else{
+				this.$message.warning('暂只支持在测试环境预览')
+			}
+			
+		},
   }
 };
 </script>

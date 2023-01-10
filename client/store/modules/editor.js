@@ -30,6 +30,7 @@ const actions = {
 	 */
 	setPrjectData({commit, state, dispatch}, data){
 		let projectData = data;
+		// 20230109yrj  解决发布后数据仍遗留问题
 		if(!projectData){
 			projectData = editorProjectConfig.getProjectConfig()
 		}

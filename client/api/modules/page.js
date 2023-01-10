@@ -81,7 +81,7 @@ export const getGroup = p => $axios.get('/content/group/'+p, {})
 // 修改节目排程
 export const updateGroup = p => $axios.put('/content/group', p)
 // 删除节目排程
-export const delGroup = p => $axios.delete('/content/program/'+p, {})
+export const delGroup = p => $axios.delete('/content/group/'+p, {})
 /**
  * 终端管理 
 */
@@ -137,6 +137,19 @@ export const getProgramterminal = p => $axios.get('/content/programterminal/'+p,
 export const listProgramterminal = p => $axios.get('/content/programterminal/list', p)
 // 批量新增节目终端
 export const batchAddProgramterminal = p => $axios.post('/content/programterminal/batch/add', p)
+
+// 新增节目排程
+export const addSchedule = p => $axios.post('/content/schedule', p)
+
+// 修改节目排程
+export const updateSchedule = p => $axios.put('/content/schedule', p)
+
+// 删除节目排程
+export const delSchedule = p => $axios.delete('/content/schedule/'+p, {})
+
+// 查询节目排程详细
+export const getSchedule = p => $axios.get('/content/schedule/'+p, {})
+
 /**
  * 节目资源
 */
@@ -208,3 +221,20 @@ export const delShutdownPlan = p => $axios.delete('/content/terminal/shutdown/pl
  * 未被挂载的接口
  */
  export const listSchedule = p => $axios.get('/content/schedule/list', p)
+
+ export const appListGet = p => $axios.post('/system/app/list/get', p)
+ 
+ // 查询模板版本信息列表
+ export const listVersion = p => $axios.get('/content/version/list', p)
+ 
+ // 查询模板版本信息详细
+ export const getVersion = p => $axios.get('/content/version/'+p, {})
+ 
+ // 新增模板版本信息
+ export const addVersion = p => $axios.post('/content/version', p)
+ 
+ // 修改模板版本信息
+ export const updateVersion = p => $axios.put('/content/version', p)
+ 
+ // 删除模板版本信息
+ export const delVersion = p => $axios.delete('/content/version/'+p, {})

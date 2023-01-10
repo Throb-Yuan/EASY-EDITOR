@@ -3,9 +3,9 @@
   <div class="qk-video">
 
     <video id="video" width="100%" height="100%" :src="notDevs ? localPath : videoSrc" :class="videoControls?'':'videodis'" style="object-fit:cover"
-      :controls="videoControls" :autoplay="videoAutoPlay" :loop="videoLoop" @canplay="isReady()" x5-video-orientation="portraint" playsinline x5-video-player-type= 'h5'>
+      :controls="videoControls" :autoplay="true" :muted="videoMuted" :loop="videoLoop" @canplay="isReady()">
       <p>当前浏览器不支持播放该视频</p>
-      <!-- <source :src="videoSrc" /> 在此处使用将造成视图不更新问题，将需要大量代码支撑 x5解决层级最高问题，但仅限x5内核-->
+      <!-- <source :src="videoSrc" /> :autoplay="videoAutoPlay"在此处使用将造成视图不更新问题，将需要大量代码支撑 x5解决层级最高问题，但仅限x5内核-->
     </video>
   </div>
 </template>
@@ -37,6 +37,10 @@ export default {
     videoLoop: {
       type: Boolean,
       default: true
+    },
+    videoMuted: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

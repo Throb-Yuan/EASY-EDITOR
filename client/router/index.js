@@ -66,7 +66,11 @@ export default new Router({
 					path: 'group-detail',
 					name: 'groupDetail',//节目排程详情
 					component: () => import('@/pages/home/group/detail'),
-				},]
+				},{
+					path: 'template-version-list',
+					name: 'templateVersionList',//模板版本管理
+					component: () => import('@/pages/home/template-version-list'),
+				}]
 			}, {
 				path: '/editor',
 				name: 'Editor',

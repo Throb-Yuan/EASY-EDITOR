@@ -345,7 +345,6 @@ export default {
       this.$API.batchAddProgramterminal(param).then(response => {
         this.$modal.msgSuccess("下发节目到终端成功");
         this.openPull = false;
-        this.getList();
       });
     },
     /** 删除按钮操作 */
@@ -355,6 +354,7 @@ export default {
       this.$modal.confirm(message).then(function () {
         return this.$API.delProgram(programIds);
       }).then(() => {
+        this.queryParams.pageNum = 1
         this.getList();
         this.$modal.msgSuccess("删除成功");
       }).catch(() => { });
@@ -407,15 +407,8 @@ export default {
      * 搜索我的页面，type: my时搜索我的作品， type: share搜索我参与的作品
      */
     doSearch(type) {
-      this.searchParams.type = type;
-      this.getList()
-    },
-    /**
-     * 切换页面类型
-     * */
-    handlePageModeClick(val) {
-      this.searchParams.pageMode = val.name;
-      this.getList()
+      // this.searchParams.type = type;
+      // this.getList()
     },
     /**
      * 获取所有页面

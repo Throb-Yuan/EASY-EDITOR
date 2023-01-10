@@ -3,7 +3,7 @@
 		<!-- <span class="unpublish" v-if="!pageData.isPublish && showPublishState">未发布</span> -->
 		<div class="thumbnail-panel-cover">
 			<div class="header-mask">
-				<div class="details-btn" @click="preview(pageData.programId)">预览</div>
+				<div class="details-btn" @click="preview(pageData.afterHtml)">预览</div>
 			</div>
 			<div class="image-wrapper">
 				<img :src="pageData.coverImage || defaultCoverImage" alt="" />
@@ -201,8 +201,17 @@ export default {
 			})
 		},
 		// 预览
-		preview(id) {
-			this.$emit('showPreview', id)
+		preview(afterHtml) {
+			// this.$emit('showPreview', id)
+			
+			if (process.env.NODE_ENV == 'production') {
+				// 暂只支持测试环境
+				localStorage.setItem("previewPageData",afterHtml)
+				window.open('http://192.168.101.250:8887/previews/html/index/preview.html')
+			}else{
+				this.$message.warning('暂只支持在测试环境预览')
+			}
+			
 		},
 		// 复制链接
 		copyUrl() {
@@ -278,7 +287,7 @@ export default {
 					const link = window.document.createElement("a")
 					link.style.display = "none"
 					link.href = url
-					link.setAttribute("download", this.pageData.programName + ".zip")
+					link.setAttribute("download", this.pageData.programName + "-unzip.zip")
 					document.body.appendChild(link)
 					this.$modal.msgSuccess("正在下载节目，请勿关闭页面");
 					link.click()

@@ -2,7 +2,7 @@
 	<div class="qk-bg-music" :class="{ playing: playing }" @click="handleMusicPlay">
 		<div class="video-play-audio" v-if="musicSrc">
 			<audio ref="audioPlayer" id="video-play-audio" :src="notDevs ? localPath : musicSrc" style="opacity: 0;" :controls="musicControls"
-				:autoplay="musicAutoPlay" loop preload></audio>
+				:autoplay="musicAutoPlay" :loop="musicLoop" preload></audio>
 		</div>
 		<img class="yinyue-img" :src="muimageSrc" alt="bg">
 	</div>
@@ -21,6 +21,10 @@ export default {
 			default: require('./music.png')
 		},
 		musicControls: {
+			type: Boolean,
+			default: true
+		},
+		musicLoop: {
 			type: Boolean,
 			default: true
 		},

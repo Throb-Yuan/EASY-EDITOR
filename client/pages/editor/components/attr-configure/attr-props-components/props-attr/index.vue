@@ -7,6 +7,7 @@
               :key="item" :is="'attr-qk-' + item"
               v-bind.sync="activeElement.propsValue"
       />
+	  <!-- <span v-if="item=='musicSrc'||item=='imageSrc'||item=='videoSrc'||item=='imageSrcList'">拖入至下发覆盖</span> -->
     </el-form>
   </div>
 </template>

@@ -60,7 +60,7 @@
         </el-table-column>
       </el-table>
     </div>
-    
+
   </el-scrollbar>
     <el-dialog v-if="terminalGroupVisible" :title="terminalGroupDialogTitle" :visible.sync="terminalGroupVisible" width="650px" :close-on-click-modal="false">
       <div class="content">

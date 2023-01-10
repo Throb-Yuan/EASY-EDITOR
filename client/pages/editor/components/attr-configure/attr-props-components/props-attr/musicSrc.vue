@@ -1,5 +1,6 @@
 <template>
 	<div @drop="drop($event)" @dragover="allowDrop($event)">
+		<div class="tip-drop">可将媒体资源拖拽至下方替换</div>
 		<el-form-item label="资源地址：">
 			<el-input type="textarea" :rows="3" placeholder="请输入url地址" v-model="tempValue">
 			</el-input>
@@ -13,10 +14,10 @@
 			</el-input>
 		</el-form-item>
 		<div style="display: flex;align-items: center;justify-content: space-between;padding-right: 30px;">
-			<el-switch v-model="tempConytols" inactive-text="播放控件">
+			<el-switch v-model="tempMusicLoop" inactive-text="循环播放">
 			</el-switch>
 			<el-switch v-model="tempAutoPlay" inactive-text="自动播放">
-			</el-switch>
+			</el-switch>	
 
 		</div>
 	</div>
@@ -30,7 +31,8 @@ export default {
 		musicControls: Boolean,
 		musicAutoPlay: Boolean,
 		androidId: String,
-		localPath: String
+		localPath: String,
+		musicLoop:Boolean
 	},
 	data() {
 		return {
@@ -38,7 +40,8 @@ export default {
 			tempConytols: true,
 			tempAutoPlay: true,
 			tempAndroidId: "",
-			tempLocalPath: ""
+			tempLocalPath: "",
+			tempMusicLoop:true
 		}
 	},
 	mounted() {
@@ -47,6 +50,7 @@ export default {
 		this.tempAutoPlay = this.musicAutoPlay;
 		this.tempAndroidId = this.androidId
 		this.tempLocalPath = this.localPath
+		this.tempMusicLoop = this.musicLoop
 	},
 	methods: {
 		/**
@@ -97,6 +101,9 @@ export default {
 		},
 		tempLocalPath() {
 			this.$emit('update:localPath', this.tempLocalPath);
+		},
+		tempMusicLoop() {
+			this.$emit('update:musicLoop', this.tempMusicLoop);
 		}
 	}
 }

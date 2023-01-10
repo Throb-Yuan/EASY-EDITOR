@@ -2,7 +2,7 @@
   <div class="app-container">
     <!-- 排程详情对话框 -->
       <el-form :model="scheduleQueryParams" ref="scheduleQueryForm" size="small" :inline="true" label-width="68px">
-        <el-row :gutter="1" style="margin-top: -20px" >
+        <el-row :gutter="1"  style="margin-bottom: 20px">
           <p style="font-size: 18px">节目排程组：{{programScheduleName}}</p>
         </el-row>
         <el-form-item label="节目名称" prop="programName">
@@ -27,7 +27,6 @@
             icon="el-icon-plus"
             size="mini"
             @click="handleScheduleAdd"
-            v-hasPermi="['content:schedule:add']"
           >新增</el-button>
         </el-col>
         <el-col :span="1.5">
@@ -38,7 +37,6 @@
             size="mini"
             :disabled="multiple"
             @click="handleScheduleDelete"
-            v-hasPermi="['content:schedule:remove']"
           >删除</el-button>
         </el-col>
       </el-row>
@@ -57,7 +55,7 @@
             <span v-if="scope.row.insertFlag == 1 ">否</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="190px" align="center" class-name="small-padding fixed-width">
+        <el-table-column label="操作" width="200px" align="center" class-name="small-padding fixed-width">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -70,14 +68,12 @@
               type="text"
               icon="el-icon-edit"
               @click="handleScheduleUpdate(scope.row)"
-              v-hasPermi="['content:schedule:edit']"
             >修改</el-button>
             <el-button
               size="mini"
               type="text"
               icon="el-icon-delete"
               @click="handleScheduleDelete(scope.row)"
-              v-hasPermi="['content:schedule:remove']"
             >删除</el-button>
           </template>
         </el-table-column>
@@ -249,8 +245,6 @@ export default {
     };
   },
   created() {
-    console.log("排程详情");
-    // const programScheduleGroupId = this.$route.params && this.$route.params.programScheduleGroupId;
     this.scheduleQueryParams.programScheduleGroupId = this.$route.query.id||null;
     this.scheduleForm.programScheduleGroupId = this.$route.query.id||null;
     this.getGroupDetail( this.scheduleForm.programScheduleGroupId );
@@ -315,7 +309,7 @@ export default {
         }
       }
       let param = {programScheduleId: this.programScheduleId, terminalIds: terminalIds}
-      this.$API.batchAddProgramterminal(param).then(response => {
+      this.$API.batchAddProgramterminal(param).then(() => {
         this.$modal.msgSuccess("下发日程到终端成功");
         this.openPull = false;
         this.getScheduleList();
@@ -542,13 +536,13 @@ export default {
         }
         if (valid) {
           if (this.scheduleForm.programScheduleId != null) {
-            this.$API.updateSchedule(this.scheduleForm).then(response => {
+            this.$API.updateSchedule(this.scheduleForm).then(() => {
               this.$modal.msgSuccess("修改成功");
               this.scheduleOptOpen = false;
               this.getScheduleList()
             });
           } else {
-            this.$API.addSchedule(this.scheduleForm).then(response => {
+            this.$API.addSchedule(this.scheduleForm).then(() => {
               this.$modal.msgSuccess("新增成功");
               this.scheduleOptOpen = false;
               this.getScheduleList()

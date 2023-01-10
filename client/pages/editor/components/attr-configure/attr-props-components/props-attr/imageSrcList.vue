@@ -3,6 +3,7 @@
 		<el-form-item label="切换时间(毫秒)：">
 			<el-input-number size="mini" v-model="tempInterval" controls-position="right" />
 		</el-form-item>
+		<div class="tip-drop" style="padding: 0 0 10px 0;">可将媒体资源拖拽至下方替换</div>
 		<el-form-item label="图片列表：">
 		<div v-for="(item, index) in tempValue" :key="index" @drop="drop($event,item)" @dragover="allowDrop($event,item)">
 			<imageSelect :url.sync="item.urls" @change="change" />
