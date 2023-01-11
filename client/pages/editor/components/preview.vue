@@ -4,7 +4,8 @@
     <div class="preview-info-wrapper">
       <div class="page-info">
         <div class="page-cover">
-          <imageCropper :url.sync="pageData.coverImage"/>
+          <!-- <imageCropper :url.sync="pageData.coverImage"/> -->
+          <img src="../../../common/images/quark--pagecover-image.png" alt="">
         </div>
         <div class="page-title-des">
           <div class="info-form-wrapper">
@@ -88,7 +89,7 @@
       </div> 
       <div class="foot-btn-wrapper">
         <el-button type="primary" @click="publishFn">保存节目</el-button>
-        <!-- <el-button @click="saveFn">保 存</el-button> -->
+        <el-button @click="preview">预览节目</el-button>
         <!-- <el-button @click="saveHtmlFn">复制HTML</el-button> -->
         <el-button @click="closePreview">取 消</el-button>
       </div>
@@ -136,7 +137,18 @@
 			},
 			saveHtmlFn() {
 				this.$emit('saveHtmlFn')
+			},
+      		// 预览
+		preview() {
+			if (process.env.NODE_ENV == 'production') {
+				// 暂只支持测试环境
+				localStorage.setItem("previewPageData",JSON.stringify(this.pageData))
+				window.open('http://192.168.101.250:8887/previews/html/index/preview.html')
+			}else{
+				this.$message.warning('暂只支持在测试环境预览')
 			}
+			
+		},
 		}
 	}
 </script>

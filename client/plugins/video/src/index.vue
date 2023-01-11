@@ -3,9 +3,9 @@
   <div class="qk-video">
 
     <video id="video" width="100%" height="100%" :src="notDevs ? localPath : videoSrc" :class="videoControls?'':'videodis'" style="object-fit:cover"
-      :controls="videoControls" :autoplay="true" :muted="videoMuted" :loop="videoLoop" @canplay="isReady()">
+      :controls="videoControls" :autoplay="true" :muted="videoMuted" :loop="videoLoop">
       <p>当前浏览器不支持播放该视频</p>
-      <!-- <source :src="videoSrc" /> :autoplay="videoAutoPlay"在此处使用将造成视图不更新问题，将需要大量代码支撑 x5解决层级最高问题，但仅限x5内核-->
+      <!-- <source :src="videoSrc" @canplay="isReady()" /> :autoplay="videoAutoPlay"在此处使用将造成视图不更新问题，将需要大量代码支撑 x5解决层级最高问题，但仅限x5内核-->
     </video>
   </div>
 </template>
@@ -41,7 +41,15 @@ export default {
     videoMuted: {
       type: Boolean,
       default: false
-    }
+    },
+		fileName: {
+			type: String,
+			default: '闪光如你.mp4'
+		},
+		fileSize: {
+			type: String,
+			default: '57.60MB'
+		}
   },
   data() {
     return {
@@ -49,14 +57,14 @@ export default {
     }
   },
   created() {
-    console.log("本地环境==》",process.env.NODE_ENV);
-    console.log("http网址==》",window.location.href.includes('http'));
+    // console.log("本地环境==》",process.env.NODE_ENV);
+    // console.log("http网址==》",window.location.href.includes('http'));
     if(process.env.NODE_ENV == 'development'&&!window.location.href.includes('http')) this.notDevs = true
     // process.env.NODE_ENV == 'development' ? "" : this.notDevs = true
   },
   methods: {
     isReady(){
-      console.log("视频已准备");
+      // console.log("视频已准备");
     }
   },
 }

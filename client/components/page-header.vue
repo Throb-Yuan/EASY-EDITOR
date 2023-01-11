@@ -47,7 +47,8 @@
 
 <style lang="scss" scoped>
   .components-page-header {
-    height: 100%;
+    // height: 100%;
+    height: 50px;
     background: white;
     box-shadow: 0 2px 3px 0 rgba(100, 100, 100, 0.06);
   }
@@ -60,12 +61,14 @@
   }
 
   .logo-wrapper {
-    width: 360px;
-    font-size: 18px;
-    line-height: 48px;
+    // width: 360px;
+    // font-size: 18px;
+    // line-height: 48px;
+    padding: 7px 0 0 0;
+    box-sizing: border-box;
     img {
       display: inline-block;
-      height: 30px;
+      height: 36px;
       vertical-align: middle;
     }
     span {
@@ -80,7 +83,7 @@
   }
 
   .user-wrapper {
-    width: 360px;
+    // width: 360px;
     text-align: right;
     padding-top: 6px;
   }

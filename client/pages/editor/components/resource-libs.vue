@@ -49,7 +49,7 @@ export default {
     openNodes(me, child, self) {
       if (me.children && me.children.length == 1 && me.children[0].resourceTypeName.includes('加载中')) {
         // 获取对应资源文件列表
-        this.$API.listResource({ resourceTypeId: me.children[0].parentId, pageNum: 1, pageSize: 20 }).then(response => {
+        this.$API.listResource({ resourceTypeId: me.children[0].parentId, pageNum: 1, pageSize: 50 }).then(response => {
           if (response.rows.length) {
             response.rows.forEach(cur => {
               cur.resourceTypeId = cur.resourceId
@@ -70,7 +70,7 @@ export default {
     * @function forEach 追加伪节点
     */
     getList() {
-      this.$API.listResourcetype(this.queryParams).then(response => {
+      this.$API.listResourcetype({}).then(response => {
 
         let resourcetypeList = this.handleTree(response.data, "resourceTypeId", "parentId");
         resourcetypeList.forEach(cur => {

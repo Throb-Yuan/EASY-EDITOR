@@ -20,7 +20,8 @@
 		<div class="editor-main">
 			<div class="control-bar-wrapper">
 				<controlBar :scale.sync="canvasConfig.scale" @import-psd-data="importPsdData"
-					@showPreview="showPreviewFn" @cancel="cancelFn" @publish="publishFn" @save="saveFn" @changeRatio="changeRatioFn" />
+					@showPreview="showPreviewFn" @cancel="cancelFn" @publish="publishFn" @save="saveFn"
+					@changeRatio="changeRatioFn" />
 			</div>
 			<div id="div1" @drop="drop($event)" @dragover="allowDrop($event)">
 				<editorPan :scale.sync="canvasConfig.scale" />
@@ -99,7 +100,7 @@ export default {
 			loading: false,
 			showPreview: false,
 			activeAttr: '属性',
-			activeSideBar: 'componentLibs',
+			// activeSideBar: this.activeSideBar,
 			sceneList: [],
 			sidebarMenus: [
 				{
@@ -127,11 +128,20 @@ export default {
 		...mapState({
 			projectData: state => state.editor.projectData,
 			activePageUUID: state => state.editor.activePageUUID,
-			activeElementUUID: state => state.editor.activeElementUUID
-		})
+			activeElementUUID: state => state.editor.activeElementUUID,
+			// activeSideBar: state => state.editor.activeSideBar,
+		}),
+		activeSideBar: {
+			get() {
+				return this.$store.state.editor.activeSideBar
+			},
+			set(v) {
+				this.$store.commit('updateSideBar',v)
+			}
+		}
 	},
 	created() {
-		this.$store.dispatch('setPrjectData')
+		// this.$store.dispatch('setPrjectData')
 		this.id = this.$route.query.id;
 		this.initPageData()
 		this.getSceneList();
@@ -139,15 +149,15 @@ export default {
 	},
 	methods: {
 		/**
- 		* 更改画布大小，更新editorPan组件大小与projectData数据
- 		* @param objs.e   所选比例值
+			* 更改画布大小，更新editorPan组件大小与projectData数据
+			* @param objs.e   所选比例值
 		* @param objs.arr 数组
- 		*/
-		changeRatioFn(objs){
-			let checkData = objs.arr.find(v=>v.value == objs.e)
+			*/
+		changeRatioFn(objs) {
+			let checkData = objs.arr.find(v => v.value == objs.e)
 			// let case = objs.arr.find(v=> {return v.value==objs.e})
-			console.log('button click',this.$config);
-			console.log('button configs',eleConfig);
+			console.log('button click', this.$config);
+			console.log('button configs', eleConfig);
 			this.projectData.width = checkData.toWidth
 			this.projectData.height = checkData.toHeight
 			this.$config.canvasH5Width = checkData.toWidth
@@ -160,13 +170,13 @@ export default {
 			// eleConfig[0].components[1].defaultStyle.height = checkData.toHeight
 			// $configs.canvasH5Width = checkData.toWidth
 			// $configs.canvasH5Height = checkData.toHeight
-			console.log('button click',this.$config);
-			console.log('button configs',eleConfig);
+			console.log('button click', this.$config);
+			console.log('button configs', eleConfig);
 		},
 		/**
- 		* 资源列表拖拽联动，生成对应标签添加至画布
- 		* @param ev 承载node节点数据
- 		*/
+			* 资源列表拖拽联动，生成对应标签添加至画布
+			* @param ev 承载node节点数据
+			*/
 		allowDrop(ev) {
 			// console.log("allowDrop函数移动时", ev);
 			ev.preventDefault();
@@ -178,7 +188,7 @@ export default {
 			// 节点基础信息写入
 			let a = {
 				defaultStyle: {
-					height: 450, paddingBottom: 0, paddingTop: 0, width: 800,top:0,left:0
+					height: 450, paddingBottom: 0, paddingTop: 0, width: 800, top: 0, left: 0
 				},
 				elName: nodeData.fileType == 'I' ? "qk-image" : "qk-video",
 				icon: "iconfont iconshipin",
@@ -192,6 +202,8 @@ export default {
 				b.localPath = nodeData.filePath
 				b.imageSrc = nodeData.fileUrl
 				b.androidId = nodeData.resourceId
+				b.fileName = nodeData.resourceName
+				b.fileSize = this.$mUtils.transFileSize(nodeData.fileSize)
 			} else if (nodeData.resourceTypeName === "视频") {
 				b.localPath = nodeData.filePath
 				b.videoSrc = nodeData.fileUrl
@@ -199,20 +211,24 @@ export default {
 				b.videoAutoPlay = true
 				b.videoControls = true
 				b.videoLoop = true
-			} else if (nodeData.resourceTypeName === "音乐") {	
+				b.fileName = nodeData.resourceName
+				b.fileSize = this.$mUtils.transFileSize(nodeData.fileSize)
+			} else if (nodeData.resourceTypeName === "音乐") {
 				b.localPath = nodeData.filePath
 				b.musicSrc = nodeData.fileUrl
 				b.androidId = nodeData.resourceId
 				b.musicAutoPlay = true
 				b.musicControls = true
 				b.musicLoop = true
+				b.fileName = nodeData.resourceName
+				b.fileSize = this.$mUtils.transFileSize(nodeData.fileSize)
 				// 调整大小与模板名称
 				a.defaultStyle.width = 60
 				a.defaultStyle.height = 60
 				a.elName = "qk-bg-music"
 				a.title = "音乐"
-			}else{
-				console.log("暂未支持的文件==>",nodeData);
+			} else {
+				console.log("暂未支持的文件==>", nodeData);
 				this.$message.warning('暂未支持的文件格式')
 				return false;
 			}
@@ -229,11 +245,12 @@ export default {
 			});
 		},
 		initPageData() {
+			console.log("initPage==");
 			if (!this.id) {
 				let body = deepClone(this.$programInit.body)
 				body.pages[0].uuid = createUUID()
 				this.$store.dispatch('setPrjectData', {
-					...this.$programInit.body
+					...body
 				})
 				return false;
 			}
@@ -310,19 +327,19 @@ export default {
 			theProjectData.pages.map(item => {
 				item.elements.map(cur => {
 					if (cur.propsValue.androidId) postIds.push(cur.propsValue.androidId)
-					if (cur.elName == "qk-image-carousel" && cur.propsValue.imageSrcList.length){
+					if (cur.elName == "qk-image-carousel" && cur.propsValue.imageSrcList.length) {
 						cur.propsValue.imageSrcList.map(ele => {
 							if (ele.androidId) postIds.push(ele.androidId)
 						})
 					}
-					if(cur.events.length){
+					if (cur.events.length) {
 						cur.events.map(eve => {
-							if (eve.type=="linkLoacl") postIds.push(eve.url.slice(2,34))
+							if (eve.type == "linkLoacl") postIds.push(eve.url.slice(2, 34))
 						})
 					}
 				})
 			})
-			console.log("theEndProjectData==", theProjectData,postIds);
+			console.log("theEndProjectData==", theProjectData, postIds);
 			if (!this.putProjects.programId) {
 				let a = {
 					html: niceHtml,//节目html拼接字符串
@@ -334,9 +351,7 @@ export default {
 				this.$API.addProgram(a).then(() => {
 					this.$message.success('已成功保存并发布!');
 					this.showPreview = false
-					this.$store.dispatch('setPrjectData', {
-					...this.$programInit.body
-				})
+					this.$store.dispatch('setPrjectData',null)
 					this.$router.push({ name: 'pageList' })
 				})
 			} else {
@@ -346,13 +361,11 @@ export default {
 				b.resourceIdList = postIds
 				b.sceneId = theProjectData.sceneId
 				b.afterHtml = jsonAfter
-				
+
 				this.$API.updateProgram(b).then(() => {
 					this.$message.success('已成功保存并发布!');
 					this.showPreview = false
-					this.$store.dispatch('setPrjectData', {
-					...this.$programInit.body
-				})
+					this.$store.dispatch('setPrjectData', null)
 					this.$router.push({ name: 'pageList' })
 				})
 			}
@@ -390,10 +403,10 @@ export default {
 					const file = new window.File([blob], +new Date() + '.png', { type: 'image/png' })
 					let params = new FormData()
 					params.append('file', file);
-					console.log("file",params);
+					console.log("file", params);
 					// return
 					this.$axios.post('/file/upload', params).then(res => {
-						console.log("file2",res);
+						console.log("file2", res);
 						// 替换主图链接
 						this.projectData.coverImage = res.body;
 						resolve(res.body)
@@ -403,7 +416,7 @@ export default {
 				})
 			})
 			// (el, { proxy: `${this.$config.baseURL}/common/html2canvas/corsproxy` })
-	
+
 		},
 		/**
 		 *

@@ -18,7 +18,10 @@ const state = {
 	historyCache: [],
 	// redo undo 指针
 	currentHistoryIndex: -1,
-	activeAttrEditCollapse: ['1']
+	activeAttrEditCollapse: ['1'],
+
+	// 左侧组件列表与资源库指针
+	activeSideBar:"componentLibs"
 
 
 };
@@ -276,7 +279,11 @@ const actions = {
 		const prevState = state.historyCache[state.currentHistoryIndex + 1]
 		commit('relapceEditorState', cloneDeep(prevState))
 		commit('editorRedo')
-	}
+	},
+
+	changeeSideBar({commit},index){
+		commit('updateSideBar',index)
+	},
 };
 const mutations = {
 	setPrjectData(state, data){
@@ -474,7 +481,14 @@ const mutations = {
 	 */
 	updateActiveAttrEditCollapse(state, data){
 		state.activeAttrEditCollapse = [...data];
-	}
+	},
+		/**
+	 * 更新左侧指针
+	 * @param index
+	 */
+	updateSideBar(state,index){
+		state.activeSideBar = index
+	},
 };
 const getters = {
 	/**

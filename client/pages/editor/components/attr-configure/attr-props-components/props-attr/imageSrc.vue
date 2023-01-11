@@ -1,7 +1,7 @@
 <template>
-	<div @drop="drop($event)" @dragover="allowDrop($event)">
-		<div class="tip-drop">可将媒体资源拖拽至下方替换</div>
-		<el-form-item label="图片：">
+	<div @drop="drop($event)" @dragover="allowDrop($event)" @dragenter="dragenter($event)">
+		<div class="tip-drop">可将对应媒体资源拖拽至下方替换<span @click="changeSide"> 查看资源库</span></div>
+		<!-- <el-form-item label="图片：">
 			<imageSelect :url.sync="tempValue" />
 		</el-form-item>
 		<el-form-item label="本地路径：">
@@ -11,7 +11,14 @@
 		<el-form-item label="资源主键：">
 			<el-input type="text" placeholder="请输入资源主键" v-model="tempAndroidId">
 			</el-input>
-		</el-form-item>
+		</el-form-item> -->
+		<div :class="activeCss ? 'drag-info-box active-css':'drag-info-box'">
+			<img :src="tempValue" alt="">
+			<div class="media-indo">
+				<div class="media-name">{{ tempFileName }}</div>
+				<div class="media-size">{{ tempFileSize }}</div>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -22,7 +29,9 @@ export default {
 	props: {
 		imageSrc: String,
 		androidId: String,
-		localPath: String
+		localPath: String,
+		fileName: String,
+		fileSize: String
 	},
 	components: {
 		imageSelect
@@ -31,13 +40,18 @@ export default {
 		return {
 			tempValue: '',
 			tempAndroidId: '',
-			tempLocalPath: ""
+			tempLocalPath: "",
+			tempFileSize:"",
+			tempFileName:"",
+			activeCss:false
 		}
 	},
 	mounted() {
 		this.tempValue = this.imageSrc;
 		this.tempAndroidId = this.androidId;
-		this.tempLocalPath = this.localPath
+		this.tempLocalPath = this.localPath;
+		this.tempFileName = this.fileName;
+		this.tempFileSize = this.fileSize
 	},
 	methods: {
 		/**
@@ -53,6 +67,7 @@ export default {
 			let nodeStr = ev.dataTransfer.getData("node")
 			let nodeData = JSON.parse(nodeStr)
 			// 为图片则更改当前轮播项数据
+			!this.activeCss ?'' : this.activeCss = false
 			if (nodeData.fileType != "I") {
 				this.$message.warning('请选择图片类型拖入覆盖');
 				return false
@@ -60,7 +75,16 @@ export default {
 			this.tempValue = nodeData.fileUrl
 			this.tempLocalPath = nodeData.filePath
 			this.tempAndroidId = nodeData.resourceId
+			this.tempFileSize = this.$mUtils.transFileSize(nodeData.fileSize)
+			this.tempFileName = nodeData.resourceName
 			ev.preventDefault();
+		},
+		dragenter(ev){
+			this.activeCss ? '' : this.activeCss = true
+		},
+		changeSide(){
+			let nowSide = this.$store.state.editor.activeSideBar
+			if(nowSide!="resourceLibs") this.$store.commit('updateSideBar',"resourceLibs")
 		}
 	},
 	watch: {
@@ -70,9 +94,9 @@ export default {
 * @function tempLocalPath 图片本地路径
 * @function tempAndroidId 图片资源ID
 */
-		imageSrc(val) {
-			this.tempValue = val;
-		},
+		// imageSrc(val) {
+		// 	this.tempValue = val;
+		// },
 		tempValue() {
 			this.$emit('update:imageSrc', this.tempValue);
 		},
@@ -81,11 +105,19 @@ export default {
 		},
 		tempLocalPath() {
 			this.$emit('update:localPath', this.tempLocalPath);
+		},
+		tempFileSize() {
+			this.$emit('update:fileSize', this.tempFileSize);
+		},
+		tempFileName() {
+			this.$emit('update:fileName', this.tempFileName);
 		}
 	}
 }
 </script>
 
 <style scoped>
-
+.active-css{
+	border: 1px dashed #58ec0e !important;
+}
 </style>

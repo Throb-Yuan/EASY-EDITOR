@@ -86,13 +86,13 @@
   .user-head-btn-components {
     display: inline-block;
     vertical-align: middle;
-    line-height: 28px;
+    line-height: 32px;
     cursor: pointer;
     .user-head-btn-img {
       display: inline-block;
       vertical-align: middle;
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       overflow: hidden;
       background: #eee;

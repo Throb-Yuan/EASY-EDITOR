@@ -1,8 +1,8 @@
 <template>
 	<div class="qk-bg-music" :class="{ playing: playing }" @click="handleMusicPlay">
 		<div class="video-play-audio" v-if="musicSrc">
-			<audio ref="audioPlayer" id="video-play-audio" :src="notDevs ? localPath : musicSrc" style="opacity: 0;" :controls="musicControls"
-				:autoplay="musicAutoPlay" :loop="musicLoop" preload></audio>
+			<audio ref="audioPlayer" id="video-play-audio" :src="notDevs ? localPath : musicSrc" style="opacity: 0;"
+				:controls="musicControls" :autoplay="musicAutoPlay" :loop="musicLoop" preload></audio>
 		</div>
 		<img class="yinyue-img" :src="muimageSrc" alt="bg">
 	</div>
@@ -40,17 +40,25 @@ export default {
 			type: String,
 			default: '../../resource/7dfe04d852b10ffa052991a9f8aae4d0.mp3'
 		},
+		fileName: {
+			type: String,
+			default: 'BEYOND-大地.mp3'
+		},
+		fileSize: {
+			type: String,
+			default: '9.98MB'
+		}
 	},
 	data() {
 		return {
 			audioEl: undefined,
 			playing: true,
-			notDevs:false
+			notDevs: false
 		}
 	},
 	created() {
 		// process.env.NODE_ENV == 'development' ? "" : this.notDevs = true
-		if(process.env.NODE_ENV == 'development'&&!window.location.href.includes('http')) this.notDevs = true
+		if (process.env.NODE_ENV == 'development' && !window.location.href.includes('http')) this.notDevs = true
 	},
 	mounted() {
 		this.audioEl = document.getElementById('video-play-audio')

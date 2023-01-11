@@ -20,6 +20,14 @@ export default {
     localPath: {
       type: String,
       default: '../../resource/86ad8aa90f71d54c1a9dbce8d941eae5.jpg'
+    },
+    fileName: {
+      type: String,
+      default: 'hbfj3.jpg'
+    },
+    fileSize: {
+      type: String,
+      default: '56.39KB'
     }
   },
   data() {

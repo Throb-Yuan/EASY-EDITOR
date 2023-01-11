@@ -5,7 +5,7 @@
 		<Swiper class="image-carsousel-swiper" v-if="imageSrcList.length > 0" :autoPlay='true' :showIndicator='true'
 			:interval="interval" duration="500">
 			<Slide class="image-carsousel-slide" v-for="(item, index) in imageSrcList" :key="index">
-				<img class="image-carsousel-image" :src="notDevs ?item.localPath : item.urls" alt="">
+				<img class="image-carsousel-image" :src="notDevs ? item.localPath : item.urls" alt="">
 			</Slide>
 		</Swiper>
 	</div>
@@ -22,19 +22,25 @@ export default {
 	props: {
 		imageSrcList: {
 			type: Array,
-			default: () =>  [{
-					urls: 'http://192.168.101.250:2501/file/download/I1516BF5E171E4D1E91F01AD375C53A99',
-					localPath: '../../resource/1aae81ff57e02d9cd7db864926de38d2.jpg',
-					androidId: 'I1516BF5E171E4D1E91F01AD375C53A99'
-				}, {
-					urls: 'http://192.168.101.250:2501/file/download/IC58C80056F354F41A64D3899254BFFE6',
-					localPath: '../../resource/c9667eb24ccd6ca0818a0b550752cf80.png',
-					androidId: 'IC58C80056F354F41A64D3899254BFFE6'
-				}, {
-					urls: 'http://192.168.101.250:2501/file/download/I0BE3F53A3C9140C286D268D04E2E3768',
-					localPath: '../../resource/db3044531589f6f20d48d42ed8b9f382.jpg',
-					androidId: 'I0BE3F53A3C9140C286D268D04E2E3768'
-				}]
+			default: () => [{
+				urls: 'http://192.168.101.250:2501/file/download/I1516BF5E171E4D1E91F01AD375C53A99',
+				localPath: '../../resource/1aae81ff57e02d9cd7db864926de38d2.jpg',
+				androidId: 'I1516BF5E171E4D1E91F01AD375C53A99',
+				fileName: "hbfj6.jpg",
+				fileSize: "189.05KB"
+			}, {
+				urls: 'http://192.168.101.250:2501/file/download/IC58C80056F354F41A64D3899254BFFE6',
+				localPath: '../../resource/c9667eb24ccd6ca0818a0b550752cf80.png',
+				androidId: 'IC58C80056F354F41A64D3899254BFFE6',
+				fileName: "hbfj7.png",
+				fileSize: "2.70MB"
+			}, {
+				urls: 'http://192.168.101.250:2501/file/download/I0BE3F53A3C9140C286D268D04E2E3768',
+				localPath: '../../resource/db3044531589f6f20d48d42ed8b9f382.jpg',
+				androidId: 'I0BE3F53A3C9140C286D268D04E2E3768',
+				fileName: "hbfj5.jpg",
+				fileSize: "272.91KB"
+			}]
 		},
 		interval: {
 			type: Number,
@@ -51,13 +57,13 @@ export default {
 	},
 	data() {
 		return {
-			notDevs:false,
-			changeShow:true
+			notDevs: false,
+			changeShow: true
 		}
 	},
-	created(){
+	created() {
 		// 判断环境赋值不同url
-		if(process.env.NODE_ENV == 'development'&&!window.location.href.includes('http')) this.notDevs = true
+		if (process.env.NODE_ENV == 'development' && !window.location.href.includes('http')) this.notDevs = true
 		// process.env.NODE_ENV == 'development' ? "" : this.notDevs = true
 		// if(this.notDevs) this.changeShow = true
 	},
@@ -74,6 +80,7 @@ export default {
 	display: block;
 	width: 100%;
 	height: 100%;
+	background-color: #fff;
 }
 </style>
 <style>

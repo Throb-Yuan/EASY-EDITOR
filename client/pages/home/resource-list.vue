@@ -200,7 +200,7 @@
           {{form.fileTypeName}}
         </el-form-item>
         <el-form-item label="文件大小" prop="fileUrl">
-          {{form.fileSize}}
+          {{form.fileSizeStr}}
         </el-form-item>
         <!--<el-form-item label="删除状态">
           <el-radio-group v-model="form.delStatus">
@@ -418,7 +418,7 @@ export default {
       const resourceId = row.resourceId || this.ids
       this.$API.getResource(resourceId).then(response => {
         this.form = response.data;
-        this.form.fileSize = this.changeFileSize(this.form.fileSize);
+        this.form.fileSizeStr = this.changeFileSize(this.form.fileSize);
         this.open = true;
         this.title = "修改资源";
       });

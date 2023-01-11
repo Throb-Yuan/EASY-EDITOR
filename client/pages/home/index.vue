@@ -30,11 +30,6 @@
           <img class="icon-imgs icon-imgimg" src="../../common/images/myicons/scene.png" alt="">
           <span slot="title">场景管理</span>
         </el-menu-item>
-        <el-menu-item index="/home/program-list">
-          <!-- <i class="el-icon-s-shop"></i> -->
-          <img class="icon-imgs" src="../../common/images/myicons/program.png" alt="">
-          <span slot="title">节目管理</span>
-        </el-menu-item>
         <el-menu-item index="/home/resourcetype-list">
           <img class="icon-imgs" src="../../common/images/myicons/resourcetype.png" alt="">
           <span slot="title">资源类型</span>

@@ -43,10 +43,6 @@ export default new Router({
 					name: 'terminalList',//终端管理
 					component: () => import('@/pages/home/terminal-list'),
 				},{
-					path: 'program-list',
-					name: 'programList',//节目管理
-					component: () => import('@/pages/home/program-list'),
-				},{
 					path: 'resource-list',
 					name: 'resourceList',//资源列表
 					component: () => import('@/pages/home/resource-list'),

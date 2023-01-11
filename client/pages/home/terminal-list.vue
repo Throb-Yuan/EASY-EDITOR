@@ -248,7 +248,7 @@
         </el-form-item>
 
         <el-form-item label="是否启用" prop="enable">
-          <el-tooltip :content="parseInt(shutdownPlanForm.enable)==0?'启用':'禁用'" placement="top">
+          <el-tooltip :content="shutdownPlanForm.enable=='0'?'启用':'禁用'" placement="top">
             <el-switch
               v-model="shutdownPlanForm.enable" active-value="0" inactive-value="1"
               active-color="#13ce66"
@@ -278,6 +278,8 @@ export default {
       shutdownPlanTitle: '新增开关机时间',
       shutdownPlanOpen: false,
       shutdownPlanForm: {
+        bootTime:'',
+        shutdownTime:'',
         terminalId: '',
         week: [],
         enable: '0' },
@@ -458,7 +460,7 @@ export default {
       }
     },
     enableFormat(row){
-      switch (parseInt(row.enable)) {
+      switch (row.enable*1) {
         case 0:
           return '启用'
         case 1:
@@ -601,7 +603,7 @@ export default {
       {
         this.controlForm.volume = 0;
       }
-      this.$API.addControl(this.controlForm).then(response => {
+      this.$API.addControl(this.controlForm).then(() => {
         this.$modal.msgSuccess("操作成功");
         this.terminalControlVisible = false;
       });
@@ -635,10 +637,10 @@ export default {
         pageSize: 10,
         terminalId: item.terminalId
       }
-      this.shutdownPlanForm = {
-        week: [],
-        terminalId: item.terminalId
-      }
+      // this.shutdownPlanForm = {
+      //   week: [],
+      //   terminalId: item.terminalId
+      // }
       this.getTerminalControlList()
       this.getProgramTerminalList()
       this.getShutdownPlanList()
@@ -711,7 +713,7 @@ export default {
             param.remark = remark
             param.terminalGroupId = terminalGroupId
             this.$API.terminalGroupUpdate(param)
-              .then(res => {
+              .then(() => {
                 this.$message({
                   type: 'success',
                   message: '修改终端组成功'
@@ -762,7 +764,7 @@ export default {
         appIds : appIds
       }
       this.$API.terminalGroupAppAdd(params)
-        .then(res => {
+        .then(() => {
           this.getGroupList()
         })
     },
@@ -777,7 +779,7 @@ export default {
             param.terminalId = terminalId
             param.terminalGroupId = terminalGroupId
             this.$API.terminalUpdate(param)
-              .then(res => {
+              .then(() => {
                 this.$message({
                   type: 'success',
                   message: '修改终端成功'
@@ -896,7 +898,7 @@ export default {
         })
     },submitShutdownPlanForm(){
 
-      this.$refs.shutdownPlanForm.validate(valid => {
+      this.$refs.shutdownPlanForm.validate(() => {
         if(this.shutdownPlanForm.week)
         {
           this.shutdownPlanForm.week=this.shutdownPlanForm.week.toString()
@@ -904,13 +906,13 @@ export default {
 
         if (this.shutdownPlanForm.terminalShutdownPlanId)
         {
-          this.$API.updateShutdownPlan(this.shutdownPlanForm).then(res => {
+          this.$API.updateShutdownPlan(this.shutdownPlanForm).then(() => {
             this.shutdownPlanOpen = false;
             this.getShutdownPlanList();
         })
 
         }else {
-          this.$API.addShutdownPlan(this.shutdownPlanForm).then(res => {
+          this.$API.addShutdownPlan(this.shutdownPlanForm).then(() => {
             this.shutdownPlanOpen = false;
             this.getShutdownPlanList();
           })
@@ -958,12 +960,12 @@ export default {
           week: item.week?item.week.split(','):[]
         }
       } else {
-        this.shutdownPlanForm.shutdownTime = ''
-        this.shutdownPlanForm.bootTime = ''
-        this.shutdownPlanForm.enable = 1
-        this.shutdownPlanForm.week = []
+        this.shutdownPlanForm.shutdownTime ? this.shutdownPlanForm.shutdownTime = '' : ''
+        this.shutdownPlanForm.bootTime ? this.shutdownPlanForm.bootTime = '' : ''
+        this.shutdownPlanForm.enable != "0" ? this.shutdownPlanForm.enable = "0" : ''
+        this.shutdownPlanForm.week != [] ? this.shutdownPlanForm.week = [] : ''
+
       }
-      console.log(this.shutdownPlanForm)
 
     }
   }
@@ -976,52 +978,6 @@ export default {
   padding: 20px;
 }
 
-.components-container {
-  margin: 30px 50px;
-  position: relative;
-}
-
-.pagination-container {
-  margin-top: 30px;
-}
-
-.text-center {
-  text-align: center
-}
-
-.sub-navbar {
-  height: 50px;
-  line-height: 50px;
-  position: relative;
-  width: 100%;
-  text-align: right;
-  padding-right: 20px;
-  transition: 600ms ease position;
-  background: linear-gradient(90deg, rgba(32, 182, 249, 1) 0%, rgba(32, 182, 249, 1) 0%, rgba(33, 120, 241, 1) 100%, rgba(33, 120, 241, 1) 100%);
-
-  .subtitle {
-    font-size: 20px;
-    color: #fff;
-  }
-
-  &.draft {
-    background: #d0d0d0;
-  }
-
-  &.deleted {
-    background: #d0d0d0;
-  }
-}
-
-.link-type,
-.link-type:focus {
-  color: #337ab7;
-  cursor: pointer;
-
-  &:hover {
-    color: rgb(32, 160, 255);
-  }
-}
 
 .filter-container {
   padding-bottom: 10px;

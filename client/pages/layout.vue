@@ -31,5 +31,8 @@
     left: 0;
     width: 100%;
     z-index: 100;
+    /* display: flex;
+    align-items: center; */
+    height: 50px;
   }
 </style>
