@@ -5,7 +5,7 @@
 		<Swiper class="image-carsousel-swiper" v-if="imageSrcList.length > 0" :autoPlay='true' :showIndicator='true'
 			:interval="interval" duration="500">
 			<Slide class="image-carsousel-slide" v-for="(item, index) in imageSrcList" :key="index">
-				<img class="image-carsousel-image" :src="notDevs ? item.localPath : item.urls" alt="">
+				<img class="image-carsousel-image" :src="notDevs ? item.localPath : item.urls" style="object-fit:cover" alt="">
 			</Slide>
 		</Swiper>
 	</div>
@@ -66,7 +66,7 @@ export default {
 	},
 	created() {
 		// 判断环境赋值不同url
-		if (process.env.NODE_ENV == 'development' && !window.location.href.includes('http')) this.notDevs = true
+		if (!window.location.href.includes('http')) this.notDevs = true
 		// process.env.NODE_ENV == 'development' ? "" : this.notDevs = true
 		// if(this.notDevs) this.changeShow = true
 	},
@@ -77,6 +77,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.qk-image-carsousel{
+	width: 100%;
+	height: 100%;
+}
 .image-carsousel-swiper,
 .image-carsousel-slide,
 .image-carsousel-image {

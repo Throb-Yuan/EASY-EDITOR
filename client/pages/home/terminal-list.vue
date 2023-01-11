@@ -121,7 +121,7 @@
         <el-form-item label="控制指令" prop="controlCommand">
           <el-select v-model="controlForm.controlCommand" >
             <el-option
-              v-for="item in options"
+              v-for="item in dict.type.content_control_command"
               :key="item.value"
               :label="item.label"
               :value="item.value">
@@ -248,7 +248,7 @@
         </el-form-item>
 
         <el-form-item label="是否启用" prop="enable">
-          <el-tooltip :content="shutdownPlanForm.enable=='0'?'启用':'禁用'" placement="top">
+          <el-tooltip :content="parseInt(shutdownPlanForm.enable)==0?'启用':'禁用'" placement="top">
             <el-switch
               v-model="shutdownPlanForm.enable" active-value="0" inactive-value="1"
               active-color="#13ce66"
@@ -271,7 +271,7 @@
 
 export default {
   name: "terminal",
-  dicts: ['sys_yes_no'],
+  dicts: ['content_control_command'],
   data() {
     return {
       activeName: 'first',
@@ -322,31 +322,6 @@ export default {
         pageSize: 10,
         terminalId: null
       },
-      options: [{
-        value: 1,
-        label: '关机'
-      }, {
-        value: 2,
-        label: '重启'
-      }, {
-        value: 3,
-        label: '播放'
-      }, {
-        value: 4,
-        label: '停止'
-      }, {
-        value: 5,
-        label: '暂停'
-      }, {
-        value: 6,
-        label: '音量'
-      }, {
-        value: 7,
-        label: '重置'
-      }, {
-        value: 8,
-        label: '截屏'
-      }],
       terminalGroupList: [],
       appList: [],
       viewVisible: false,
@@ -460,7 +435,7 @@ export default {
       }
     },
     enableFormat(row){
-      switch (row.enable*1) {
+      switch (parseInt(row.enable)) {
         case 0:
           return '启用'
         case 1:
@@ -478,28 +453,11 @@ export default {
       let minute = datetime.getMinutes()< 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();
       let second = datetime.getSeconds()< 10 ? "0" + datetime.getSeconds() : datetime.getSeconds();
       return  year + "-" + month + "-" + date+" "+hour+":"+minute+":"+second
-    },controlCommandFormat(row){
-      switch (row.controlCommand) {
-        case 1:
-          return '关机'
-        case 2:
-          return '重启'
-        case 3:
-          return '播放'
-        case 4:
-          return '停止'
-        case 5:
-          return '暂停'
-        case 6:
-          return '音量'
-        case 7:
-          return '重置'
-        case 8:
-          return '截屏'
-        default:
-          break
-      }
-    },volumeFormat(row){
+    },
+    controlCommandFormat(row){
+      return this.selectDictLabel(this.dict.type.content_control_command, row.controlCommand);
+    },
+    volumeFormat(row){
       if(row.controlCommand==6)
       {
         return Math.round(row.volume *100)+"%";
@@ -612,7 +570,7 @@ export default {
       this.controlForm = {
         terminalId: item.terminalId,
         terminalName: item.terminalName,
-        controlCommand: 1
+        controlCommand: '1'
       }
       this.terminalControlVisible = true
     },
@@ -637,10 +595,10 @@ export default {
         pageSize: 10,
         terminalId: item.terminalId
       }
-      // this.shutdownPlanForm = {
-      //   week: [],
-      //   terminalId: item.terminalId
-      // }
+      this.shutdownPlanForm = {
+        week: [],
+        terminalId: item.terminalId
+      }
       this.getTerminalControlList()
       this.getProgramTerminalList()
       this.getShutdownPlanList()
@@ -797,7 +755,7 @@ export default {
           } else {
             this.$API
               .terminalAdd(param)
-              .then(() => {
+              .then(res => {
                 this.$message({
                   type: 'success',
                   message: '新增终端组成功'
@@ -960,13 +918,11 @@ export default {
           week: item.week?item.week.split(','):[]
         }
       } else {
-        this.shutdownPlanForm.shutdownTime ? this.shutdownPlanForm.shutdownTime = '' : ''
-        this.shutdownPlanForm.bootTime ? this.shutdownPlanForm.bootTime = '' : ''
-        this.shutdownPlanForm.enable != "0" ? this.shutdownPlanForm.enable = "0" : ''
-        this.shutdownPlanForm.week != [] ? this.shutdownPlanForm.week = [] : ''
-
+          this.shutdownPlanForm.shutdownTime ? this.shutdownPlanForm.shutdownTime = '' : ''
+          this.shutdownPlanForm.bootTime ? this.shutdownPlanForm.bootTime = '' : ''
+          this.shutdownPlanForm.enable != 1 ? this.shutdownPlanForm.enable = 1 : ''
+          this.shutdownPlanForm.week != [] ? this.shutdownPlanForm.week = [] : ''
       }
-
     }
   }
 }

@@ -65,7 +65,7 @@ export const Cookie = {
 			domain = '';
 
 		date.setTime(date.getTime() + (expiresDays || 1) * 24 * 3600 * 1000);
-		cookieString = cookieString + domain + "; path="+ (path || "/") +"; expires=" + date.toGMTString();
+		cookieString = cookieString + domain + "; path=" + (path || "/") + "; expires=" + date.toGMTString();
 
 		document.cookie = cookieString;
 	},
@@ -80,7 +80,7 @@ export const Cookie = {
 };
 
 
-export function dataURItoBlob (dataURI) {
+export function dataURItoBlob(dataURI) {
 	// convert base64 to raw binary data held in a string
 	// doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
 	var byteString = atob(dataURI.split(',')[1])
@@ -106,23 +106,23 @@ export function dataURItoBlob (dataURI) {
 /** 换算文件单位
  * @param limit 单位B 
 */
-export function transFileSize(limit){
+export function transFileSize(limit) {
 	let size = "";
-	if(limit <  1024){                            //小于1KB，则转化成B
-	  size = limit.toFixed(2) + "B"
-	}else if(limit <  1024 * 1024){            //小于1MB，则转化成KB
-	  size = (limit/1024).toFixed(2) + "KB"
-	}else if(limit <  1024 * 1024 * 1024){        //小于1GB，则转化成MB
-	  size = (limit/(1024 * 1024)).toFixed(2) + "MB"
-	}else{                                            //其他转化成GB
-	  size = (limit/(1024 * 1024 * 1024)).toFixed(2) + "GB"
+	if (limit < 1024) {                            //小于1KB，则转化成B
+		size = limit.toFixed(2) + "B"
+	} else if (limit < 1024 * 1024) {            //小于1MB，则转化成KB
+		size = (limit / 1024).toFixed(2) + "KB"
+	} else if (limit < 1024 * 1024 * 1024) {        //小于1GB，则转化成MB
+		size = (limit / (1024 * 1024)).toFixed(2) + "MB"
+	} else {                                            //其他转化成GB
+		size = (limit / (1024 * 1024 * 1024)).toFixed(2) + "GB"
 	}
 
 	var sizeStr = size + "";                        //转成字符串
 	var index = sizeStr.indexOf(".");                    //获取小数点处的索引
-	var dou = sizeStr.substr(index + 1 ,2)            //获取小数点后两位的值
-	if(dou == "00"){                                //判断后两位是否为00，如果是则删除00
-	  return sizeStr.substring(0, index) + sizeStr.substr(index + 3, 2)
+	var dou = sizeStr.substr(index + 1, 2)            //获取小数点后两位的值
+	if (dou == "00") {                                //判断后两位是否为00，如果是则删除00
+		return sizeStr.substring(0, index) + sizeStr.substr(index + 3, 2)
 	}
 	return size;
-  }
+}

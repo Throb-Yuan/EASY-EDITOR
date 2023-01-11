@@ -2,9 +2,10 @@
 <template>
   <div class="qk-video">
 
-    <video id="video" width="100%" height="100%" :src="notDevs ? localPath : videoSrc" :class="videoControls?'':'videodis'" style="object-fit:cover"
+    <video id="video" width="100%" height="100%"  style="object-fit:cover" :src="notDevs ? localPath : videoSrc" 
       :controls="videoControls" :autoplay="true" :muted="videoMuted" :loop="videoLoop">
       <p>当前浏览器不支持播放该视频</p>
+      <!-- <source   /> -->
       <!-- <source :src="videoSrc" @canplay="isReady()" /> :autoplay="videoAutoPlay"在此处使用将造成视图不更新问题，将需要大量代码支撑 x5解决层级最高问题，但仅限x5内核-->
     </video>
   </div>
@@ -17,6 +18,7 @@ export default {
     videoSrc: {
       type: String,
       default: 'http://192.168.101.250:2501/file/download/VD3C485F7FBA3443DB93CDE364E6A9C23'
+      // default:'https://www.runoob.com/try/demo_source/movie.mp4'
     },
     videoControls: {
       type: Boolean,
@@ -57,10 +59,12 @@ export default {
     }
   },
   created() {
-    // console.log("本地环境==》",process.env.NODE_ENV);
-    // console.log("http网址==》",window.location.href.includes('http'));
-    if(process.env.NODE_ENV == 'development'&&!window.location.href.includes('http')) this.notDevs = true
+    console.log("所属环境==》",process.env.NODE_ENV);
+    console.log("网址==》",window.location.href);
+    if(!window.location.href.includes('http')) this.notDevs = true
     // process.env.NODE_ENV == 'development' ? "" : this.notDevs = true
+    let videoEle = document.getElementById("video")
+    console.log("本地路径归属",this.notDevs,videoEle);
   },
   methods: {
     isReady(){

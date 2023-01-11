@@ -58,7 +58,7 @@ export default {
 	},
 	created() {
 		// process.env.NODE_ENV == 'development' ? "" : this.notDevs = true
-		if (process.env.NODE_ENV == 'development' && !window.location.href.includes('http')) this.notDevs = true
+		if (!window.location.href.includes('http')) this.notDevs = true
 	},
 	mounted() {
 		this.audioEl = document.getElementById('video-play-audio')

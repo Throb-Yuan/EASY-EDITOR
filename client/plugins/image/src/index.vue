@@ -1,7 +1,7 @@
 <!--test.vue-->
 <template>
   <div class="qk-image">
-    <img :src="notDevs ? localPath : imageSrc" alt="">
+    <img :src="notDevs ? localPath : imageSrc" style="object-fit:cover" alt="">
   </div>
 </template>
 
@@ -36,7 +36,7 @@ export default {
     }
   },
   created() {
-    if(process.env.NODE_ENV == 'development'&&!window.location.href.includes('http')) this.notDevs = true
+    if(!window.location.href.includes('http')) this.notDevs = true
   }
 }
 </script>

@@ -238,3 +238,6 @@ export const delShutdownPlan = p => $axios.delete('/content/terminal/shutdown/pl
  
  // 删除模板版本信息
  export const delVersion = p => $axios.delete('/content/version/'+p, {})
+
+ // 根据字典类型查询字典数据信息
+ export const getDicts = p => $axios.get('/system/dict/data/type/'+p, {})

@@ -105,6 +105,7 @@ li {
 	display: flex;
 	width: 100%;
 	// height: 30px;
+	height: 100%;
 	top: 50%;
 	transform: translateY(-50%);
 	// font-size: 24px;

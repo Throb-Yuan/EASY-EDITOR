@@ -170,6 +170,7 @@ export default {
           }).then(() => {
             
             this.loading = false
+            this.$modal.msgSuccess("登录成功");
             if (this.fromUrl) {
               this.$router.push(this.fromUrl)
             } else {
