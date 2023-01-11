@@ -14,7 +14,7 @@
         <el-select v-model="queryParams.resourceTypeId" placeholder="请选择资源类型" clearable>
           <el-option
             v-for="(dict,index) in resourceTypes"
-            :key="dict.resourceTypeId"
+            :key="index"
             :label="dict.resourceTypeName"
             :value="dict.resourceTypeId"
           />
@@ -24,7 +24,7 @@
         <el-select v-model="queryParams.fileType" placeholder="请选择文件类型" clearable>
           <el-option
             v-for="(dictele,index) in dicts"
-            :key="dictele.value"
+            :key="index"
             :label="dictele.label"
             :value="dictele.value"
           />
@@ -139,7 +139,7 @@
           <el-select v-model="resourceTypeId" placeholder="请选择资源类型" clearable>
             <el-option
               v-for="(dict,index) in resourceTypes"
-              :key="dict.resourceTypeId"
+              :key="index"
               :label="dict.resourceTypeName"
               :value="dict.resourceTypeId"
             />
@@ -184,7 +184,7 @@
             <el-select v-model="form.resourceTypeId" placeholder="请选择资源类型" clearable>
               <el-option
                 v-for="(dict,index) in resourceTypes"
-                :key="dict.resourceTypeId"
+                :key="index"
                 :label="dict.resourceTypeName"
                 :value="dict.resourceTypeId"
               />
@@ -329,7 +329,7 @@ export default {
       this.loading = true;
       this.$refs.upload.submit();
     },
-    handleSuccess(res, file, fileList) {
+    handleSuccess(res) {
       let response = res.data
       let param = {
         resourceId: response.fileId,
@@ -341,7 +341,7 @@ export default {
         fileUrl: baseURL+'/file/download/'+response.fileId
       }
 
-      this.$API.addResource(param).then(response => {
+      this.$API.addResource(param).then(() => {
         this.$modal.msgSuccess("新增成功");
         this.open = false;
         this.getList();
@@ -428,13 +428,13 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.resourceId != null) {
-            this.$API.updateResource(this.form).then(response => {
+            this.$API.updateResource(this.form).then(() => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            this.$API.addResource(this.form).then(response => {
+            this.$API.addResource(this.form).then(() => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();

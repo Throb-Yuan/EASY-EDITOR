@@ -2,9 +2,9 @@ import axios from 'axios'
 import store from '@/store/index'
 import $config from "@/config/index";
 import userModel from '@/libs/userModel'
-import { Cookie } from '@/common/js/mUtils'
+// import { Cookie } from '@/common/js/mUtils'
 import QS from 'qs';
-import { getToken, getTenantId } from '@/common/js/auth'
+import { getToken } from '@/common/js/auth'
 
 // 线上环境配置axios.defaults.baseURL，生产环境则用proxy代理
 if (process.env.NODE_ENV !== 'development') {
@@ -28,23 +28,22 @@ axios.interceptors.request.use(config => {
 
 //响应拦截器即异常处理  status==200为blob数据类型
 axios.interceptors.response.use(response => {
-
 	if (response.request.responseType === 'blob' || response.request.responseType === 'arraybuffer') {
 		return Promise.resolve(response.data)
 	}
-	if (response.data.status || response.status == 200) {
+	if (response.data.code==200 || response.code == 200) {
 		return Promise.resolve(response.data)
 	} else {
 		store.dispatch('showMassage', {
 			type: 'error',
 			data: response.data.message || response.data.msg || response.data.errMsg
 		});
-		return Promise.reject(response)
+		return Promise.reject("error")
 	}
 
 }, err => {
 	if (err && err.response) {
-		switch (err.response.status) {
+		switch (err.response.code) {
 			case 400:
 				err.message = '错误请求';
 				break;
@@ -109,7 +108,7 @@ export default {
 			},
 			data: QS.stringify(params) || {},
 		})
-	  },
+	},
 	//get请求
 	get(url, param, responseType, header) {
 		return axios({

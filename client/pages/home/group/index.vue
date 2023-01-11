@@ -71,6 +71,12 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-mobile-phone"
+              @click="handlePull(scope.row)"
+          >下发到终端</el-button>
+          <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
@@ -121,6 +127,26 @@
       </div>
     </el-dialog>
 
+
+    <el-dialog title="下发排程组到终端" :visible.sync="openPull" width="500px" append-to-body>
+      <el-form ref="form" :model="pullform" label-width="80px">
+        <el-tree
+            :data="treeData"
+            show-checkbox
+            default-expand-all
+            node-key="id"
+            ref="tree"
+            highlight-current
+            :props="defaultProps">
+        </el-tree>
+
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitPull">确 定</el-button>
+        <el-button @click="cancelPull">取 消</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -141,7 +167,7 @@ export default {
       multiple: true,
       // 显示搜索条件
       showSearch: true,
-      programScheduleId: null,
+      programScheduleGroupId: null,
       // 总条数
       total: 0,
       scheduleTotal: 0,
@@ -165,8 +191,13 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {
-      }
+      rules: {},
+      pullform: {},
+      treeData: [],
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
     };
   },
   created() {
@@ -174,6 +205,42 @@ export default {
   },
   methods: {
 
+    /**下发到终端操作 */
+    handlePull(row)
+    {
+      this.$API.terminalTreeListGet({}).then(response => {
+        this.treeData = response.data;
+      });
+      this.programScheduleGroupId = row.programScheduleGroupId
+      this.openPull = true
+      this.$refs.tree.setCheckedKeys([]);
+    },
+    submitPull() {
+      let terminalIds = this.$refs.tree.getCheckedKeys();
+      if(terminalIds.length==0)
+      {
+        this.$message.error("请选择终端进行下发");
+        return
+      }
+      for(let i = 0;i<terminalIds.length;i++){
+        if(terminalIds[i]==''||terminalIds[i]==null||typeof(terminalIds[i])==undefined){
+          terminalIds.splice(i,1);
+          i=i-1;
+        }
+      }
+      let param = {programScheduleGroupId: this.programScheduleGroupId, terminalIds: terminalIds}
+      this.$API.batchAddProgramterminal(param).then(() => {
+        this.$modal.msgSuccess("下发日程组到终端成功");
+        this.openPull = false;
+        this.getList();
+      });
+
+    },
+    // 取消按钮
+    cancelPull() {
+      this.$refs.tree.setCheckedKeys([]);
+      this.openPull = false;
+    },
     /** 查询节目排程组列表 */
     getList() {
       this.loading = true;

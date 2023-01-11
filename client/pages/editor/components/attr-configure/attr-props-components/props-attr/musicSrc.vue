@@ -1,5 +1,5 @@
 <template>
-	<div @drop="drop($event)" @dragover="allowDrop($event)">
+	<div @drop="drop($event)" @dragover="allowDrop($event)" @dragenter="dragenter($event)">
 		<div class="tip-drop">可将媒体资源拖拽至下方替换<span @click="changeSide"> 查看资源库</span></div>
 		<!-- <el-form-item label="资源地址：">
 			<el-input type="textarea" :rows="3" placeholder="请输入url地址" v-model="tempValue">
@@ -13,7 +13,7 @@
 			<el-input type="text" placeholder="请输入资源主键" v-model="tempAndroidId">
 			</el-input>
 		</el-form-item> -->
-		<div class="drag-info-box">
+		<div :class="activeCss ? 'drag-info-box active-css':'drag-info-box'">
 			<img src="../../../../../../common/images/myicons/musics.png" alt="">
 			<div class="media-indo">
 				<div class="media-name">{{ tempFileName }}</div>
@@ -52,7 +52,8 @@ export default {
 			tempLocalPath: "",
 			tempMusicLoop:true,
 			tempFileSize:"",
-			tempFileName:""
+			tempFileName:"",
+			activeCss:false
 		}
 	},
 	mounted() {
@@ -78,6 +79,7 @@ export default {
 			let nodeStr = ev.dataTransfer.getData("node")
 			let nodeData = JSON.parse(nodeStr)
 			// 为图片则更改当前轮播项数据
+			!this.activeCss ?'' : this.activeCss = false
 			if (nodeData.resourceTypeName != "音乐") {
 				this.$message.warning('请选择音乐类型拖入覆盖');
 				return false
@@ -88,6 +90,9 @@ export default {
 			this.tempFileSize = this.$mUtils.transFileSize(nodeData.fileSize)
 			this.tempFileName = nodeData.resourceName
 			ev.preventDefault();
+		},
+		dragenter(){
+			this.activeCss ? '' : this.activeCss = true
 		},
 		changeSide(){
 			let nowSide = this.$store.state.editor.activeSideBar

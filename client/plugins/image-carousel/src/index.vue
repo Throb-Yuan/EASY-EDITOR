@@ -27,19 +27,22 @@ export default {
 				localPath: '../../resource/1aae81ff57e02d9cd7db864926de38d2.jpg',
 				androidId: 'I1516BF5E171E4D1E91F01AD375C53A99',
 				fileName: "hbfj6.jpg",
-				fileSize: "189.05KB"
+				fileSize: "189.05KB",
+				activeCss:false
 			}, {
 				urls: 'http://192.168.101.250:2501/file/download/IC58C80056F354F41A64D3899254BFFE6',
 				localPath: '../../resource/c9667eb24ccd6ca0818a0b550752cf80.png',
 				androidId: 'IC58C80056F354F41A64D3899254BFFE6',
 				fileName: "hbfj7.png",
-				fileSize: "2.70MB"
+				fileSize: "2.70MB",
+				activeCss:false
 			}, {
 				urls: 'http://192.168.101.250:2501/file/download/I0BE3F53A3C9140C286D268D04E2E3768',
 				localPath: '../../resource/db3044531589f6f20d48d42ed8b9f382.jpg',
 				androidId: 'I0BE3F53A3C9140C286D268D04E2E3768',
 				fileName: "hbfj5.jpg",
-				fileSize: "272.91KB"
+				fileSize: "272.91KB",
+				activeCss:false
 			}]
 		},
 		interval: {

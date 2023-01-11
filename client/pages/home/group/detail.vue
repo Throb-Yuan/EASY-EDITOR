@@ -338,9 +338,9 @@ export default {
           let sceneList = response.data;
           let program = resp.data;
 
-          sceneList.forEach((item,index) =>{
+          sceneList.forEach(item =>{
             let subPorgram = [];
-            program.forEach((program,i) =>{
+            program.forEach(program =>{
               if(item.sceneId === program.sceneId)
               {
                 subPorgram.push(program)

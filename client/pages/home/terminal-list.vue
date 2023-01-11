@@ -797,7 +797,7 @@ export default {
           } else {
             this.$API
               .terminalAdd(param)
-              .then(res => {
+              .then(() => {
                 this.$message({
                   type: 'success',
                   message: '新增终端组成功'

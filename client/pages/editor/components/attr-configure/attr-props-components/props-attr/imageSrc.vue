@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import imageSelect from '@client/components/image-select'
 export default {
 	name: "attr-qk-imageSrc",
 	props: {
@@ -32,9 +31,6 @@ export default {
 		localPath: String,
 		fileName: String,
 		fileSize: String
-	},
-	components: {
-		imageSelect
 	},
 	data() {
 		return {
@@ -79,7 +75,7 @@ export default {
 			this.tempFileName = nodeData.resourceName
 			ev.preventDefault();
 		},
-		dragenter(ev){
+		dragenter(){
 			this.activeCss ? '' : this.activeCss = true
 		},
 		changeSide(){
@@ -117,7 +113,5 @@ export default {
 </script>
 
 <style scoped>
-.active-css{
-	border: 1px dashed #58ec0e !important;
-}
+
 </style>

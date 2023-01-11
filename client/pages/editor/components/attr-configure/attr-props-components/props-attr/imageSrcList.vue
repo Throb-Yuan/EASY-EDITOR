@@ -6,7 +6,7 @@
 		<div class="tip-drop" style="padding: 0 0 10px 0;">可将媒体资源拖拽至下方替换<span @click="changeSide"> 查看资源库</span></div>
 		<el-form-item label="图片列表：">
 			<div v-for="(item, index) in tempValue" :key="index" @drop="drop($event, item)"
-				@dragover="allowDrop($event, item)">
+				@dragover="allowDrop($event, item)" @dragenter="dragenter(item)">
 				<!-- <imageSelect :url.sync="item.urls" @change="change" />
 			<el-form-item label="本地路径：">
 				<el-input type="textarea" :rows="2" placeholder="请输入图片本地路径" v-model="item.localPath" @change="change">
@@ -16,7 +16,7 @@
 				<el-input type="text" placeholder="请输入资源主键" v-model="item.androidId" @change="change">
 				</el-input>
 			</el-form-item> -->
-				<div class="drag-info-box" style="line-height: 1;">
+				<div :class="item.activeCss ? 'drag-info-box active-css':'drag-info-box'" style="line-height: 1;">
 					<img :src="item.urls" alt="">
 					<div class="media-indo">
 						<div class="media-name">{{ item.fileName }}</div>
@@ -43,13 +43,13 @@
 </template>
 
 <script>
-import imageSelect from '@client/components/image-select'
 const defaultEle = {
 	urls: 'http://192.168.101.250:2501/file/download/I30B65E69B78D44CEB2D45AB9A78A49AF',
 	localPath: '../../resource/86ad8aa90f71d54c1a9dbce8d941eae5.jpg',
 	androidId: 'I30B65E69B78D44CEB2D45AB9A78A49AF',
 	fileName: "hbfj3.jpg",
-	fileSize: "56.39KB"
+	fileSize: "56.39KB",
+	activeCss:false
 }
 export default {
 	name: "attr-qk-imageSrcList",
@@ -62,9 +62,6 @@ export default {
 			type: Number,
 			default: 2500
 		}
-	},
-	components: {
-		imageSelect
 	},
 	data() {
 		return {
@@ -137,6 +134,7 @@ export default {
 			let nodeStr = ev.dataTransfer.getData("node")
 			let nodeData = JSON.parse(nodeStr)
 			// 为图片则更改当前轮播项数据
+			!item.activeCss ?'' : item.activeCss = false
 			if (nodeData.fileType != "I") {
 				this.$message.warning('请选择图片类型拖入覆盖');
 				return false
@@ -147,6 +145,9 @@ export default {
 			item.fileSize = this.$mUtils.transFileSize(nodeData.fileSize)
 			item.fileName = nodeData.resourceName
 			ev.preventDefault();
+		},
+		dragenter(item){
+			item.activeCss ? '' : item.activeCss = true
 		},
 		changeSide(){
 			let nowSide = this.$store.state.editor.activeSideBar
