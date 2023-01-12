@@ -20,16 +20,16 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="文件类型" prop="fileType">
+      <!--<el-form-item label="文件类型" prop="fileType">
         <el-select v-model="queryParams.fileType" placeholder="请选择文件类型" clearable>
           <el-option
-            v-for="(dictele,index) in dicts"
-            :key="index"
-            :label="dictele.label"
-            :value="dictele.value"
+            v-for="dict in dict.type.content_file_type"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -84,18 +84,18 @@
       <el-table-column label="资源名称" align="center" prop="resourceName" />
       <el-table-column label="资源类型" align="center" prop="resourceTypeName" />
       <el-table-column label="MD5值" align="center" prop="resourceMd5" />
-      <el-table-column label="文件类型" align="center" width="100" prop="fileTypeName" />
+      <!--<el-table-column label="文件类型" align="center" width="100" prop="fileTypeName" />-->
       <el-table-column label="文件大小" align="center" width="100" prop="fileSize" :formatter="fileSizeFormat"/>
-      <el-table-column label="文件地址" align="center" prop="fileUrl">
+      <el-table-column label="文件预览" align="center" prop="fileUrl">
         <template slot-scope="scope">
           <div class="demo-image__preview" v-if="scope.row.fileType == 'I'">
-  <el-image 
-    style="width: 100px; height: 100px"
-    :src="scope.row.fileUrl" 
-    :fit="'cover'"
-    :preview-src-list="[scope.row.fileUrl]">
-  </el-image>
-</div>
+            <el-image
+              style="width: 100px; height: 100px"
+              :src="scope.row.fileUrl"
+              :fit="'cover'"
+              :preview-src-list="[scope.row.fileUrl]">
+            </el-image>
+          </div>
 <div class="demo-image__preview" v-else-if="scope.row.fileType == 'V'">
   <el-button @click="openUrl(scope.row.fileUrl,scope.row.fileType)" type="primary" icon="el-icon-caret-right">播放</el-button>
 </div>
@@ -150,6 +150,7 @@
             ref="upload"
             drag
             :action="uploadAction"
+            :before-upload="beforeAvatarUpload"
             :on-success="handleSuccess"
             :file-list="fileList"
             :auto-upload="false" multiple>
@@ -164,7 +165,7 @@
 <!-- 预览播放视频 -->
 <el-dialog title="媒体播放" :visible.sync="openMeaia" width="60%" append-to-body>
   <video
-  id="video" 
+  id="video"
   width="100%"
   height="100%"
   :src="videoSrc"
@@ -221,8 +222,8 @@
 </template>
 
 <script>
-
-const baseURL = 'http://192.168.101.250:2501'
+import * as imageConversion from 'image-conversion'
+const baseURL =  process.env.VUE_APP_BASE_API
 
 export default {
   name: "Resource",
@@ -231,7 +232,6 @@ export default {
     return {
       videoSrc:"",
       openMeaia:false,
-      dicts:[{label:'图片',value:"1"},{label:'文档',value:"2"},{label:'多媒体',value:"3"},{label:'视频',value:"4"}],
       resourceTypeId: '',
       uploadAction: baseURL+'/file/upload',
       fileList: [],
@@ -244,7 +244,7 @@ export default {
       /**这是2022年的冬天
        * 他的车贷房贷在等待
        * 他的
-       *  */ 
+       *  */
       single: true,
       // 非多个禁用
       multiple: true,
@@ -328,6 +328,19 @@ export default {
     submitUpload() {
       this.loading = true;
       this.$refs.upload.submit();
+    },
+    beforeAvatarUpload(file) {
+      return new Promise(resolve => {
+        let isLt2M = file.size / 1024 / 1024 < 1 // 判定图片大小是否小于1MB
+        if (isLt2M) {
+          resolve(file)
+        }
+        // 可自定义kb
+        let toSize = Math.round(file.size / 1024 / 8);
+        imageConversion.compressAccurately(file,toSize).then(res => { // console.log(res)
+         resolve(res)
+        })
+      })
     },
     handleSuccess(res) {
       let response = res.data

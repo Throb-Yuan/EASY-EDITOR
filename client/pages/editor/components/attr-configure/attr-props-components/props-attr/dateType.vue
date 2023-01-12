@@ -21,25 +21,25 @@ export default {
 			tempValue: '',
 			dateTypeArr: [{
 				value: 'yyyy年MM月dd日 HH:mm:ss',
-				label: 'yyyy年MM月dd日 时分秒'
+				label: '年月日 时:分:秒'
 			}, {
 				value: 'yyyy-MM-dd HH:mm:ss',
-				label: 'yyyy-MM-dd 时分秒'
+				label: '年-月-日 时:分:秒'
 			}, {
 				value: 'yyyy年MM月dd日',
-				label: 'yyyy年MM月dd日'
+				label: '年月日'
 			}, {
 				value: 'MM月dd日 HH:mm',
-				label: 'MM月dd日 时分'
+				label: '月日 时:分'
 			}, {
 				value: 'MM-dd HH:mm',
-				label: 'MM-dd 时分'
+				label: '月-日 时:分'
 			}, {
 				value: 'HH:mm:ss',
-				label: '时分秒'
+				label: '时:分:秒'
 			}, {
 				value: 'HH:mm',
-				label: '时分'
+				label: '时:分'
 			}]
 		}
 	},

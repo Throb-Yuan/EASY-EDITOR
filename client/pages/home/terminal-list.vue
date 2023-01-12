@@ -248,7 +248,7 @@
         </el-form-item>
 
         <el-form-item label="是否启用" prop="enable">
-          <el-tooltip :content="parseInt(shutdownPlanForm.enable)==0?'启用':'禁用'" placement="top">
+          <el-tooltip :content="shutdownPlanForm.enable=='0'?'启用':'禁用'" placement="top">
             <el-switch
               v-model="shutdownPlanForm.enable" active-value="0" inactive-value="1"
               active-color="#13ce66"
@@ -435,7 +435,7 @@ export default {
       }
     },
     enableFormat(row){
-      switch (parseInt(row.enable)) {
+      switch (row.enable*1) {
         case 0:
           return '启用'
         case 1:
@@ -595,13 +595,10 @@ export default {
         pageSize: 10,
         terminalId: item.terminalId
       }
-      this.shutdownPlanForm = {
-        week: [],
-        terminalId: item.terminalId
-      }
       this.getTerminalControlList()
       this.getProgramTerminalList()
       this.getShutdownPlanList()
+      this.shutdownPlanForm.terminalId =  item.terminalId
     },
     getProgramTerminalList(){
       this.loading = true;
@@ -755,7 +752,7 @@ export default {
           } else {
             this.$API
               .terminalAdd(param)
-              .then(res => {
+              .then(() => {
                 this.$message({
                   type: 'success',
                   message: '新增终端组成功'
@@ -918,9 +915,10 @@ export default {
           week: item.week?item.week.split(','):[]
         }
       } else {
+          // this.shutdownPlanForm.terminalId = row.terminalId
           this.shutdownPlanForm.shutdownTime ? this.shutdownPlanForm.shutdownTime = '' : ''
           this.shutdownPlanForm.bootTime ? this.shutdownPlanForm.bootTime = '' : ''
-          this.shutdownPlanForm.enable != 1 ? this.shutdownPlanForm.enable = 1 : ''
+          this.shutdownPlanForm.enable != '0' ? this.shutdownPlanForm.enable = '0' : ''
           this.shutdownPlanForm.week != [] ? this.shutdownPlanForm.week = [] : ''
       }
     }

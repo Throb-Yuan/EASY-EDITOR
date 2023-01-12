@@ -1,7 +1,7 @@
 <template>
   <div class="page-home">
     <div class="home-side-bar">
-      <el-menu default-active="/page-list" router>
+      <el-menu default-active="/home/page-list" router>
         <el-menu-item index="/home/page-list">
           <!-- <i class="el-icon-mobile"></i> -->
           <img class="icon-imgs" src="../../common/images/myicons/pageli.png" alt="">
