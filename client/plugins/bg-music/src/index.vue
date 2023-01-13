@@ -14,7 +14,7 @@ export default {
 	props: {
 		musicSrc: {
 			type: String,
-			default: 'http://192.168.101.250:2501/file/download/V5114A7622F774D43B29EA2C7CD85C660'
+			default: 'http://192.168.101.250:2501/file/download/VEB24E7A9AF994CD8AD6C2A7E102EC15B'
 		},
 		muimageSrc: {
 			type: String,
@@ -42,11 +42,11 @@ export default {
 		},
 		fileName: {
 			type: String,
-			default: 'BEYOND-大地.mp3'
+			default: 'BEYOND-光辉岁月.mp3'
 		},
 		fileSize: {
 			type: String,
-			default: '9.98MB'
+			default: '11.57MB'
 		}
 	},
 	data() {

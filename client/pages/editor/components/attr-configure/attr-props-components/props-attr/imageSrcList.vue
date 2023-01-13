@@ -1,7 +1,11 @@
 <template>
 	<div>
-		<el-form-item label="切换时间(毫秒)：">
+		<el-form-item label="切换时间(毫秒)：" style="margin-bottom:0">
 			<el-input-number size="mini" v-model="tempInterval" controls-position="right" />
+		</el-form-item>
+		<el-form-item label="轮播指针：">
+			<el-switch v-model="tempIndicator">
+			</el-switch>
 		</el-form-item>
 		<div class="tip-drop" style="padding: 0 0 10px 0;">可将媒体资源拖拽至下方替换<span @click="changeSide"> 查看资源库</span></div>
 		<el-form-item label="图片列表：">
@@ -61,12 +65,17 @@ export default {
 		interval: {
 			type: Number,
 			default: 2500
-		}
+		},
+		indicator: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {
 			tempValue: [],
-			tempInterval: 0
+			tempInterval: 0,
+			tempIndicator:false
 		}
 	},
 	created() {
@@ -77,8 +86,17 @@ export default {
 		imageSrc() {
 			this.initData()
 		},
+		interval(val) {
+			this.tempInterval = val;
+		},
+		indicator(val) {
+			this.tempIndicator = val;
+		},
 		tempInterval() {
 			this.$emit('update:interval', this.tempInterval);
+		},
+		tempIndicator() {
+			this.$emit('update:indicator', this.tempIndicator);
 		}
 	},
 	methods: {

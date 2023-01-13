@@ -40,9 +40,9 @@
 				<el-tab-pane label="动画" name="动画">
 					<animationEdit></animationEdit>
 				</el-tab-pane>
-				<el-tab-pane label="JS脚本" name="脚本">
+				<!-- <el-tab-pane label="JS脚本" name="脚本">
 					<scriptEdit></scriptEdit>
-				</el-tab-pane>
+				</el-tab-pane> -->
 				<el-tab-pane label="页面设置" name="页面属性">
 					<pageAttrEdit></pageAttrEdit>
 				</el-tab-pane>
@@ -67,7 +67,6 @@ import attrEdit from './components/attr-configure/attr-edit'
 import animationEdit from './components/attr-configure/animation-edit'
 import eventEdit from './components/attr-configure/event-edit'
 import pageAttrEdit from './components/attr-configure/page-attr-edit'
-import scriptEdit from './components/attr-configure/script-edit'
 import { createUUID, deepClone } from '../../../common/uitls'
 import controlBar from './components/control-bar'
 
@@ -88,7 +87,6 @@ export default {
 		animationEdit,
 		eventEdit,
 		pageAttrEdit,
-		scriptEdit,
 		controlBar,
 		previewPage
 	},
@@ -211,6 +209,7 @@ export default {
 				b.videoAutoPlay = true
 				b.videoControls = true
 				b.videoLoop = true
+				b.videoMuted = false
 				b.fileName = nodeData.resourceName
 				b.fileSize = this.$mUtils.transFileSize(nodeData.fileSize)
 			} else if (nodeData.resourceTypeName === "音乐") {
@@ -334,11 +333,18 @@ export default {
 					}
 					if (cur.events.length) {
 						cur.events.map(eve => {
-							if (eve.type == "linkLoacl") postIds.push(eve.url.slice(2, 34))
+							if (eve.type == "linkLoacl"){
+								let urlSplit = eve.url.split('/')
+								urlSplit = urlSplit[urlSplit.length-1]
+								urlSplit = urlSplit.split('.')
+								postIds.push(urlSplit[0])
+							} 
 						})
 					}
 				})
 			})
+			let audioEle =  document.getElementById('video-play-audio')
+			if(audioEle) audioEle.remove()
 			console.log("theEndProjectData==", theProjectData, postIds);
 			if (!this.putProjects.programId) {
 				let a = {
@@ -349,7 +355,7 @@ export default {
 					sceneId: theProjectData.sceneId //节目ID
 				}
 				this.$API.addProgram(a).then(() => {
-					this.$message.success('已成功保存并发布!');
+					this.$message.success('保存成功!');
 					this.showPreview = false
 					this.$store.dispatch('setPrjectData',null)
 					this.$router.push({ name: 'pageList' })
@@ -363,12 +369,13 @@ export default {
 				b.afterHtml = jsonAfter
 
 				this.$API.updateProgram(b).then(() => {
-					this.$message.success('已成功保存并发布!');
+					this.$message.success('保存成功!');
 					this.showPreview = false
 					this.$store.dispatch('setPrjectData', null)
 					this.$router.push({ name: 'pageList' })
 				})
 			}
+			
 		},
 		async showPreviewFn() {
 			console.log("将提交数据===", this.projectData);

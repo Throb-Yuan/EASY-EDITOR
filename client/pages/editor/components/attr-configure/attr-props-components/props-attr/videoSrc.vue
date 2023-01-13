@@ -51,11 +51,11 @@ export default {
 	data() {
 		return {
 			tempValue: '',
-			tempConytols: false,
-			tempAutoPlay: true,
+			tempConytols: null,
+			tempAutoPlay: null,
 			tempAndroidId: "",
 			tempLocalPath: "",
-			tempVideoLoop:true,
+			tempVideoLoop:null,
 			tempVideoMuted:false,
 			tempFileSize:"",
 			tempFileName:"",
@@ -114,10 +114,26 @@ export default {
 	 * @function tempConytols 视频控制键展示与否
 	 * @function tempAutoPlay 视频自动播放与否
 	 * @function tempAndroidId 视频资源ID
+	 * @function tempAndroidId 视频资源ID
 	 * @function tempVideoLoop 视频循环播放
 	 */
+	 	videoLoop(val) {
+			this.tempVideoLoop = val;
+		},
+		videoAutoPlay(val) {
+			this.tempAutoPlay = val;
+		},
+		videoMuted(val) {
+			this.tempVideoMuted = val;
+		},
 		videoControls(val) {
 			this.tempConytols = val;
+		},
+		fileSize(val) {
+			this.tempFileSize = val;
+		},
+		fileName(val) {
+			this.tempFileName = val;
 		},
 		videoSrc(val) {
 			this.tempValue = val;

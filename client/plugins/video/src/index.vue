@@ -17,7 +17,7 @@ export default {
   props: {
     videoSrc: {
       type: String,
-      default: 'http://192.168.101.250:2501/file/download/VD3C485F7FBA3443DB93CDE364E6A9C23'
+      default: 'http://192.168.101.250:2501/file/download/V1C2864384FA34B2A95B812E0ADB5724A'
       // default:'https://www.runoob.com/try/demo_source/movie.mp4'
     },
     videoControls: {
@@ -30,11 +30,11 @@ export default {
     },
     androidId: {
       type: String,
-      default: 'VD3C485F7FBA3443DB93CDE364E6A9C23'
+      default: 'V1C2864384FA34B2A95B812E0ADB5724A'
     },
     localPath: {
       type: String,
-      default: '../../resource/4fca81e244ec55a21bd89e9c43f941ce.mp4'
+      default: '../../resource/62783f8c09823931c3068d84c8668724.mp4'
     },
     videoLoop: {
       type: Boolean,
@@ -46,11 +46,11 @@ export default {
     },
 		fileName: {
 			type: String,
-			default: '闪光如你.mp4'
+			default: '智慧海洋.mp4'
 		},
 		fileSize: {
 			type: String,
-			default: '57.60MB'
+			default: '56.76MB'
 		}
   },
   data() {
@@ -59,12 +59,8 @@ export default {
     }
   },
   created() {
-    console.log("所属环境==》",process.env.NODE_ENV);
-    console.log("网址==》",window.location.href);
     if(!window.location.href.includes('http')) this.notDevs = true
     // process.env.NODE_ENV == 'development' ? "" : this.notDevs = true
-    let videoEle = document.getElementById("video")
-    console.log("本地路径归属",this.notDevs,videoEle);
   },
   methods: {
     isReady(){

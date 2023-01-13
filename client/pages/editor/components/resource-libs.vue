@@ -8,10 +8,12 @@
           <div class="custom-tree-node" slot-scope="{ node, data }">
             <span v-if="node.childNodes.length || node.data.resourceTypeName == '加载中...'" draggable="true"
               @dragstart="drag($event, node)">{{ node.data.resourceTypeName }}</span>
-
-            <img v-else-if="node.data.resourceTypeName != '加载中...' && node.data.fileType == 'I'" draggable="true" id=""
-              @dragstart="drag($event, node)" style="width: 120px;height: 80px;object-fit:cover;padding-top: 5px;"
-              :src="node.data.fileUrl" alt="">
+              <el-tooltip v-else-if="node.data.resourceTypeName != '加载中...' && node.data.fileType == 'I'" draggable="true" id=""
+               class="item" effect="dark"
+                :content="node.data.resourceName" placement="top-start">
+            <img @dragstart="drag($event, node)"  style="width: 120px;height: 80px;object-fit:cover;padding-top: 5px;"
+            v-lazy="node.data.fileUrl" :key="node.data.fileUrl" alt="">
+            </el-tooltip>
             <div v-else>
               <el-tooltip v-if="node.data.resourceName && node.data.resourceName.length > 8" class="item" effect="dark"
                 :content="node.data.resourceName" placement="top-start">
@@ -49,7 +51,7 @@ export default {
     openNodes(me, child, self) {
       if (me.children && me.children.length == 1 && me.children[0].resourceTypeName.includes('加载中')) {
         // 获取对应资源文件列表
-        this.$API.listResource({ resourceTypeId: me.children[0].parentId, pageNum: 1, pageSize: 100 }).then(response => {
+        this.$API.listResource({ resourceTypeId: me.children[0].parentId, pageNum: 1, pageSize: 200 }).then(response => {
           if (response.rows.length) {
             response.rows.forEach(cur => {
               cur.resourceTypeId = cur.resourceId

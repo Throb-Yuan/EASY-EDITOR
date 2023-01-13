@@ -16,6 +16,7 @@ import '@/common/styles/element-variables.scss'
 import '@/common/styles/index.scss' // 自定义 css
 import 'animate.css'
 import VueClipboard from 'vue-clipboard2'
+import VueLazyload from 'vue-lazyload'//懒加载
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, addBeginAndEndTime, handleTree } from '@client/common/js/ruoyi';
 // 字典数据组件
 import DictData from '@client/common/js/DictData';
@@ -39,6 +40,15 @@ Vue.prototype.handleTree = handleTree
 Vue.component('Pagination', Pagination)
 Vue.component('RightToolbar', RightToolbar)
 
+const loadimage = require('./common/images/myicons/loadingis.gif')
+const errorimage = require('./common/images/logos.png')
+
+Vue.use(VueLazyload, {
+  preLoad: 1.3,
+  error: errorimage,
+  loading: loadimage,
+  attempt: 1
+})
 /**
  * 引入公共方法mUtils
  */

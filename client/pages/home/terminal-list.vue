@@ -17,7 +17,6 @@
 
         </el-form>
     <div class="app-wrap-body">
-        <div>终端管理</div>
       <el-table :data="tableData" :show-header="false" default-expand-all style="width: 100%">
         <el-table-column type="expand">
           <template slot-scope="props">

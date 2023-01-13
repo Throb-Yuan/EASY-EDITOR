@@ -2,7 +2,7 @@
 <template>
 	<div class="qk-image-carsousel" v-if="changeShow">
 		<!--异步加载轮播图的情况;-->
-		<Swiper class="image-carsousel-swiper" v-if="imageSrcList.length > 0" :autoPlay='true' :showIndicator='true'
+		<Swiper class="image-carsousel-swiper" v-if="imageSrcList.length > 0" :autoPlay='true' :showIndicator='indicator'
 			:interval="interval" duration="500">
 			<Slide class="image-carsousel-slide" v-for="(item, index) in imageSrcList" :key="index">
 				<img class="image-carsousel-image" :src="notDevs ? item.localPath : item.urls" style="object-fit:cover" alt="">
@@ -48,6 +48,10 @@ export default {
 		interval: {
 			type: Number,
 			default: 2500
+		},
+		indicator: {
+			type: Boolean,
+			default: false
 		}
 	},
 	watch: {
@@ -56,7 +60,13 @@ export default {
 			setTimeout(() => {
 				this.changeShow = true
 			}, 100);
-		}
+		},
+		indicator() {
+			this.changeShow = false
+			setTimeout(() => {
+				this.changeShow = true
+			}, 100);
+		},
 	},
 	data() {
 		return {

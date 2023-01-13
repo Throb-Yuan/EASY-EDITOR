@@ -33,17 +33,17 @@
         </div>
         <!--页面列表-->
         <div class="yrj_ccc" ref="yrjccc" style="overflow: hidden;">
-          <div class="page-item-wrapper"  ref="content" v-loading="loadingHui">
-          <div class="page-item">
-            <thumbnailPanel :pageType="searchParams.pageMode" />
-          </div>
-          <div class="page-item" v-for="(item, index) in pageList" :key="index">
-            <thumbnailPanel @refresh="getList" @showPreview="showPreviewFn" @terminalFun="terminalFun" :pageData="item"
-              :btnList="operationBtn(item.isPublish)" />
+          <div class="page-item-wrapper" ref="content" v-loading="loadingHui">
+            <div class="page-item">
+              <thumbnailPanel :pageType="searchParams.pageMode" />
+            </div>
+            <div class="page-item" v-for="(item, index) in pageList" :key="index">
+              <thumbnailPanel @refresh="getList" @showPreview="showPreviewFn" @terminalFun="terminalFun"
+                :pageData="item" :btnList="operationBtn(item.isPublish)" />
+            </div>
           </div>
         </div>
-        </div>
-    
+
       </div>
     </el-scrollbar>
     <!-- 添加或修改节目管理对话框 -->
@@ -86,13 +86,11 @@
 
 <script>
 import thumbnailPanel from '@/components/thumbnail-panel'
-import previewPage from './components/preview'
 export default {
   dicts: ['sys_del_status'],
   name: "Program",
   components: {
-    thumbnailPanel,
-    previewPage
+    thumbnailPanel
   },
   data() {
     return {
@@ -171,17 +169,16 @@ export default {
     handleScroll() {
       let high = this.$refs.celia.$refs.wrap.scrollTop;//距离顶部的距离
       let contentHeight = this.$refs.yrjccc.offsetHeight
-      let crrHeight = this.$refs.yrjccc.clientHeight
       //.clientHeight - 滚动条外容器的高度
       //.scrollHeight - 滚动条高度
-      console.log("滚动监听==",high+window.innerHeight-200,contentHeight);
-      if (high+window.innerHeight-200 > contentHeight&&!this.loadingHui&&this.myCount>this.pageList.length) {
+      console.log("滚动监听==", high + window.innerHeight - 200, contentHeight);
+      if (high + window.innerHeight - 200 > contentHeight && !this.loadingHui && this.myCount > this.pageList.length) {
         //自行定义
         this.queryParams.pageNum++
         this.getList()
       }
     },
-      copyOther(value, name) {
+    copyOther(value, name) {
       this.$copyText(value).then(() => {
         this.$message.success(`${name}已复制!`);
       })
@@ -196,8 +193,8 @@ export default {
       this.loadingHui = true;
       this.$API.listProgram(this.queryParams).then(response => {
         // this.programList = response.rows;
-        this.queryParams.pageNum == 1 ? this.pageList = response.rows||[] :this.pageList = this.pageList.concat(response.rows)
-        
+        this.queryParams.pageNum == 1 ? this.pageList = response.rows || [] : this.pageList = this.pageList.concat(response.rows)
+
         // this.total = response.total;
         this.myCount = response.total;
         this.loadingHui = false;
@@ -314,13 +311,13 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.programId != null) {
-            this.$API.updateProgram(this.form).then(response => {
+            this.$API.updateProgram(this.form).then(() => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            this.$API.addProgram(this.form).then(response => {
+            this.$API.addProgram(this.form).then(() => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -342,7 +339,7 @@ export default {
         }
       }
       let param = { programId: this.programId, programName: this.programName, terminalIds: terminalIds }
-      this.$API.batchAddProgramterminal(param).then(response => {
+      this.$API.batchAddProgramterminal(param).then(() => {
         this.$modal.msgSuccess("下发节目到终端成功");
         this.openPull = false;
       });
@@ -406,7 +403,7 @@ export default {
     /**
      * 搜索我的页面，type: my时搜索我的作品， type: share搜索我参与的作品
      */
-    doSearch(type) {
+    doSearch() {
       // this.searchParams.type = type;
       // this.getList()
     },

@@ -111,6 +111,18 @@ export default {
 		musicSrc(val) {
 			this.tempValue = val;
 		},
+		fileSize(val) {
+			this.tempFileSize = val;
+		},
+		fileName(val) {
+			this.tempFileName = val;
+		},
+		musicLoop(val) {
+			this.tempMusicLoop = val;
+		},
+		musicAutoPlay(val) {
+			this.tempAutoPlay = val;
+		},
 		tempValue() {
 			this.$emit('update:musicSrc', this.tempValue);
 		},

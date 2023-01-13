@@ -47,8 +47,10 @@ export default {
 		this.tempValue = this.dateType;
 	},
 	watch: {
+		dateType(val) {
+			this.tempValue = val;
+		},
 		tempValue() {
-			console.log("dateType==", this.tempValue);
 			this.$emit('update:dateType', this.tempValue);
 		},
 	}

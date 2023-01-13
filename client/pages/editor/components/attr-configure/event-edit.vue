@@ -37,7 +37,7 @@
                   <p class="attr-item-title">选择节目：</p>
                   <div class="col-1  attr-item-edit-input">
                     <el-select v-model="value" filterable placeholder="请选择"  @change="checkProgram($event,item)">
-                      <el-option v-for="item in programList" :key="item.programId" :label="item.programName" :value="item.programId">
+                      <el-option v-for="item in programList" :key="item.programId" :label="item.programName" :value="'../'+item.sceneName+'/'+item.programId+'.html'">
                       </el-option>
                     </el-select>
                   </div>
@@ -61,7 +61,6 @@ export default {
   name: "event-edit",
   data() {
     return {
-      
       programList: [],
       value: '',
       
@@ -97,13 +96,23 @@ export default {
   created() {
     this.getList()
   },
+  watch:{
+    activeElement(){
+      if(!this.activeElement) return false;
+      let a = JSON.parse(JSON.stringify(this.activeElement))
+      if(a.events.length&&a.events[0].type=='linkLoacl'&&a.events[0].url){
+        this.value == a.events[0].url ? '' :  this.value = a.events[0].url
+      }
+    }
+  },
   methods: {
     // init 匹配项展示
     handleChange(){
-      console.log("事件组件===");
+     
       let a = JSON.parse(JSON.stringify(this.activeElement))
       if(a.events.length&&a.events[0].type=='linkLoacl'&&a.events[0].url&&!this.value){
-        let b = a.events[0].url.slice(2,34)
+        console.log("事件组件===",a.events[0]);
+        let b = a.events[0].url
         this.value = b
       }
     },
@@ -126,10 +135,11 @@ export default {
      */
     checkProgram(e,item){
       // console.log("选中值===",e,this.value);
-      let a = this.activeElement
-      console.log("事件组件===",a);
-      item.url = './' + e + '.html'
-      console.log("选中值===",item);
+      // let a = this.activeElement
+      // console.log("事件组件===",a);
+      // item.url = './' + e + '.html'
+      item.url = e
+      console.log("选中值===>",item);
     },
     /**
      * 添加事件

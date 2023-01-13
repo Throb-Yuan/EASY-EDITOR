@@ -109,6 +109,7 @@
             drag
             :action="uploadAction"
             :on-success="handleSuccess"
+            :before-upload="beforeAvatarUpload"
             :auto-upload="false" multiple>
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -180,13 +181,18 @@ export default {
       const NOW_MONTHS_AGO = `${year}${month}${day}`
       return NOW_MONTHS_AGO
     },
+    beforeAvatarUpload(file) {
+      return new Promise(resolve => {
+        this.loading = true;
+        resolve(file)
+      })
+    },
     handleSuccess(res, file, fileList) {
       this.loading = false;
       this.form.downloadUrl = res.data.fileId
       this.form.size = res.data.fileSize
     },
     submitUpload() {
-      this.loading = true;
       this.$refs.upload.submit();
     },
     fileSizeFormat(row){

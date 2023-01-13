@@ -65,10 +65,8 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import UploadPsd from '@client/components/upload-psd'
 export default {
   components: {
-    UploadPsd
   },
   props: {
     // 是否loading

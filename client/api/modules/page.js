@@ -43,11 +43,11 @@ export const addCooperation = p => $axios.post('/quark/page/addCooperation', p)
 export const delCooperation = p => $axios.post('/quark/page/delCooperation', p)
 /**
  * =========== MY HuiJi Post =================================================
- * 
+ *
  * */
 //  export const newLogin = p => $axios.postFormData('/content/auth/oauth/token', p)
 /**
- * 节目管理 
+ * 节目管理
 */
 // 新增节目
 export const addProgramNew = p => $axios.post('/content/program', p)
@@ -83,7 +83,7 @@ export const updateGroup = p => $axios.put('/content/group', p)
 // 删除节目排程
 export const delGroup = p => $axios.delete('/content/group/'+p, {})
 /**
- * 终端管理 
+ * 终端管理
 */
 
 // 获取终端组列表
@@ -123,7 +123,7 @@ export const listControl = p => $axios.get('/content/control/list', p)
 // 查询终端控制记录详细
 export const getControl = p => $axios.get('/content/control/'+p, {})
 /**
- * 节目终端 
+ * 节目终端
 */
 // 新增节目
 export const addProgramterminal = p => $axios.post('/content/programterminal/add', p)
@@ -166,7 +166,7 @@ export const delProgramresource = p => $axios.delete('/content/programresource/'
 // 导出节目资源列表
 // export const exportResource = p => $axios.post('/content/programresource', p)
 /**
- * 资源列表 
+ * 资源列表
 */
 // 新增资源列表
 export const addResource = p => $axios.post('/content/resource', p)
@@ -192,7 +192,7 @@ export const updateResourcetype = p => $axios.put('/content/resourcetype', p)
 // 删除资源类型
 export const delResourcetype = p => $axios.delete('/content/resourcetype/'+p, {})
 /**
- * 场景管理 
+ * 场景管理
 */
 // 新增场景管理
 export const addScene = p => $axios.post('/content/scene', p)
@@ -203,7 +203,7 @@ export const getScene = p => $axios.get('/content/scene/'+p, {})
 // 修改场景管理
 export const updateScene = p => $axios.put('/content/scene', p)
 // 删除场景管理
-export const delscene = p => $axios.delete('/content/scene/'+p, {})
+export const delScene = p => $axios.delete('/content/scene/'+p, {})
 /**
  * 开关机计划
 */
@@ -223,19 +223,19 @@ export const delShutdownPlan = p => $axios.delete('/content/terminal/shutdown/pl
  export const listSchedule = p => $axios.get('/content/schedule/list', p)
 
  export const appListGet = p => $axios.post('/system/app/list/get', p)
- 
+
  // 查询模板版本信息列表
  export const listVersion = p => $axios.get('/content/version/list', p)
- 
+
  // 查询模板版本信息详细
  export const getVersion = p => $axios.get('/content/version/'+p, {})
- 
+
  // 新增模板版本信息
  export const addVersion = p => $axios.post('/content/version', p)
- 
+
  // 修改模板版本信息
  export const updateVersion = p => $axios.put('/content/version', p)
- 
+
  // 删除模板版本信息
  export const delVersion = p => $axios.delete('/content/version/'+p, {})
 

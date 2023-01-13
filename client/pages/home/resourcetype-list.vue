@@ -20,7 +20,7 @@
         </el-select>
       </el-form-item>-->
       <el-form-item>
-	    <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+    <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
@@ -253,13 +253,13 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.resourceTypeId != null) {
-            this.$API.updateResourcetype(this.form).then(response => {
+            this.$API.updateResourcetype(this.form).then(() => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            this.$API.addResourcetype(this.form).then(response => {
+            this.$API.addResourcetype(this.form).then(() => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();

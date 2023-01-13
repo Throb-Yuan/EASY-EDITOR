@@ -32,6 +32,9 @@
 			qrCodeValue(val) {
 				this.tempValue = val;
 			},
+			codeSize(val) {
+				this.tempCodeSize = val;
+			},
 			tempValue() {
 				this.$emit('update:qrCodeValue', this.tempValue);
 			},

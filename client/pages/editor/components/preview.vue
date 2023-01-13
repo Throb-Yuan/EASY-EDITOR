@@ -81,7 +81,7 @@
       <div class="info-form-wrapper">
         <div class="info-form-l com-width">节目场景：</div>
         <div class="info-form-r">
-          <el-select v-model="pageData.sceneId" placeholder="请选择场景" clearable>
+          <el-select v-model="pageData.sceneId" placeholder="请选择场景" :disabled="!!pageId">
             <el-option v-for="(dict, index) in sceneList" :key="dict.sceneId" :label="dict.sceneName"
               :value="dict.sceneId" />
           </el-select>

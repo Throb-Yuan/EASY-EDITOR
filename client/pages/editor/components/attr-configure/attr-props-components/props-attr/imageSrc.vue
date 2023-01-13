@@ -90,9 +90,21 @@ export default {
 * @function tempLocalPath 图片本地路径
 * @function tempAndroidId 图片资源ID
 */
-		// imageSrc(val) {
-		// 	this.tempValue = val;
-		// },
+		imageSrc(val) {
+			this.tempValue = val;
+		},
+		androidId(val) {
+			this.tempAndroidId = val;
+		},
+		localPath(val) {
+			this.tempLocalPath = val;
+		},
+		fileSize(val) {
+			this.tempFileSize = val;
+		},
+		fileName(val) {
+			this.tempFileName = val;
+		},
 		tempValue() {
 			this.$emit('update:imageSrc', this.tempValue);
 		},

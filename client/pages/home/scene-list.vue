@@ -37,17 +37,12 @@
     >
       <el-table-column label="场景名称" prop="sceneName" >
         <template slot-scope="scope">
-          <router-link :to="'/home/program-list?id=' + scope.row.sceneId" class="link-type">
+          <router-link :to="'/home/page-list?id=' + scope.row.sceneId" class="link-type">
             <span>{{ scope.row.sceneName }}</span>
           </router-link>
         </template>
       </el-table-column>
       <el-table-column label="父级场景" align="center" prop="parentName" />
-      <!--<el-table-column label="删除状态" align="center" prop="delStatus" >
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_del_status" :value="scope.row.delStatus"/>
-        </template>
-      </el-table-column>-->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -139,7 +134,7 @@ export default {
   },
   methods: {
     handleProgramList(row){
-      this.$router.push({ path: '/home/program-list?id=' + row.sceneId });
+      this.$router.push({ path: '/home/page-list?id=' + row.sceneId });
     },
     /** 查询场景管理列表 */
     getList() {
@@ -220,7 +215,7 @@ export default {
       if (row != null) {
         this.form.parentId = row.sceneId;
       }
-      getScene(row.sceneId).then(response => {
+      this.$API.getScene(row.sceneId).then(response => {
         this.form = response.data;
         this.open = true;
         this.title = "修改场景管理";
@@ -231,13 +226,13 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.sceneId != null) {
-            this.$API.updateScene(this.form).then(response => {
+            this.$API.updateScene(this.form).then(() => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addScene(this.form).then(response => {
+            this.$API.addScene(this.form).then(() => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
