@@ -42,6 +42,12 @@
                     </el-select>
                   </div>
                 </div>
+                <div class="attr-item-edit-wrapper" v-show="(item.type == 'linkBack')">
+                  <p class="attr-item-title">*请确保该页面为子页面</p>
+                  <!-- <div class="col-1  attr-item-edit-input">
+                    <el-input type="textarea" :rows="3" placeholder="请输入url" v-model="item.url" />
+                  </div> -->
+                </div>
               </div>
             </el-collapse-item>
           </el-collapse>

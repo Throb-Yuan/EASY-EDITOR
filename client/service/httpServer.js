@@ -15,6 +15,9 @@ axios.defaults.timeout = 30000; // 超时时间
 
 //请求拦截器
 axios.interceptors.request.use(config => {
+	if(config.url.includes('content/program/download')) config.timeout = 300000;
+	
+	console.log("config==>",config);
 	// config.headers.Authorization = store.getters.authorization;
 	if (getToken()) {
 		// 有token则携带token

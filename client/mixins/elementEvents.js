@@ -45,6 +45,16 @@ export default {
 				}
 				resolve()
 			})
+		},
+		/**
+		 * 返回上一页
+		 * @private
+		 */
+		 _event_linkLoacl(){
+			return new Promise((resolve) => {
+					window.history.back()
+				resolve()
+			})
 		}
 	}
 }

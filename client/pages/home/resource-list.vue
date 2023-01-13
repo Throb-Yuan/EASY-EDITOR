@@ -269,7 +269,7 @@ export default {
           resolve(file)
         } else {
           // 可自定义kb
-          let toSize = Math.round(file.size / 1024 / 8);
+          let toSize = Math.round(file.size / 1024 / 6);
           imageConversion.compressAccurately(file, toSize).then(res => { // console.log(res)
             resolve(res)
           })
