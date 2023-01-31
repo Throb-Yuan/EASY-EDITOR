@@ -42,11 +42,8 @@
                     </el-select>
                   </div>
                 </div>
-                <div class="attr-item-edit-wrapper" v-show="(item.type == 'linkBack')">
-                  <p class="attr-item-title">*请确保该页面为子页面</p>
-                  <!-- <div class="col-1  attr-item-edit-input">
-                    <el-input type="textarea" :rows="3" placeholder="请输入url" v-model="item.url" />
-                  </div> -->
+                <div class="attr-item-edit-wrapper" v-show="(item.type == 'goback')">
+                  <p class="" style="color: #E6A23C;padding-top: 10px;">*请确保该页面为子页面</p>
                 </div>
               </div>
             </el-collapse-item>
@@ -73,17 +70,13 @@ export default {
       eventTypeList: [{
         label: '节目跳转',
         value: 'linkLoacl'
+      },{
+        label: '返回上一页',
+        value: 'goback'
       }, {
         label: '链接跳转',
         value: 'link'
       }]
-      //  {
-      //   label: '分享',
-      //   value: 'share'
-      // }, {
-      //   label: '表单提交',
-      //   value: 'submitForm'
-      // }
     }
   },
   computed: {
@@ -117,7 +110,6 @@ export default {
      
       let a = JSON.parse(JSON.stringify(this.activeElement))
       if(a.events.length&&a.events[0].type=='linkLoacl'&&a.events[0].url&&!this.value){
-        console.log("事件组件===",a.events[0]);
         let b = a.events[0].url
         this.value = b
       }
@@ -140,12 +132,7 @@ export default {
      * @param item 单个事件本身
      */
     checkProgram(e,item){
-      // console.log("选中值===",e,this.value);
-      // let a = this.activeElement
-      // console.log("事件组件===",a);
-      // item.url = './' + e + '.html'
       item.url = e
-      console.log("选中值===>",item);
     },
     /**
      * 添加事件

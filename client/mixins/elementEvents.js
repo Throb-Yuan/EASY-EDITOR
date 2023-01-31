@@ -50,9 +50,9 @@ export default {
 		 * 返回上一页
 		 * @private
 		 */
-		 _event_linkLoacl(){
+		 _event_goback(){
 			return new Promise((resolve) => {
-					window.history.back()
+				window.history.back()
 				resolve()
 			})
 		}

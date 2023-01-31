@@ -169,6 +169,17 @@ export default [
 					top: 0,
 					left: 0
 				}
+			},{
+				elName: 'qk-pdf-view',
+				title: 'PDF',
+				icon: 'iconfont iconPSD',
+				valueType: '', // 标识数据类型，用于表单组件,
+				defaultStyle: {
+					width: 315,
+					height: 450,
+					top: 0,
+					left: 0
+				}
 			},
 			{
 				elName: 'qk-date-time',

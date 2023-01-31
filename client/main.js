@@ -39,7 +39,6 @@ Vue.prototype.handleTree = handleTree
 // 全局组件挂载
 Vue.component('Pagination', Pagination)
 Vue.component('RightToolbar', RightToolbar)
-
 const loadimage = require('./common/images/myicons/loadingis.gif')
 const errorimage = require('./common/images/logos.png')
 

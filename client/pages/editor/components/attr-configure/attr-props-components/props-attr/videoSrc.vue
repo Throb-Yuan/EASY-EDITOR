@@ -21,14 +21,14 @@
 			</div>
 		</div>
 		<div style="display: flex;align-items: center;justify-content: space-between;padding-right: 30px;flex-wrap: wrap; gap: 12px; ">
-			<el-switch v-model="tempConytols" inactive-text="播放控件">
-			</el-switch>
-			<el-switch v-model="tempAutoPlay" inactive-text="自动播放">
-			</el-switch>
-			<el-switch v-model="tempVideoLoop" inactive-text="循环播放">
-			</el-switch>
-			<el-switch v-model="tempVideoMuted" inactive-text="静音播放">
-			</el-switch>
+			<div><span class="switch-labels">播放控件</span><el-switch v-model="tempConytols">
+			</el-switch></div>
+			<div><span class="switch-labels">自动播放</span><el-switch v-model="tempAutoPlay">
+			</el-switch></div>
+			<div><span class="switch-labels">循环播放</span><el-switch v-model="tempVideoLoop">
+			</el-switch></div>
+			<div><span class="switch-labels">静音播放</span><el-switch v-model="tempVideoMuted">
+			</el-switch></div>
 		</div>
 	</div>
 </template>

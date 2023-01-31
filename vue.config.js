@@ -88,5 +88,14 @@ module.exports = {
 				// 修改它的选项...
 				return options
 			})
+			config.module
+			.rule('worker')
+			.test(/\.worker\.js$/)
+			.use('worker-loader')
+			.loader('worker-loader')
+			.options({
+				inline: true,
+				fallback: false
+			})
 	}
 }

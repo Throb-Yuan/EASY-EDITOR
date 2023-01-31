@@ -21,10 +21,10 @@
 			</div>
 		</div>
 		<div style="display: flex;align-items: center;justify-content: space-between;padding-right: 30px;">
-			<el-switch v-model="tempMusicLoop" inactive-text="循环播放">
-			</el-switch>
-			<el-switch v-model="tempAutoPlay" inactive-text="自动播放">
-			</el-switch>	
+			<div><span class="switch-labels">循环播放</span><el-switch v-model="tempMusicLoop">
+			</el-switch></div>
+			<div><span class="switch-labels">自动播放</span><el-switch v-model="tempAutoPlay">
+			</el-switch></div>
 
 		</div>
 	</div>

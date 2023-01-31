@@ -7,6 +7,7 @@ import videoSrc from './videoSrc'
 import noticeText from './noticeText'
 import qrcodeValue from './qrcodeValue'
 import dateType from './dateType'
+import pdfSrc from './pdfSrc'
 
 export default {
 	[Text.name]: Text,
@@ -17,5 +18,6 @@ export default {
 	[videoSrc.name]: videoSrc,
 	[noticeText.name]: noticeText,
 	[qrcodeValue.name]: qrcodeValue,
-	[dateType.name]: dateType
+	[dateType.name]: dateType,
+	[pdfSrc.name]: pdfSrc
 }

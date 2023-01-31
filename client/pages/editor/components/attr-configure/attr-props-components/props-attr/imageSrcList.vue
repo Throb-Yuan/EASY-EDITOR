@@ -18,7 +18,7 @@
 			</el-form-item>
 			<el-form-item label="资源主键：">
 				<el-input type="text" placeholder="请输入资源主键" v-model="item.androidId" @change="change">
-				</el-input>
+				</el-input> 
 			</el-form-item> -->
 				<div :class="item.activeCss ? 'drag-info-box active-css':'drag-info-box'" style="line-height: 1;">
 					<img :src="item.urls" alt="">

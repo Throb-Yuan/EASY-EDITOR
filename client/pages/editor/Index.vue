@@ -226,6 +226,20 @@ export default {
 				a.defaultStyle.height = 60
 				a.elName = "qk-bg-music"
 				a.title = "音乐"
+			} else if (nodeData.resourceName.includes('.pdf')) {
+				b.localPath = nodeData.filePath
+				b.pdfSrc = nodeData.fileUrl
+				b.androidId = nodeData.resourceId
+				b.autoPlay = false
+				b.speed = 3000
+				b.showPageNum = true
+				b.fileName = nodeData.resourceName
+				b.fileSize = this.$mUtils.transFileSize(nodeData.fileSize)
+				// 调整大小与模板名称
+				a.defaultStyle.width = 315
+				a.defaultStyle.height = 450
+				a.elName = "qk-pdf-view"
+				a.title = "PDF"
 			} else {
 				console.log("暂未支持的文件==>", nodeData);
 				this.$message.warning('暂未支持的文件格式')

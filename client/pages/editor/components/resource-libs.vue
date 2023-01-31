@@ -6,36 +6,74 @@
         <el-tree ref="tree" :data="resourcetypeList" node-key="resourceTypeId" :label="'resourceTypeName'"
           children="children" accordion :expand-on-click-node="true" @node-expand="openNodes">
           <div class="custom-tree-node" slot-scope="{ node, data }">
+            <!-- 自定义节点信息start -->
             <span v-if="node.childNodes.length || node.data.resourceTypeName == '加载中...'" draggable="true"
               @dragstart="drag($event, node)">{{ node.data.resourceTypeName }}</span>
-              <el-tooltip v-else-if="node.data.resourceTypeName != '加载中...' && node.data.fileType == 'I'" draggable="true" id=""
-               class="item" effect="dark"
-                :content="node.data.resourceName" placement="top-start">
-            <img @dragstart="drag($event, node)"  style="width: 120px;height: 80px;object-fit:cover;padding-top: 5px;"
-            v-lazy="node.data.fileUrl" :key="node.data.fileUrl" alt="">
+            <el-tooltip v-else-if="node.data.resourceTypeName != '加载中...' && node.data.fileType == 'I'" draggable="true"
+              id="" class="item" effect="dark" :content="node.data.resourceName" placement="top-start">
+              <img @dragstart="drag($event, node, data)"
+                style="width: 120px;height: 80px;object-fit:cover;padding-top: 5px;" v-lazy="node.data.fileUrl"
+                :key="node.data.fileUrl" alt="">
             </el-tooltip>
             <div v-else>
               <el-tooltip v-if="node.data.resourceName && node.data.resourceName.length > 8" class="item" effect="dark"
                 :content="node.data.resourceName" placement="top-start">
-                <span  draggable="true" @dragstart="drag($event, node)">{{ node.data.resourceName.substring(0, 7)
+                <span draggable="true" @dragstart="drag($event, node)">{{
+                  node.data.resourceName.substring(0, 7)
                 }}...</span>
               </el-tooltip>
-              <span v-else-if="node.data.resourceName" draggable="true" @dragstart="drag($event, node)">{{ node.data.resourceName }}</span>
+              <span v-else-if="node.data.resourceName" draggable="true" @dragstart="drag($event, node)">{{
+                node.data.resourceName
+              }}</span>
               <span v-else style="font-size: 14px;color: #888;">{{ node.data.resourceTypeName }}</span>
             </div>
+            <!-- 尾部状态 查看更多 -->
+            <!-- <div v-if="total>node.childNodes&&"></div> -->
+            <!-- 自定义节点信息end -->
           </div>
         </el-tree>
+        <!-- <el-pagination small layout="prev, pager, next" :total="50">
+        </el-pagination> -->
       </div>
     </el-scrollbar>
+    <div class="fixbom-add">
+      <el-button type="primary" plain icon="el-icon-plus" @click="handleAdd">添加资源</el-button>
+    </div>
+    <el-dialog :title="'添加资源'" :visible.sync="addOpen" width="450px" append-to-body>
+      <el-form ref="form">
+        <el-form-item label="资源类型">
+          <el-select v-model="resourceTypeId" placeholder="请选择资源类型" clearable>
+            <el-option v-for="(dict, index) in resourcetypeList" :key="index" :label="dict.resourceTypeName"
+              :value="dict.resourceTypeId" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-upload ref="upload" drag :action="uploadAction" :before-upload="beforeAvatarUpload"
+            :on-success="handleSuccess" :file-list="fileList" :auto-upload="false" multiple>
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+
+          </el-upload>
+          <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 <script>
+const baseURL = process.env.VUE_APP_BASE_API
 let idx = 0;
 
 export default {
   data() {
     return {
-      resourcetypeList: []
+      resourcetypeList: [],
+      resourceTypeId: '',
+      uploadAction: baseURL + '/file/upload',
+      fileList: [],
+      resourceTypes: [],
+      addOpen: false,
+      total: 0
     }
   },
   created() {
@@ -92,11 +130,56 @@ export default {
     * @param ev event信息，可传递node数据
     * @param node 节点数据
     */
-    drag(ev, node) {
-      console.log("drag====", node);
+    drag(ev, node, data) {
+      console.log("drag====", data, node);
       let nodeStr = JSON.stringify(node.data)
       ev.dataTransfer.setData("node", nodeStr);
-    }
+    },
+    /** 新增按钮操作 */
+    handleAdd() {
+      // this.reset();
+      this.addOpen = true;
+      // this.title = "添加资源";
+    },
+    submitUpload() {
+        this.$refs.upload.submit();
+    },
+    beforeAvatarUpload(file) {
+      return new Promise(resolve => {
+        this.loading = true;
+        let isLt2M = file.size / 1024 / 1024 < 1 // 判定图片大小是否小于1MB  
+        const isJPG = file.type.includes('image')
+        const isGif = file.type.includes('gif')
+        if (isLt2M || !isJPG || isGif) {
+          resolve(file)
+        } else {
+          // 可自定义kb
+          let toSize = Math.round(file.size / 1024 / 6);
+          imageConversion.compressAccurately(file, toSize).then(res => { // console.log(res)
+            resolve(res)
+          })
+        }
+      })
+    },
+    handleSuccess(res) {
+      let response = res.data
+      let param = {
+        resourceId: response.fileId,
+        resourceName: response.fileName,
+        resourceTypeId: this.resourceTypeId,
+        resourceMd5: response.fileHash,
+        fileSize: response.fileSize,
+        fileType: response.fileId.substr(0, 1),
+        fileUrl: baseURL + '/file/download/' + response.fileId
+      }
+
+      this.$API.addResource(param).then(() => {
+        this.$modal.msgSuccess("新增成功");
+        this.addOpen = false;
+        this.getList();
+      });
+      this.loading = false;
+    },
   }
 };
 </script>
@@ -113,5 +196,16 @@ export default {
   justify-content: space-between;
   font-size: 14px;
   padding-right: 8px; */
+}
+.fixbom-add{
+  position: relative;
+  bottom: 200px;
+  width: 100%;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  /* border-top: 0.5px solid #787878; */
 }
 </style>
