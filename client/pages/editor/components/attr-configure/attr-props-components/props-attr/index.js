@@ -7,6 +7,8 @@ import videoSrc from './videoSrc'
 import noticeText from './noticeText'
 import qrcodeValue from './qrcodeValue'
 import dateType from './dateType'
+import weekType from './weekType'
+import countDownTime from './countDownTime'
 import pdfSrc from './pdfSrc'
 
 export default {
@@ -19,5 +21,7 @@ export default {
 	[noticeText.name]: noticeText,
 	[qrcodeValue.name]: qrcodeValue,
 	[dateType.name]: dateType,
+	[weekType.name]: weekType,
+	[countDownTime.name]: countDownTime,
 	[pdfSrc.name]: pdfSrc
 }

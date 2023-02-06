@@ -13,6 +13,8 @@ import Video from './video'
 import Notice from './notice'
 import Qrcode from './qrcode'
 import DateTmie from './date-time'
+import WeekTmie from './week-time'
+import countDownTmie from './count-down'
 import pdfView from './pdf-view'
 // 所有组件列表
 const components = [
@@ -27,6 +29,8 @@ const components = [
 	Notice,
 	Qrcode,
 	DateTmie,
+	WeekTmie,
+	countDownTmie,
 	pdfView
 ]
 // 定义 install 方法，接收 Vue 作为参数
@@ -61,6 +65,8 @@ export {
 	Notice,
 	Qrcode,
 	DateTmie,
+	WeekTmie,
+	countDownTmie,
 	pdfView,
 	_qk_register_components_object
 }

@@ -1,0 +1,51 @@
+{
+  "id": "3874224",
+  "name": "easy-editor",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "27963836",
+      "name": "跑马灯_复制",
+      "font_class": "paomadeng_fuzhi",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "666890",
+      "name": "天气",
+      "font_class": "tianqi",
+      "unicode": "e694",
+      "unicode_decimal": 59028
+    },
+    {
+      "icon_id": "1969475",
+      "name": "我的一周",
+      "font_class": "wodeyizhou",
+      "unicode": "e623",
+      "unicode_decimal": 58915
+    },
+    {
+      "icon_id": "5916422",
+      "name": "PDF",
+      "font_class": "PDF",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "5985625",
+      "name": "计时沙漏",
+      "font_class": "jishishalou",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "19654504",
+      "name": "apk",
+      "font_class": "apk",
+      "unicode": "e653",
+      "unicode_decimal": 58963
+    }
+  ]
+}

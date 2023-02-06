@@ -1,0 +1,21 @@
+node_modules 修改
+
+vue-pdf 相关
+
+node_modules\pdfjs-dist\es5\build pdf.js
+去除警告日志打印 console.log("Warning: ".concat(msg));
+
+***重要，否则无法使用***
+node_modules\vue-pdf\src vuePdfNoSss.vue
+PdfjsWorker  import引入代替require引入 解决跨域问题
+
+vue.config.js中chainWebpack 加入
+    config.module
+      .rule('worker')
+      .test(/\.worker\.js$/)
+      .use('worker-loader')
+      .loader('worker-loader')
+      .options({
+        inline: true,
+        fallback: false
+

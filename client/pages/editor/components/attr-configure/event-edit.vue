@@ -16,7 +16,7 @@
           <p class="gray inline-block fontsize-12 marginL10">事件在编辑模式下无效果</p>
         </div>
         <div class="el-animate-list-wrapper paddingT20" v-show="activeElement.events.length">
-          <el-collapse accordion  @change="handleChange"> 
+          <el-collapse accordion @change="handleChange">
             <el-collapse-item v-for="(item, index) in activeElement.events" :key="index">
               <template slot="title">
                 <span class="el-animate-title-name">事件 {{ index + 1 }}</span>
@@ -36,8 +36,19 @@
                 <div class="attr-item-edit-wrapper" v-show="item.type == 'linkLoacl'">
                   <p class="attr-item-title">选择节目：</p>
                   <div class="col-1  attr-item-edit-input">
-                    <el-select v-model="value" filterable placeholder="请选择"  @change="checkProgram($event,item)">
-                      <el-option v-for="item in programList" :key="item.programId" :label="item.programName" :value="'../'+item.sceneName+'/'+item.programId+'.html'">
+                    <el-select v-model="value" filterable placeholder="请选择" @change="checkProgram($event, item)">
+                      <el-option v-for="item in programList" :key="item.programId" :label="item.programName"
+                        :value="'../' + item.sceneName + '/' + item.programId + '.html'">
+                      </el-option>
+                    </el-select>
+                  </div>
+                </div>
+                <div class="attr-item-edit-wrapper" v-show="item.type == 'openApp'">
+                  <p class="attr-item-title">选择应用：</p>
+                  <div class="col-1  attr-item-edit-input">
+                    <el-select v-model="apkValue" filterable placeholder="请选择" @change="checkApk($event, item)">
+                      <el-option v-for="(item, index) in apkList" :key="item.resourceId" :label="item.resourceName"
+                        :value="index">
                       </el-option>
                     </el-select>
                   </div>
@@ -65,17 +76,23 @@ export default {
   data() {
     return {
       programList: [],
+      apkList: [],
+      apkValue: '',
       value: '',
-      
+      programIsGet: false,
+      apkIsGet: false,
       eventTypeList: [{
         label: '节目跳转',
         value: 'linkLoacl'
-      },{
+      }, {
         label: '返回上一页',
         value: 'goback'
       }, {
         label: '链接跳转',
         value: 'link'
+      }, {
+        label: '打开/安装应用',
+        value: 'openApp'
       }]
     }
   },
@@ -93,23 +110,23 @@ export default {
     ])
   },
   created() {
-    this.getList()
+    // this.getList()
   },
-  watch:{
-    activeElement(){
-      if(!this.activeElement) return false;
+  watch: {
+    activeElement() {
+      if (!this.activeElement) return false;
       let a = JSON.parse(JSON.stringify(this.activeElement))
-      if(a.events.length&&a.events[0].type=='linkLoacl'&&a.events[0].url){
-        this.value == a.events[0].url ? '' :  this.value = a.events[0].url
+      if (a.events.length && a.events[0].type == 'linkLoacl' && a.events[0].url) {
+        this.value == a.events[0].url ? '' : this.value = a.events[0].url
       }
     }
   },
   methods: {
     // init 匹配项展示
-    handleChange(){
-     
+    handleChange() {
+
       let a = JSON.parse(JSON.stringify(this.activeElement))
-      if(a.events.length&&a.events[0].type=='linkLoacl'&&a.events[0].url&&!this.value){
+      if (a.events.length && a.events[0].type == 'linkLoacl' && a.events[0].url && !this.value) {
         let b = a.events[0].url
         this.value = b
       }
@@ -117,13 +134,33 @@ export default {
     /**
      * 获取节目列表
      */
-     getList() {
+    getList() {
       let queryParams = {
         pageNum: 1,
         pageSize: 100
       }
       this.$API.listProgram(queryParams).then(response => {
+        this.programIsGet = true
         this.programList = response.rows;
+      });
+    },
+    /**
+     * 获取应用apk列表
+     */
+    getApkList() {
+      let queryParams = {
+        pageNum: 1,
+        pageSize: 100,
+        resourceTypeId: '5D3E1E9ADB8042919A20364696E35AAB'
+      }
+      this.$API.listResource(queryParams).then(response => {
+        if (response.rows.length) {
+          this.apkList = response.rows
+          this.apkIsGet = true
+        } else {
+          // me.children[0].resourceTypeName = "暂无资源"
+        }
+
       });
     },
     /**
@@ -131,18 +168,32 @@ export default {
      * @param e 节目ID,html名称
      * @param item 单个事件本身
      */
-    checkProgram(e,item){
+    checkProgram(e, item) {
       item.url = e
+    },
+    /**
+ * 节APK选中，拼接URL,透传
+ * @param e 节目ID,html名称
+ * @param item 单个事件本身 
+ */
+    checkApk(e, item) {
+      // item.info = item
+      // 需存储 mdk+'.apk',resourceId 
+      console.log("check==", e, item);
+      item.mdkName = this.apkList[e].resourceMd5 + '.apk'
+      item.resourceId = this.apkList[e].resourceId
     },
     /**
      * 添加事件
      * @param type 事件名称
      */
     addEvent(type) {
-      if(this.activeElement&&this.activeElement.events.length) {
+      if (this.activeElement && this.activeElement.events.length) {
         this.$message.warning('请勿添加多个事件');
         return false;
       }
+      if (type == 'linkLoacl') this.programIsGet ? '' : this.getList()
+      if (type == 'openApp') this.apkIsGet ? '' : this.getApkList()
       this.$store.dispatch('addElementEvent', type)
     },
     /**

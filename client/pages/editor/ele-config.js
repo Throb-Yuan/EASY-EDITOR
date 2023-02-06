@@ -172,7 +172,7 @@ export default [
 			},{
 				elName: 'qk-pdf-view',
 				title: 'PDF',
-				icon: 'iconfont iconPSD',
+				icon: 'iconfont iconPDF',
 				valueType: '', // 标识数据类型，用于表单组件,
 				defaultStyle: {
 					width: 315,
@@ -194,11 +194,39 @@ export default [
 					fontSize: 32,
 					fontWeight: 600
 				}
+			},{
+				elName: 'qk-week-time',
+				title: '星期',
+				icon: 'iconfont iconwodeyizhou',
+				// 每个组件设置props来展示哪些显示哪些编辑项
+				valueType: '', // 标识数据类型，用于表单组件
+				defaultStyle: {
+					width: 120,
+					height: 40,
+					color: "#3e8dd3",
+					fontSize: 32,
+					top: 240,
+					fontWeight: 600
+				}
+			},{
+				elName: 'qk-count-down',
+				title: '倒计时',
+				icon: 'iconfont iconjishishalou',
+				// 每个组件设置props来展示哪些显示哪些编辑项
+				valueType: '', // 标识数据类型，用于表单组件
+				defaultStyle: {
+					width: 180,
+					height: 32,
+					color: "#3e8dd3",
+					fontSize: 24,
+					fontWeight: 600,
+					top: 280,
+				}
 			},
 			{
 				elName: 'qk-notice',
 				title: '公告栏',
-				icon: 'iconfont iconwenbenkuang',
+				icon: 'iconfont iconpaomadeng_fuzhi',
 				valueType: '',
 				defaultStyle: {
 					width: $config.canvasH5Width,

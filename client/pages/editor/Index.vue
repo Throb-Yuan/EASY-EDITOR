@@ -154,8 +154,6 @@ export default {
 		changeRatioFn(objs) {
 			let checkData = objs.arr.find(v => v.value == objs.e)
 			// let case = objs.arr.find(v=> {return v.value==objs.e})
-			console.log('button click', this.$config);
-			console.log('button configs', eleConfig);
 			this.projectData.width = checkData.toWidth
 			this.projectData.height = checkData.toHeight
 			this.$config.canvasH5Width = checkData.toWidth
@@ -168,8 +166,6 @@ export default {
 			// eleConfig[0].components[1].defaultStyle.height = checkData.toHeight
 			// $configs.canvasH5Width = checkData.toWidth
 			// $configs.canvasH5Height = checkData.toHeight
-			console.log('button click', this.$config);
-			console.log('button configs', eleConfig);
 		},
 		/**
 			* 资源列表拖拽联动，生成对应标签添加至画布
@@ -258,7 +254,6 @@ export default {
 			});
 		},
 		initPageData() {
-			console.log("initPage==");
 			if (!this.id) {
 				let body = deepClone(this.$programInit.body)
 				body.pages[0].uuid = createUUID()
@@ -352,6 +347,10 @@ export default {
 								urlSplit = urlSplit[urlSplit.length-1]
 								urlSplit = urlSplit.split('.')
 								postIds.push(urlSplit[0])
+							} 
+							if (eve.type == "openApp"){
+								eve.resourceId ? postIds.push(eve.resourceId) : ''
+								
 							} 
 						})
 					}

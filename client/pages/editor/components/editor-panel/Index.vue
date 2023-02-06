@@ -149,6 +149,7 @@
 			},
 			handleClickCanvas(e) {
 				if (!e.target.classList.contains('element-on-edit-pane') && !e.target.classList.contains('menu-item-on-edit-panel')) {
+					console.log("空白区域重置");					
 					this.$store.dispatch('setActiveElementUUID', '');
 				}
 			},
