@@ -64,9 +64,6 @@ export default {
 		 _event_openApp(eventData){
 			return new Promise((resolve) => {
 				window.terminal.openApp(eventData.mdkName)
-				// callHandler('openApp',eventData.resourceMd5,()=>{
-				// 	console.log('_event_openApp执行 ');
-				// })
 				resolve()
 			})
 		}

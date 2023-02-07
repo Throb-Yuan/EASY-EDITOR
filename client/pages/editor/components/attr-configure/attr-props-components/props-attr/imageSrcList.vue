@@ -11,17 +11,9 @@
 		<el-form-item label="图片列表：">
 			<div v-for="(item, index) in tempValue" :key="index" @drop="drop($event, item)"
 				@dragover="allowDrop($event, item)" @dragenter="dragenter(item)">
-				<!-- <imageSelect :url.sync="item.urls" @change="change" />
-			<el-form-item label="本地路径：">
-				<el-input type="textarea" :rows="2" placeholder="请输入图片本地路径" v-model="item.localPath" @change="change">
-				</el-input>
-			</el-form-item>
-			<el-form-item label="资源主键：">
-				<el-input type="text" placeholder="请输入资源主键" v-model="item.androidId" @change="change">
-				</el-input> 
-			</el-form-item> -->
 				<div :class="item.activeCss ? 'drag-info-box active-css':'drag-info-box'" style="line-height: 1;">
-					<img :src="item.urls" alt="">
+					<img v-if="item.fileType == 'I' " :src="item.urls" alt="">
+					<img v-else src="../../../../../../common/images/myicons/videosss.jpg" alt="">
 					<div class="media-indo">
 						<div class="media-name">{{ item.fileName }}</div>
 						<div class="media-size">{{ item.fileSize }}</div>
@@ -53,7 +45,8 @@ const defaultEle = {
 	androidId: 'I30B65E69B78D44CEB2D45AB9A78A49AF',
 	fileName: "hbfj3.jpg",
 	fileSize: "56.39KB",
-	activeCss:false
+	activeCss:false,
+	fileType:"I"
 }
 export default {
 	name: "attr-qk-imageSrcList",
@@ -153,8 +146,8 @@ export default {
 			let nodeData = JSON.parse(nodeStr)
 			// 为图片则更改当前轮播项数据
 			!item.activeCss ?'' : item.activeCss = false
-			if (nodeData.fileType != "I") {
-				this.$message.warning('请选择图片类型拖入覆盖');
+			if (nodeData.fileType != "I" && nodeData.fileType != "V" ) {
+				this.$message.warning('请选择图片视频类型拖入覆盖');
 				return false
 			}
 			item.urls = nodeData.fileUrl
@@ -162,6 +155,7 @@ export default {
 			item.androidId = nodeData.resourceId
 			item.fileSize = this.$mUtils.transFileSize(nodeData.fileSize)
 			item.fileName = nodeData.resourceName
+			item.fileType = nodeData.fileType
 			ev.preventDefault();
 		},
 		dragenter(item){

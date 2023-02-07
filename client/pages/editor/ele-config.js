@@ -160,7 +160,7 @@ export default [
 			},
 			{
 				elName: 'qk-image-carousel',
-				title: '图片轮播',
+				title: '混播',
 				icon: 'iconfont iconshouyelunbotu',
 				valueType: '', // 标识数据类型，用于表单组件,
 				defaultStyle: {

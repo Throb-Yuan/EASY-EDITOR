@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3874224 */
-  src: url('iconfonthj.woff2?t=1675154258852') format('woff2'),
-       url('iconfonthj.woff?t=1675154258852') format('woff'),
-       url('iconfonthj.ttf?t=1675154258852') format('truetype');
+  src: url('iconfont.woff2?t=1675735379534') format('woff2'),
+       url('iconfont.woff?t=1675735379534') format('woff'),
+       url('iconfont.ttf?t=1675735379534') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,114 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.iconrss:before {
+  content: "\e652";
+}
+
+.iconduomeiti:before {
+  content: "\e710";
+}
+
+.iconduoyun:before {
+  content: "\e6f3";
+}
+
+.iconsun:before {
+  content: "\e603";
+}
+
+.iconicontest:before {
+  content: "\e604";
+}
+
+.iconicontest1:before {
+  content: "\e605";
+}
+
+.iconicontest2:before {
+  content: "\e607";
+}
+
+.iconicontest3:before {
+  content: "\e608";
+}
+
+.iconicontest4:before {
+  content: "\e609";
+}
+
+.iconicontest5:before {
+  content: "\e60a";
+}
+
+.iconicontest6:before {
+  content: "\e60b";
+}
+
+.iconicontest7:before {
+  content: "\e60c";
+}
+
+.iconicontest8:before {
+  content: "\e60d";
+}
+
+.iconicontest9:before {
+  content: "\e60e";
+}
+
+.iconicontest10:before {
+  content: "\e60f";
+}
+
+.iconicontest11:before {
+  content: "\e610";
+}
+
+.iconicontest12:before {
+  content: "\e611";
+}
+
+.iconicontest13:before {
+  content: "\e612";
+}
+
+.iconicontest14:before {
+  content: "\e613";
+}
+
+.iconicontest15:before {
+  content: "\e614";
+}
+
+.iconicontest16:before {
+  content: "\e615";
+}
+
+.iconicontest17:before {
+  content: "\e616";
+}
+
+.iconicontest18:before {
+  content: "\e617";
+}
+
+.iconicontest19:before {
+  content: "\e618";
+}
+
+.iconicontest20:before {
+  content: "\e619";
+}
+
+.iconicontest21:before {
+  content: "\e61a";
+}
+
+.iconicontest22:before {
+  content: "\e61b";
 }
 
 .iconpaomadeng_fuzhi:before {
