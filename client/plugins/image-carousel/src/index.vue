@@ -5,8 +5,8 @@
 		<Swiper ref="swiper" class="image-carsousel-swiper" v-if="imageSrcList.length > 0" :autoPlay='autoPlay'
 			:showIndicator='indicator' :interval="interval" duration="500" @transtionend="getNum"  >
 			<Slide class="image-carsousel-slide" v-for="(item, index) in imageSrcList" :key="index">
-				<video ref="videoswiper" v-if="item.fileType == 'V'" :id="'videoswiper'+index" width="100%" height="100%" style="object-fit:cover"
-					:src="notDevs ? localPath : item.urls" controls="false" :autoplay="false" :loop="false" @ended="videoEnd"></video>
+				<video ref="videoswiper" v-if="item.fileType == 'V'"  class="image-carsousel-image" :id="'videoswiper'+index" width="100%" height="100%" style="object-fit:cover"
+					:src="notDevs ? item.localPath : item.urls" controls="false" :autoplay="false" :loop="false" @ended="videoEnd"></video>
 				<img v-else class="image-carsousel-image" :src="notDevs ? item.localPath : item.urls"
 					style="object-fit:cover" alt="">
 			</Slide>
@@ -33,14 +33,6 @@ export default {
 				fileSize: "189.05KB",
 				activeCss: false,
 				fileType: 'I'
-			}, {
-				urls: 'http://192.168.101.250:2501/file/download/VDEA5E431C0CD4732BC7ECD6E8DD3E0B2',
-				localPath: '../../resource/db3044531589f6f20d48d42ed8b9f382.jpg',
-				androidId: 'I0BE3F53A3C9140C286D268D04E2E3768',
-				fileName: "智慧海洋.mp4",
-				fileSize: "272.91KB",
-				activeCss: false,
-				fileType: 'V'
 			}, {
 				urls: 'http://192.168.101.250:2501/file/download/IC58C80056F354F41A64D3899254BFFE6',
 				localPath: '../../resource/c9667eb24ccd6ca0818a0b550752cf80.png',

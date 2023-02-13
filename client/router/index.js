@@ -71,10 +71,6 @@ export default new Router({
 				path: '/editor',
 				name: 'Editor',
 				component: () => import('@/pages/editor/Index')
-			},{
-				path: '/terminals',
-				name: 'terminalLists',
-				component: () => import('@/pages/terminal/terminal-list'),
 			}
 		],
 	},

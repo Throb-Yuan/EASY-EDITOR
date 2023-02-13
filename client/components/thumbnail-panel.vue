@@ -6,7 +6,8 @@
 				<div class="details-btn" @click="preview(pageData.afterHtml)">预览</div>
 			</div>
 			<div class="image-wrapper">
-				<img :src="pageData.coverImage || defaultCoverImage" alt="" />
+				<img style="object-fit: cover;" v-if="pageData.coverImgId" :src='baseURL+"/file/download/"+pageData.coverImgId' alt="" />
+				<img style="object-fit: cover;" :src="defaultCoverImage" v-else alt="">
 			</div>
 		</div>
 		<div class="page-item-title border-T ellipsis">
@@ -59,6 +60,7 @@ import {
 // import editorProjectConfig from '@/pages/editor/DataModel'
 
 import addCooperationer from '@/components/add-cooperationer/index.js'
+const baseURL = process.env.VUE_APP_BASE_API
 export default {
 	props: {
 		showPublishState: {
@@ -89,6 +91,7 @@ export default {
 	},
 	data() {
 		return {
+			baseURL,
 			loading: false,
 			defaultCoverImage: require('@/common/images/quark--pagecover-image.png'),
 			operationDataList: [{
@@ -311,7 +314,7 @@ export default {
 .page-thumbnail-panel {
 	width: 224px;
 	height: 296px;
-	border-radius: 4px;
+	border-radius: 8px;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
@@ -371,8 +374,10 @@ export default {
     align-items: center;
 		img {
 			display: block;
-			width: 60%;
-			height: 45%;
+			width: 180px;
+			height: 180px;
+			border-radius: 8px;
+			// height: 45%;
 		}
 	}
 }

@@ -5,7 +5,13 @@
       <div class="page-info">
         <div class="page-cover">
           <!-- <imageCropper :url.sync="pageData.coverImage"/> -->
-          <img src="../../../common/images/quark--pagecover-image.png" alt="">
+          <el-upload ref="upload" :action="uploadAction" :show-file-list="false" 
+            :on-success="handleSuccess" :multiple="false" style="border:1px dashed #909399;width: 122px;height: 122px;border-radius: 6px;box-sizing: border-box;">
+            <img v-if="!coverImage" src="../../../common/images/quark--pagecover-image.png" alt="">
+            <img v-else :src="coverImage" alt="">
+          </el-upload>
+
+          <!-- <img src="../../../common/images/quark--pagecover-image.png" alt=""> -->
         </div>
         <div class="page-title-des">
           <div class="info-form-wrapper">
@@ -100,7 +106,7 @@
 <script>
 	import previewWrapper from '@client/components/preview-wrapper'
 	import imageCropper from '@client/components/image-cropper'
-
+  const baseURL = process.env.VUE_APP_BASE_API
 	export default {
 		components: {
 			previewWrapper,
@@ -118,9 +124,15 @@
 			}
 		},
 		data() {
-			return {}
+			return {
+        uploadAction: baseURL + '/file/upload',
+        coverImage:''
+      }
 		},
     created(){
+      if (this.pageData.pages[0].coverResourceId) {
+        this.coverImage = baseURL+"/file/download/"+this.pageData.pages[0].coverResourceId
+      }
     },
 		methods: {
 			/**
@@ -149,6 +161,13 @@
 			}
 			
 		},
+    handleSuccess(res,file) {
+      console.log(this.pageData);
+      this.coverImage = URL.createObjectURL(file.raw);
+      this.pageData.pages[0].coverResourceId = res.data.fileId
+      console.log("this.pageData,==",this.pageData);
+      // this.loading = false;
+    },
 		}
 	}
 </script>
@@ -161,8 +180,14 @@
   .page-info {
     display: flex;
     .page-cover {
-      width: 120px;
+      width: 122px;
+      height: 122px;
+      img{
+        width: 120px;
       height: 120px;
+      border-radius: 4px;
+      object-fit: cover;
+      }
       overflow: hidden;
     }
     .page-title-des {

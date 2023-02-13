@@ -10,3 +10,5 @@ export * from './modules/page'
 export * from './modules/image'
 // 解析psd
 export * from './modules/psd'
+// 组件共用
+export * from './modules/eleBus'

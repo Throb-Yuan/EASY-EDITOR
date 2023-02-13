@@ -5,9 +5,10 @@
 				<img src="https://t7.baidu.com/it/u=2222012502,2910942051&fm=193" alt="">
 			</div> -->
 			<!-- 滚动文字区域 -->
-			<div class="marquee-wrap">
-				<ul class="marquee-box" :id="'marquee-box'+uuid">
-					<li class="marquee-list" v-for="i in 5" :key="i" v-html="noticeText" :id="i == 1 ? 'marquee'+uuid : ''">
+			<div class="marquee-wrap" :id="sportType">
+				<ul class="marquee-box" :id="'marquee-box' + uuid">
+					<li class="marquee-list" v-for="i in 8" :key="i" v-html="noticeText"
+						:id="i == 1 ? 'marquee' + uuid : ''">
 					</li>
 				</ul>
 			</div>
@@ -26,6 +27,10 @@ export default {
 		speed: {
 			type: Number,
 			default: 20
+		},
+		sportType: {
+			type: String,
+			default: 'left'
 		}
 	},
 	data() {
@@ -39,6 +44,17 @@ export default {
 			/**
 			 * 速度改变，重置定时器使用新速度播放
 			 */
+			console.log("speed", this.speed);
+			clearInterval(this.interFuns)
+			setTimeout(() => {
+				this.runMarquee();
+			}, 500);
+		},
+		sportType() {
+			/**
+			 * 方向改变，重置定时器使用新速度播放
+			 */
+			console.log("sportType", this.sportType);
 			clearInterval(this.interFuns)
 			setTimeout(() => {
 				this.runMarquee();
@@ -60,21 +76,46 @@ export default {
 			this.uuid = createUUID()
 		},
 		runMarquee() {
-			// 获取文字 计算后宽度
-			let width = document.getElementById(`marquee${this.uuid}`).getBoundingClientRect().width,
-				marquee = document.getElementById(`marquee-box${this.uuid}`),
-				disx = 0; // 位移距离
-			//设置位移
-			this.interFuns = setInterval(() => {
-				disx--; // disx-=1; 滚动步长
-				if (-disx >= width * 5) {
-					disx = 0; // 如果位移超过文字宽度，则回到起点  marquee-list的margin值
-				}
-				// marquee.style.transform = 'translateX(' + disx + 'px)'
-				marquee.style.left = disx + "px";
-			}, this.speed); //滚动速度
+			if (this.sportType == "top" || this.sportType == "bottom") {
+				// 获取文字 计算后宽度
+				let height = document.getElementById(`marquee${this.uuid}`).getBoundingClientRect().height,
+					marquee = document.getElementById(`marquee-box${this.uuid}`),
+					disx = 0; // 位移距离
+				//设置位移
+				this.interFuns = setInterval(() => {
+					disx--; // disx-=1; 滚动步长
+					if (-disx >= height * 5) {
+						disx = 0; // 如果位移超过文字宽度，则回到起点  marquee-list的margin值
+					}
+					// marquee.style.transform = 'translateX(' + disx + 'px)'
+					marquee.style.left = '10px'
+					marquee.style.width = "100%"
+					this.sportType == "top" ? marquee.style.top = disx + "px" : marquee.style.top = -disx + "px"
+				}, this.speed); //滚动速度
+			} else {
+				// 获取文字 计算后宽度
+				let width = document.getElementById(`marquee${this.uuid}`).getBoundingClientRect().width,
+					marquee = document.getElementById(`marquee-box${this.uuid}`),
+					disx = 0; // 位移距离
+				if(this.sportType == 'right') disx = width*5+100
+				//设置位移
+				this.interFuns = setInterval(() => {
+					disx--; // disx-=1; 滚动步长
+					// console.log("disx==",disx);
+					if (-disx >= width * 5 ) {
+						disx = 0; // 如果位移超过文字宽度，则回到起点  marquee-list的margin值
+					}
+					if (this.sportType == 'right' && disx == 0 ) {
+						disx = width*5+100; // 如果位移超过文字宽度，则回到起点  marquee-list的margin值
+					}
+					marquee.style.top = '50%'
+					// marquee.style.transform = 'translateX(' + disx + 'px)'
+					this.sportType == "left" ? marquee.style.left = disx + "px" : marquee.style.left = -disx + "px"
+				}, this.speed); //滚动速度
+			}
+
 		}
-		
+
 	}
 };
 
@@ -134,6 +175,7 @@ li {
 	width: 100%;
 	height: 100%;
 	// margin-left: 8px;
+
 }
 
 .marquee-box {
@@ -152,5 +194,21 @@ li {
 	// padding: 0 0.04rem;
 	// color: #ffe17b;
 	// font-weight: 700;
+}
+
+#top {
+	.marquee-box {
+		flex-direction: column;
+		white-space: normal;
+		text-align: left;
+	}
+}
+
+#bottom {
+	.marquee-box {
+		flex-direction: column;
+		white-space: normal;
+		text-align: left;
+	}
 }
 </style>

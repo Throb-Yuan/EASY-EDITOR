@@ -86,7 +86,7 @@ export default [
 			// 	elName: 'map',
 			// 	title: '地图',
 			// 	icon: 'iconfont iconditu',
-			// 	valueType: '',
+			// 	valueType: '', 
 			// 	defaultStyle: {
 			// 		width: 300,
 			// 		height: 200,
@@ -172,7 +172,7 @@ export default [
 			},{
 				elName: 'qk-pdf-view',
 				title: 'PDF',
-				icon: 'iconfont iconPDF',
+				icon: 'hjiconfont iconPDF',
 				valueType: '', // 标识数据类型，用于表单组件,
 				defaultStyle: {
 					width: 315,
@@ -197,7 +197,7 @@ export default [
 			},{
 				elName: 'qk-week-time',
 				title: '星期',
-				icon: 'iconfont iconwodeyizhou',
+				icon: 'hjiconfont iconwodeyizhou',
 				// 每个组件设置props来展示哪些显示哪些编辑项
 				valueType: '', // 标识数据类型，用于表单组件
 				defaultStyle: {
@@ -211,7 +211,7 @@ export default [
 			},{
 				elName: 'qk-count-down',
 				title: '倒计时',
-				icon: 'iconfont iconjishishalou',
+				icon: 'hjiconfont iconjishishalou',
 				// 每个组件设置props来展示哪些显示哪些编辑项
 				valueType: '', // 标识数据类型，用于表单组件
 				defaultStyle: {
@@ -226,7 +226,7 @@ export default [
 			{
 				elName: 'qk-notice',
 				title: '公告栏',
-				icon: 'iconfont iconpaomadeng_fuzhi',
+				icon: 'hjiconfont iconpaomadeng_fuzhi',
 				valueType: '',
 				defaultStyle: {
 					width: $config.canvasH5Width,
@@ -250,7 +250,29 @@ export default [
 					height: 120,
 					width: 120,
 				}
-			}
+			},
+			{
+				elName: 'qk-weather',
+				title: '天气',
+				icon: 'hjiconfont iconduoyun',
+				valueType: '',
+				defaultStyle: {
+					height: 80,
+					width: 180,
+					color:'#0d7fef'
+				}
+			},
+			// {
+			// 	elName: 'qk-notice-rss',
+			// 	title: 'RSS',
+			// 	icon: 'hjiconfont iconrss',
+			// 	valueType: '',
+			// 	defaultStyle: {
+			// 		height: 180,
+			// 		width: 180,
+			// 		color:'#0d7fef'
+			// 	}
+			// }
 		]
 	},
 

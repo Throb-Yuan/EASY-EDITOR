@@ -19,3 +19,15 @@ vue.config.js中chainWebpack 加入
         inline: true,
         fallback: false
 
+
+
+swipe==>  node_modules\vue-swiper-component
+getElementsByClassName报错
+解决：
+
+var SlideDom = ""
+                console.log(" this.className==", this.className);
+                if (document.querySelector('.' + this.className)&& document.querySelector('.' + this.className).getElementsByClassName('wh_slide')) {
+                    SlideDom = document.querySelector('.' + this.className).getElementsByClassName('wh_slide')
+                }
+

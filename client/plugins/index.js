@@ -16,6 +16,8 @@ import DateTmie from './date-time'
 import WeekTmie from './week-time'
 import countDownTmie from './count-down'
 import pdfView from './pdf-view'
+import Weather from './weather'
+import NoticeRss from './noticeRss'
 // 所有组件列表
 const components = [
 	Text,
@@ -31,7 +33,9 @@ const components = [
 	DateTmie,
 	WeekTmie,
 	countDownTmie,
-	pdfView
+	pdfView,
+	NoticeRss,
+	Weather
 ]
 // 定义 install 方法，接收 Vue 作为参数
 const install = function (Vue) {
@@ -68,6 +72,8 @@ export {
 	WeekTmie,
 	countDownTmie,
 	pdfView,
+	Weather,
+	NoticeRss,
 	_qk_register_components_object
 }
 

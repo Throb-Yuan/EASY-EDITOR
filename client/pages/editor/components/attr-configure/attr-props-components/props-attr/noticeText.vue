@@ -8,6 +8,12 @@
 		<el-form-item label="速度(用时)：">
 			<el-input-number size="mini" v-model="tempSpeed" controls-position="right" />
 		</el-form-item>
+		<el-form-item label="滚动方向：">
+			<el-select v-model="tempSport" placeholder="请选择">
+				<el-option v-for="item in sportTypeArr" :key="item.value" :label="item.label" :value="item.value">
+				</el-option>
+			</el-select>
+		</el-form-item>
 	</div>
 
 </template>
@@ -17,17 +23,33 @@ export default {
 	name: "attr-qk-noticeText",
 	props: {
 		noticeText: String,
-		speed:Number
+		speed:Number,
+		sportType:String
 	},
 	data() {
 		return {
 			tempText: '',
-			tempSpeed: 20
+			tempSpeed: 20,
+			tempSport: '',
+			sportTypeArr: [{
+				value: 'left',
+				label: '从左到右'
+			}, {
+				value: 'right',
+				label: '从右到左'
+			}, {
+				value: 'top',
+				label: '从上到下'
+			}, {
+				value: 'bottom',
+				label: '从下到上'
+			}]
 		}
 	},
-	mounted() {
+	created() {
 		this.tempText = this.noticeText;
 		this.tempSpeed = this.speed
+		this.tempSport = this.sportType
 	},
 	watch: {
 		noticeText() {
@@ -41,7 +63,13 @@ export default {
 		},
 		tempSpeed() {
 			this.$emit('update:speed', this.tempSpeed)
-		}
+		},
+		sportType() {
+			this.tempSport = this.sportType;
+		},
+		tempSport() {
+			this.$emit('update:sportType', this.tempSport)
+		},
 	}
 }
 </script>

@@ -1,12 +1,12 @@
 @font-face {
-  font-family: "iconfont"; /* Project id 3874224 */
-  src: url('iconfont.woff2?t=1675735379534') format('woff2'),
-       url('iconfont.woff?t=1675735379534') format('woff'),
-       url('iconfont.ttf?t=1675735379534') format('truetype');
+  font-family: "hjiconfont"; /* Project id 3874224 */
+  src: url('iconfont.woff2?t=1675740458796') format('woff2'),
+       url('iconfont.woff?t=1675740458796') format('woff'),
+       url('iconfont.ttf?t=1675740458796') format('truetype');
 }
 
-.iconfont {
-  font-family: "iconfont" !important;
+.hjiconfont {
+  font-family: "hjiconfont" !important;
   font-size: 16px;
   font-style: normal;
   -webkit-font-smoothing: antialiased;
@@ -17,7 +17,7 @@
   content: "\e652";
 }
 
-.iconduomeiti:before {
+.iconduomeiti-:before {
   content: "\e710";
 }
 
@@ -29,95 +29,95 @@
   content: "\e603";
 }
 
-.iconicontest:before {
+.iconicon-test:before {
   content: "\e604";
 }
 
-.iconicontest1:before {
+.iconicon-test1:before {
   content: "\e605";
 }
 
-.iconicontest2:before {
+.iconicon-test2:before {
   content: "\e607";
 }
 
-.iconicontest3:before {
+.iconicon-test3:before {
   content: "\e608";
 }
 
-.iconicontest4:before {
+.iconicon-test4:before {
   content: "\e609";
 }
 
-.iconicontest5:before {
+.iconicon-test5:before {
   content: "\e60a";
 }
 
-.iconicontest6:before {
+.iconicon-test6:before {
   content: "\e60b";
 }
 
-.iconicontest7:before {
+.iconicon-test7:before {
   content: "\e60c";
 }
 
-.iconicontest8:before {
+.iconicon-test8:before {
   content: "\e60d";
 }
 
-.iconicontest9:before {
+.iconicon-test9:before {
   content: "\e60e";
 }
 
-.iconicontest10:before {
+.iconicon-test10:before {
   content: "\e60f";
 }
 
-.iconicontest11:before {
+.iconicon-test11:before {
   content: "\e610";
 }
 
-.iconicontest12:before {
+.iconicon-test12:before {
   content: "\e611";
 }
 
-.iconicontest13:before {
+.iconicon-test13:before {
   content: "\e612";
 }
 
-.iconicontest14:before {
+.iconicon-test14:before {
   content: "\e613";
 }
 
-.iconicontest15:before {
+.iconicon-test15:before {
   content: "\e614";
 }
 
-.iconicontest16:before {
+.iconicon-test16:before {
   content: "\e615";
 }
 
-.iconicontest17:before {
+.iconicon-test17:before {
   content: "\e616";
 }
 
-.iconicontest18:before {
+.iconicon-test18:before {
   content: "\e617";
 }
 
-.iconicontest19:before {
+.iconicon-test19:before {
   content: "\e618";
 }
 
-.iconicontest20:before {
+.iconicon-test20:before {
   content: "\e619";
 }
 
-.iconicontest21:before {
+.iconicon-test21:before {
   content: "\e61a";
 }
 
-.iconicontest22:before {
+.iconicon-test22:before {
   content: "\e61b";
 }
 

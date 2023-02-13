@@ -21,10 +21,16 @@ export default {
 			tempValue: '',
 			weekTypeArr: [{
 				value: '星期',
-				label: '星期'
+				label: '星期一'
 			}, {
 				value: '周',
-				label: '周'
+				label: '周一'
+			}, {
+				value: 'Mon',
+				label: 'Mon'
+			}, {
+				value: 'Monday',
+				label: 'Monday'
 			}]
 		}
 	},

@@ -10,6 +10,7 @@ import dateType from './dateType'
 import weekType from './weekType'
 import countDownTime from './countDownTime'
 import pdfSrc from './pdfSrc'
+import weatherArea from './weatherArea'
 
 export default {
 	[Text.name]: Text,
@@ -23,5 +24,6 @@ export default {
 	[dateType.name]: dateType,
 	[weekType.name]: weekType,
 	[countDownTime.name]: countDownTime,
-	[pdfSrc.name]: pdfSrc
+	[pdfSrc.name]: pdfSrc,
+	[weatherArea.name]: weatherArea
 }
