@@ -8,20 +8,14 @@
         </el-form-item>
         <el-form-item label="资源类型" prop="resourceTypeId">
           <el-select v-model="queryParams.resourceTypeId" placeholder="请选择资源类型" clearable>
-            <el-option v-for="(dict, index) in resourceTypes" :key="index" :label="dict.resourceTypeName"
-              :value="dict.resourceTypeId" />
+            <el-option
+                v-for="dict in dict.type.content_resource_type"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+            />
           </el-select>
         </el-form-item>
-        <!--<el-form-item label="文件类型" prop="fileType">
-        <el-select v-model="queryParams.fileType" placeholder="请选择文件类型" clearable>
-          <el-option
-            v-for="dict in dict.type.content_file_type"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>-->
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -50,9 +44,8 @@
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="资源主键" align="center" prop="resourceId" />
         <el-table-column label="资源名称" align="center" prop="resourceName" />
-        <el-table-column label="资源类型" align="center" prop="resourceTypeName" />
+        <el-table-column label="资源类型" align="center" prop="resourceTypeId"  :formatter="resourceTypeFormat"/>
         <el-table-column label="MD5值" align="center" prop="resourceMd5" />
-        <!--<el-table-column label="文件类型" align="center" width="100" prop="fileTypeName" />-->
         <el-table-column label="文件大小" align="center" width="100" prop="fileSize" :formatter="fileSizeFormat" />
         <el-table-column label="文件预览" align="center" prop="fileUrl">
           <template slot-scope="scope">
@@ -89,8 +82,7 @@
       <el-form ref="form">
         <el-form-item label="资源类型">
           <el-select v-model="resourceTypeId" placeholder="请选择资源类型" clearable>
-            <el-option v-for="(dict, index) in resourceTypes" :key="index" :label="dict.resourceTypeName"
-              :value="dict.resourceTypeId" />
+            <el-option    v-for="dict in dict.type.content_resource_type" :key="dict.value" :label="dict.label" :value="dict.value" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -119,8 +111,7 @@
 
         <el-form-item label="资源类型">
           <el-select v-model="form.resourceTypeId" placeholder="请选择资源类型" clearable>
-            <el-option v-for="(dict, index) in resourceTypes" :key="index" :label="dict.resourceTypeName"
-              :value="dict.resourceTypeId" />
+            <el-option    v-for="dict in dict.type.content_resource_type" :key="dict.value" :label="dict.label" :value="dict.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="MD5值" prop="resourceMd5">
@@ -129,21 +120,12 @@
         <el-form-item label="文件地址" prop="fileUrl">
           {{ form.fileUrl }}
         </el-form-item>
-        <el-form-item label="文件类型" prop="fileUrl">
+        <el-form-item label="文件类型" prop="fileTypeName">
           {{ form.fileTypeName }}
         </el-form-item>
-        <el-form-item label="文件大小" prop="fileUrl">
+        <el-form-item label="文件大小" prop="fileSizeStr">
           {{ form.fileSizeStr }}
         </el-form-item>
-        <!--<el-form-item label="删除状态">
-          <el-radio-group v-model="form.delStatus">
-            <el-radio
-              v-for="(dict,index) in dict.type.sys_del_status"
-              :key="dict.value"
-              :label="parseInt(dict.value)"
-            >{{dict.label}}</el-radio>
-          </el-radio-group>
-        </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -159,7 +141,7 @@ const baseURL = process.env.VUE_APP_BASE_API
 
 export default {
   name: "Resource",
-  dicts: ['sys_del_status', 'content_file_type'],
+  dicts: ['sys_del_status', 'content_resource_type'],
   data() {
     return {
       videoSrc: "",
@@ -211,7 +193,6 @@ export default {
   created() {
     this.queryParams.resourceTypeId = this.$route.query.id || null;
     this.getList();
-    this.getResourceTypeList();
   },
   methods: {
     openUrl(url, type) {
@@ -221,6 +202,9 @@ export default {
       } else {
         window.open(url, "_blank");
       }
+    },
+    resourceTypeFormat(row) {
+      return this.selectDictLabel(this.dict.type.content_resource_type, row.resourceTypeId);
     },
     fileSizeFormat(row) {
       return this.changeFileSize(row.fileSize)
@@ -302,12 +286,6 @@ export default {
         this.resourceList = response.rows;
         this.total = response.total;
         this.loading = false;
-      });
-    },
-    /** 查询资源类型列表 */
-    getResourceTypeList() {
-      this.$API.listResourcetype().then(response => {
-        this.resourceTypes = response.data;
       });
     },
     // 取消按钮

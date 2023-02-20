@@ -151,7 +151,7 @@ export default {
       let queryParams = {
         pageNum: 1,
         pageSize: 100,
-        resourceTypeId: '5D3E1E9ADB8042919A20364696E35AAB'
+        resourceTypeId: '5'
       }
       this.$API.listResource(queryParams).then(response => {
         if (response.rows.length) {

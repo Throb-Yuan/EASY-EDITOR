@@ -2,45 +2,7 @@
 	页面相关api
 **/
 import $axios from "@/service/httpServer";
-// 获取我的页面列表
-export const getMyPages = p => $axios.get('/quark/page/getMyPages', p);
-// 获取我的页面详情
-export const getPageDetail = p => $axios.get('/quark/page/detail', p);
-// 新增页面
-export const createPage = p => $axios.post('/quark/page/create', p);
-// 更新页面
-export const updatePage = p => $axios.post('/quark/page/update', p);
-// 删除页面
-export const deletePage = p => $axios.post('/quark/page/delete', p);
-// 复制页面
-export const copyPage = p => $axios.post('/quark/page/copy', p);
-// 设置为模板
-export const setTemplatePage = p => $axios.post('/quark/page/setTemplate', p);
-// 发布页面
-export const publishPage = p => $axios.post('/quark/page/setPublish', p);
 
-/**
- * ========================================================================
- * */
-// 获取我的模板
-export const getMyTemplates = p => $axios.get('/quark/page/getMyTemplates', p);
-
-
-/**
- * ========================================================================
- * */
-// 获取模板市场模板
-export const getPublishTemplates = p => $axios.get('/quark/page/getPublishTemplates', p);
-
-/**
- * ========================================================================
- * */
-// 获取协作人列表
-export const getCooperationUserListByPageId = p => $axios.get('/quark/page/getCooperationList', p)
-// 按userIds添加协作人
-export const addCooperation = p => $axios.post('/quark/page/addCooperation', p)
-// 删除协作人
-export const delCooperation = p => $axios.post('/quark/page/delCooperation', p)
 /**
  * =========== MY HuiJi Post =================================================
  *
@@ -241,3 +203,24 @@ export const delShutdownPlan = p => $axios.delete('/content/terminal/shutdown/pl
 
  // 根据字典类型查询字典数据信息
  export const getDicts = p => $axios.get('/system/dict/data/type/'+p, {})
+
+// 查询字幕信息列表
+export const listSubtitle = p => $axios.get('/content/subtitle/list', p)
+
+// 查询字幕信息详细
+export const getSubtitle = p => $axios.get('/content/subtitle/'+p, {})
+
+// 新增字幕信息
+export const addSubtitle = p => $axios.post('/content/subtitle', p)
+
+// 修改字幕信息
+export const updateSubtitle = p => $axios.put('/content/subtitle', p)
+
+// 删除字幕信息
+export const delSubtitle = p => $axios.delete('/content/subtitle/'+p, {})
+
+export const batchAddSubtitlTerminal = p => $axios.post('/content/subtitlTerminal/batch/add', p)
+// 字典查询
+export const dictList = p => $axios.get('/system/dict/data/list', p)
+
+export const listSubtitlTerminal = p => $axios.get('/content/subtitlTerminal/list', p)

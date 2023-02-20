@@ -54,6 +54,9 @@
 		</previewPage>
 		<!--我的图片-->
 		<imageLibs />
+		<!-- <div class="tip-modal">
+			<img class="left_tip" src="../../common/images/jiantousp.png" alt="">
+		</div> -->
 	</div>
 </template>
 
@@ -134,7 +137,7 @@ export default {
 				return this.$store.state.editor.activeSideBar
 			},
 			set(v) {
-				this.$store.commit('updateSideBar',v)
+				this.$store.commit('updateSideBar', v)
 			}
 		}
 	},
@@ -152,17 +155,52 @@ export default {
 		* @param objs.arr 数组
 			*/
 		changeRatioFn(objs) {
-			let checkData = objs.arr.find(v => v.value == objs.e)
+
+			let checkData = deepClone(objs.arr.find(v => v.value == objs.e))
 			// let case = objs.arr.find(v=> {return v.value==objs.e})
+
+			console.log("checkData1", checkData);
+
+			let rate = 1
+			if (objs.e == '自定义') {
+				if (checkData.toWidth * 1 >= checkData.toHeight * 1) {
+					// 宽>高,以宽比例缩小 800*800
+					console.log("checkData2", checkData)
+					if (checkData.toWidth >= 800) {
+						console.log("checkData3", checkData)
+						rate = checkData.toWidth / 800
+						checkData.toWidth = 800
+						checkData.toHeight = checkData.toHeight / rate<1 ? 1 : heckData.toHeight / rate
+					} else {
+						rate = 800 / checkData.toWidth
+						checkData.toWidth = 800
+						checkData.toHeight = checkData.toHeight * rate<1 ? 1 : heckData.toHeight * rate
+					}
+				} else {
+					// 宽<高,以高比例缩小 800*800
+					if (checkData.toHeight >= 800) {
+						rate = checkData.toHeight / 800
+						checkData.toHeight = 800
+						checkData.toWidth = checkData.toWidth / rate<1 ? 1 : heckData.toWidth / rate
+					} else {
+						rate = 800 / checkData.toHeight
+						checkData.toHeight = 800
+						checkData.toWidth = checkData.toWidth * rate<1 ? 1 : heckData.toWidth * rate
+					}
+				}
+				// return false
+			}
+
+			console.log("checkData4", checkData);
 			this.projectData.width = checkData.toWidth
 			this.projectData.height = checkData.toHeight
 			this.$config.canvasH5Width = checkData.toWidth
 			this.$config.canvasH5Height = checkData.toHeight
-
-			eleConfig[0].components[1].defaultStyle.width = checkData.toWidth
-			eleConfig[1].components[1].defaultStyle.width = checkData.toWidth
+			eleConfig[0].components[1].defaultStyle.width = checkData.toWidth/2
+			eleConfig[0].components[1].defaultStyle.height = checkData.toHeight/2
+			eleConfig[1].components[0].defaultStyle.width = checkData.toWidth
 			eleConfig[1].components[2].defaultStyle.width = checkData.toWidth
-			eleConfig[1].components[3].defaultStyle.width = checkData.toWidth
+			eleConfig[1].components[7].defaultStyle.width = checkData.toWidth
 			// eleConfig[0].components[1].defaultStyle.height = checkData.toHeight
 			// $configs.canvasH5Width = checkData.toWidth
 			// $configs.canvasH5Height = checkData.toHeight
@@ -192,13 +230,13 @@ export default {
 			}
 			let b = {} //节点信息带入
 			// 判断节点类型，添加至画布
-			if (nodeData.resourceTypeName === "图片") {
+			if (nodeData.resourceTypeId === "1") {
 				b.localPath = nodeData.filePath
 				b.imageSrc = nodeData.fileUrl
 				b.androidId = nodeData.resourceId
 				b.fileName = nodeData.resourceName
 				b.fileSize = this.$mUtils.transFileSize(nodeData.fileSize)
-			} else if (nodeData.resourceTypeName === "视频") {
+			} else if (nodeData.resourceTypeId === "2") {
 				b.localPath = nodeData.filePath
 				b.videoSrc = nodeData.fileUrl
 				b.androidId = nodeData.resourceId
@@ -208,7 +246,7 @@ export default {
 				b.videoMuted = false
 				b.fileName = nodeData.resourceName
 				b.fileSize = this.$mUtils.transFileSize(nodeData.fileSize)
-			} else if (nodeData.resourceTypeName === "音乐") {
+			} else if (nodeData.resourceTypeId === "3") {
 				b.localPath = nodeData.filePath
 				b.musicSrc = nodeData.fileUrl
 				b.androidId = nodeData.resourceId
@@ -346,23 +384,23 @@ export default {
 					}
 					if (cur.events.length) {
 						cur.events.map(eve => {
-							if (eve.type == "linkLoacl"){
+							if (eve.type == "linkLoacl") {
 								let urlSplit = eve.url.split('/')
-								urlSplit = urlSplit[urlSplit.length-1]
+								urlSplit = urlSplit[urlSplit.length - 1]
 								urlSplit = urlSplit.split('.')
 								postIds.push(urlSplit[0])
-							} 
-							if (eve.type == "openApp"){
+							}
+							if (eve.type == "openApp") {
 								eve.resourceId ? postIds.push(eve.resourceId) : ''
-								
-							} 
+
+							}
 						})
 					}
 				})
 			})
 			// if(theProjectData.pages[0].coverResourceId) postIds.push(theProjectData.pages[0].coverResourceId)
-			let audioEle =  document.getElementById('video-play-audio')
-			if(audioEle) audioEle.remove()
+			let audioEle = document.getElementById('video-play-audio')
+			if (audioEle) audioEle.remove()
 			console.log("theEndProjectData==", theProjectData, postIds);
 			if (!this.putProjects.programId) {
 				let a = {
@@ -371,13 +409,13 @@ export default {
 					resourceIdList: postIds,//节目资源主键集合
 					afterHtml: jsonAfter,//JSON数据
 					sceneId: theProjectData.sceneId, //节目ID
-					coverImgId:theProjectData.pages[0].coverResourceId||'',
-					locationIdList:losId
+					coverImgId: theProjectData.pages[0].coverResourceId || '',
+					locationIdList: losId
 				}
 				this.$API.addProgram(a).then(() => {
 					this.$message.success('保存成功!');
 					this.showPreview = false
-					this.$store.dispatch('setPrjectData',null)
+					this.$store.dispatch('setPrjectData', null)
 					this.$router.push({ name: 'pageList' })
 				})
 			} else {
@@ -387,7 +425,7 @@ export default {
 				b.resourceIdList = postIds
 				b.sceneId = theProjectData.sceneId
 				b.afterHtml = jsonAfter
-				b.coverImgId = theProjectData.pages[0].coverResourceId||''
+				b.coverImgId = theProjectData.pages[0].coverResourceId || ''
 				b.locationIdList = losId
 				this.$API.updateProgram(b).then(() => {
 					this.$message.success('保存成功!');
@@ -396,7 +434,7 @@ export default {
 					this.$router.push({ name: 'pageList' })
 				})
 			}
-			
+
 		},
 		async showPreviewFn() {
 			console.log("将提交数据===", this.projectData);
@@ -541,6 +579,22 @@ export default {
 			padding-left: 16px;
 			padding-right: 16px;
 		}
+	}
+}
+.tip-modal{
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.6);
+	z-index: 2000;
+	img{
+		width: 200px;
+		position: absolute;
+		left: 0;
+	}
+	.left_tip{
+		left: 28px;
+   		top: 66px;
 	}
 }
 </style>

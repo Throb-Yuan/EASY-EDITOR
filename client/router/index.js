@@ -59,6 +59,10 @@ export default new Router({
 					name: 'groupList',//节目排程
 					component: () => import('@/pages/home/group/index'),
 				},{
+					path: 'subtitle-list',
+					name: 'subtitleList',//节目排程
+					component: () => import('@/pages/home/subtitle-list'),
+				},{
 					path: 'group-detail',
 					name: 'groupDetail',//节目排程详情
 					component: () => import('@/pages/home/group/detail'),

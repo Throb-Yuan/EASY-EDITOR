@@ -1,7 +1,11 @@
 <!--test.vue-->
 <template>
   <div class="qk-image">
-    <img :src="notDevs ? localPath : imageSrc" style="object-fit:cover" alt="">
+    <img v-if="imageSrc!=''" :src="notDevs ? localPath : imageSrc" style="object-fit:cover" alt="">
+    <div v-else-if="!notDevs">
+      <img :src="defaultImg"  style="object-fit:cover" alt=""/>
+      <span>请在右侧组件属性区域上传图片</span>
+    </div>
   </div>
 </template>
 
@@ -9,34 +13,42 @@
 export default {
   name: 'QkImage', //未来的标签模板名<qk-text></qk-text>
   props: {
+    // imageSrc: {
+    //   type: String,
+    //   default: 'http://192.168.101.250:2501/file/download/I30B65E69B78D44CEB2D45AB9A78A49AF'
+    // },
     imageSrc: {
       type: String,
-      default: 'http://192.168.101.250:2501/file/download/I30B65E69B78D44CEB2D45AB9A78A49AF'
+      default: ''
     },
     androidId: {
       type: String,
-      default: 'I30B65E69B78D44CEB2D45AB9A78A49AF'
+      default: ''
     },
     localPath: {
       type: String,
-      default: '../../resource/86ad8aa90f71d54c1a9dbce8d941eae5.jpg'
+      default: ''
     },
     fileName: {
       type: String,
-      default: 'hbfj3.jpg'
+      default: ''
     },
     fileSize: {
       type: String,
-      default: '56.39KB'
+      default: ''
     }
   },
   data() {
     return {
-      notDevs: false
+      notDevs: false,
+      defaultImg:require('@client/common/images/defimgs.png'),
     }
   },
   created() {
     if(!window.location.href.includes('http')) this.notDevs = true
+    setTimeout(() => {
+      console.log("imageSrc",this.imageSrc,!this.imageSrc);
+    }, 1000);
   }
 }
 </script>
@@ -45,6 +57,24 @@ export default {
 .qk-image {
   width: 100%;
   height: 100%;
+  div{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: column;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #fff;
+    width: 100%;
+    height: 100%;
+    img{
+      width: 70%;
+      height: 70%;
+    }
+    span{
+      margin-top: 6px;
+    }
+  }
 }
 
 img {

@@ -3,13 +3,13 @@
     <p class="page-title text-center">媒体资源列表</p>
     <el-scrollbar class="scroll-wrapper page-list-wrapper" style="height: 1000px;padding-bottom: 120px;">
       <div class="block">
-        <el-tree ref="tree" :data="resourcetypeList" node-key="resourceTypeId" :label="'resourceTypeName'"
+        <el-tree ref="tree" :data="resourcetypeList" node-key="dictCode" :label="'dictLabel'"
           children="children" accordion :expand-on-click-node="true" @node-expand="openNodes">
           <div class="custom-tree-node" slot-scope="{ node, data }">
             <!-- 自定义节点信息start -->
-            <span v-if="node.childNodes.length || node.data.resourceTypeName == '加载中...'" draggable="true"
-              @dragstart="drag($event, node)">{{ node.data.resourceTypeName }}</span>
-            <el-tooltip v-else-if="node.data.resourceTypeName != '加载中...' && node.data.fileType == 'I'" draggable="true"
+            <span v-if="node.childNodes.length || node.data.dictLabel == '加载中...'" draggable="true"
+              @dragstart="drag($event, node)">{{ node.data.dictLabel }}</span>
+            <el-tooltip v-else-if="node.data.dictLabel != '加载中...' && node.data.fileType == 'I'" draggable="true"
               id="" class="item" effect="dark" :content="node.data.resourceName" placement="top-start">
               <img @dragstart="drag($event, node, data)"
                 style="width: 120px;height: 80px;object-fit:cover;padding-top: 5px;" v-lazy="node.data.fileUrl"
@@ -25,7 +25,7 @@
               <span v-else-if="node.data.resourceName" draggable="true" @dragstart="drag($event, node)">{{
                 node.data.resourceName
               }}</span>
-              <span v-else style="font-size: 14px;color: #888;">{{ node.data.resourceTypeName }}</span>
+              <span v-else style="font-size: 14px;color: #888;">{{ node.data.dictLabel }}</span>
             </div>
             <!-- 尾部状态 查看更多 -->
             <!-- <div v-if="total>node.childNodes&&"></div> -->
@@ -42,9 +42,9 @@
     <el-dialog :title="'添加资源'" :visible.sync="addOpen" width="450px" append-to-body>
       <el-form ref="form">
         <el-form-item label="资源类型">
-          <el-select v-model="resourceTypeId" placeholder="请选择资源类型" clearable>
-            <el-option v-for="(dict, index) in resourcetypeList" :key="index" :label="dict.resourceTypeName"
-              :value="dict.resourceTypeId" />
+          <el-select v-model="dictCode" placeholder="请选择资源类型" clearable>
+            <el-option v-for="(dict, index) in resourcetypeList" :key="index" :label="dict.dictLabel"
+              :value="dict.dictCode" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -62,13 +62,13 @@
 </template>
 <script>
 const baseURL = process.env.VUE_APP_BASE_API
-let idx = 0;
+let idx = 1;
 
 export default {
   data() {
     return {
       resourcetypeList: [],
-      resourceTypeId: '',
+      dictCode: '',
       uploadAction: baseURL + '/file/upload',
       fileList: [],
       resourceTypes: [],
@@ -87,18 +87,19 @@ export default {
     * @param self 节点组件本身
     */
     openNodes(me, child, self) {
-      if (me.children && me.children.length == 1 && me.children[0].resourceTypeName.includes('加载中')) {
+      if (me.children && me.children.length == 1 && me.children[0].dictLabel.includes('加载中')) {
         // 获取对应资源文件列表
-        this.$API.listResource({ resourceTypeId: me.children[0].parentId, pageNum: 1, pageSize: 200 }).then(response => {
+        this.$API.listResource({ resourceTypeId: me.children[0].dictValue, pageNum: 1, pageSize: 200 }).then(response => {
           if (response.rows.length) {
             response.rows.forEach(cur => {
-              cur.resourceTypeId = cur.resourceId
+              cur.dictCode = cur.resourceId
             })
+            // this.$refs["tree"].updateKeyChildren(me.dictCode, response.rows);
             this.$nextTick(() => {
-              this.$refs["tree"].updateKeyChildren(me.resourceTypeId, response.rows);
+              this.$refs["tree"].updateKeyChildren(me.dictCode, response.rows);
             })
           } else {
-            me.children[0].resourceTypeName = "暂无资源"
+            me.children[0].dictLabel = "暂无资源"
           }
 
         });
@@ -110,17 +111,21 @@ export default {
     * @function forEach 追加伪节点
     */
     getList() {
-      this.$API.listResourcetype({}).then(response => {
+      this.$API.dictList({
+        pageNum: 1,
+        pageSize: 10,
+        dictType: 'content_resource_type'
+      }).then(response => {
 
-        let resourcetypeList = this.handleTree(response.data, "resourceTypeId", "parentId");
+        let resourcetypeList = this.handleTree(response.rows, "dictCode", "dictValue");
         resourcetypeList.forEach(cur => {
           idx++
-          if (cur.children) {
-            cur.children.forEach(ele => {
-              if (!ele.children) ele.children = [{ resourceTypeId: ele.resourceTypeId + idx, resourceTypeName: "加载中2...", parentId: ele.resourceTypeId }]
-            })
-          }
-          if (!cur.children) cur.children = [{ resourceTypeId: cur.resourceTypeId + idx, resourceTypeName: "加载中...", parentId: cur.resourceTypeId }]
+          // if (cur.children) {
+          //   cur.children.forEach(ele => {
+          //     if (!ele.children) ele.children = [{ dictCode: ele.dictCode + idx, dictLabel: "加载中...", dictValue: ele.dictValue }]
+          //   })
+          // }
+          if (!cur.children) cur.children = [{ dictCode: cur.dictCode*idx , dictLabel: "加载中...", dictValue: cur.dictValue }]
         })
         this.resourcetypeList = resourcetypeList
       });
@@ -166,7 +171,7 @@ export default {
       let param = {
         resourceId: response.fileId,
         resourceName: response.fileName,
-        resourceTypeId: this.resourceTypeId,
+        dictCode: this.dictCode,
         resourceMd5: response.fileHash,
         fileSize: response.fileSize,
         fileType: response.fileId.substr(0, 1),

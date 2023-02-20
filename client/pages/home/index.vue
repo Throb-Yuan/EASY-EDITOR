@@ -30,17 +30,21 @@
           <img class="icon-imgs icon-imgimg" src="../../common/images/myicons/scene.png" alt="">
           <span slot="title">场景管理</span>
         </el-menu-item>
-        <el-menu-item index="/home/resourcetype-list">
+        <!-- <el-menu-item index="/home/resourcetype-list">
           <img class="icon-imgs" src="../../common/images/myicons/resourcetype.png" alt="">
           <span slot="title">资源类型</span>
-        </el-menu-item>
+        </el-menu-item> -->
         <el-menu-item index="/home/resource-list">
           <img class="icon-imgs icon-imgimg" src="../../common/images/myicons/sceneli.png" alt="">
           <span slot="title">资源列表</span>
-        </el-menu-item> 
+        </el-menu-item>
         <el-menu-item index="/home/group-list">
           <img class="icon-imgs icon-imgimg" src="../../common/images/myicons/schedul.png" alt="">
           <span slot="title">节目排程</span>
+        </el-menu-item>
+        <el-menu-item index="/home/subtitle-list">
+          <img class="icon-imgs icon-imgimg" src="../../common/images/myicons/program.png" alt="">
+          <span slot="title">紧急字幕</span>
         </el-menu-item>
         <el-menu-item index="/home/template-version-list">
           <img class="icon-imgs icon-imgimg" src="../../common/images/myicons/version.png" alt="">

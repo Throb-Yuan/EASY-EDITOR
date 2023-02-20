@@ -1,26 +1,24 @@
 <template>
 	<div @drop="drop($event)" @dragover="allowDrop($event)" @dragenter="dragenter($event)">
-		<div class="tip-drop">可将媒体资源拖拽至下方替换<span @click="changeSide"> 查看资源库</span></div>
-		<!-- <el-form-item label="资源地址：">
-			<el-input type="textarea" :rows="3" placeholder="请输入视频地址" v-model="tempValue">
-			</el-input>
-		</el-form-item>
-		<el-form-item label="本地路径：">
-			<el-input type="textarea" :rows="2" placeholder="请输入视频本地路径" v-model="tempLocalPath">
-			</el-input>
-		</el-form-item>
-		<el-form-item label="资源主键：">
-			<el-input type="text" placeholder="请输入资源主键" v-model="tempAndroidId">
-			</el-input>
-		</el-form-item> -->
-		<div :class="activeCss ? 'drag-info-box active-css':'drag-info-box'">
-			<img src="../../../../../../common/images/myicons/videosss.jpg" alt="">
-			<div class="media-indo">
-				<div class="media-name">{{ tempFileName }}</div>
-				<div class="media-size">{{ tempFileSize }}</div>
+		<div class="tip-drop">可将本地文件或媒体资源拖至下方替换<span @click="changeSide"> 查看资源库</span></div>
+		<el-upload ref="upload" drag style="height: 100px;" :action="uploadAction" accept="video/*" :auto-upload="true" :on-success="handleSuccess" :show-file-list="false" :multiple="false">
+			<div :class="activeCss ? 'drag-info-box active-css' : 'drag-info-box'">
+				<div class="inline-block cropper-res-img">
+					<div class="cropper-res-imgs">
+						<img v-if="tempValue" src="../../../../../../common/images/myicons/videosss.jpg" alt="">
+						<div v-else>
+							<i class="el-icon-plus" style="font-size: 20px;"></i>
+						</div>
+						<p v-show="!tempValue" class="cropper-res-img-title">上传视频</p>
+					</div>
+				</div>
+				<div class="media-indo">
+					<div class="media-name">{{ tempValue? tempFileName: '请点击或拖至此处上传' }}</div>
+					<div class="media-size">{{ tempValue? tempFileSize: '支持本地文件与已上传媒体资源' }}</div>
+				</div>
 			</div>
-		</div>
-		<div style="display: flex;align-items: center;justify-content: space-between;padding-right: 30px;flex-wrap: wrap; gap: 12px; ">
+		</el-upload>
+		<div style="display: flex;align-items: center;justify-content: space-between;padding-right: 30px;flex-wrap: wrap; gap: 12px; margin-top: 14px;">
 			<div><span class="switch-labels">播放控件</span><el-switch v-model="tempConytols">
 			</el-switch></div>
 			<div><span class="switch-labels">自动播放</span><el-switch v-model="tempAutoPlay">
@@ -34,6 +32,7 @@
 </template>
 
 <script>
+const baseURL = process.env.VUE_APP_BASE_API
 export default {
 	name: "attr-qk-videoSrc",
 	props: {
@@ -50,6 +49,7 @@ export default {
 	},
 	data() {
 		return {
+			uploadAction: baseURL + '/file/upload',
 			tempValue: '',
 			tempConytols: null,
 			tempAutoPlay: null,
@@ -74,6 +74,32 @@ export default {
 		this.tempFileSize = this.fileSize
 	},
 	methods: {
+		handleSuccess(res) {
+			let response = res.data
+			console.log("file1==", response);
+			let param = {
+				resourceId: response.fileId,
+				resourceName: response.fileName,
+				resourceTypeId: "2",
+				resourceMd5: response.fileHash,
+				fileSize: response.fileSize,
+				fileType: response.fileId.substr(0, 1),
+				fileUrl: baseURL + '/file/download/' + response.fileId
+			}
+
+			this.$API.addResource(param).then(() => {
+				console.log("file2==", response);
+				this.$modal.msgSuccess("上传成功");
+				this.open = false;
+				this.tempValue = baseURL + '/file/download/' + response.fileId
+				this.tempAndroidId = response.fileId
+				this.tempFileName = response.fileName
+				this.tempFileSize = this.$mUtils.transFileSize(response.fileSize)
+				let arrs = response.fileName.split('.')
+				this.tempLocalPath = '../../resource/' + response.fileHash+'.'+arrs[arrs.length-1]
+			});
+			this.loading = false;
+		},
 		/**
 		* 资源列表拖拽联动，将对应图片数据覆盖至拖拽的节点数据
 		* @param ev 承载node节点数据
@@ -169,6 +195,9 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style>
+.el-upload-dragger {
+	width: auto !important;
+	height: auto !important;
+}
 </style>

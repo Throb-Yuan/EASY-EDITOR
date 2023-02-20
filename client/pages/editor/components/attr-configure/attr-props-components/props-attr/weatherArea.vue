@@ -15,6 +15,9 @@
 				</el-option>
 			</el-select>
 		</el-form-item>
+		<!-- <el-form-item label="展示大小：">
+			<el-input-number size="mini" v-model="tempScale" :step="0.1" :precision="1" :max="5" :min="0.2" controls-position="right"   />
+		</el-form-item> -->
 		<div style="color:#fcbd71;font-size:14px">*天气数据仅为预览，实际以终端为准</div>
 	</div>
 
@@ -26,7 +29,8 @@ export default {
 	name: "attr-qk-weatherArea",
 	props: {
 		weatherArea: Object,
-		weatherType: String
+		weatherType: String,
+		weatherScale:Number,
 	},
 	data() {
 		return {
@@ -37,6 +41,7 @@ export default {
 			tempType: '',
 			areaData,
 			casData: "",
+			tempScale:0,
 			weatherTypeArr: [{
 				value: 'easy',
 				label: '简单'
@@ -51,6 +56,7 @@ export default {
 	mounted() {
 		this.tempArea = this.weatherArea;
 		this.tempType = this.weatherType;
+		this.tempScale = this.weatherScale;
 	},
 	methods: {
 		checkCity(e) {
@@ -74,6 +80,12 @@ export default {
 		},
 		tempType() {
 			this.$emit('update:weatherType', this.tempType)
+		},
+		weatherScale() {
+			this.tempScale = this.weatherScale;
+		},
+		tempScale() {
+			this.$emit('update:weatherScale', this.tempScale)
 		}
 	}
 }

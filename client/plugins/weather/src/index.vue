@@ -1,7 +1,7 @@
 <!--test.vue-->
 <template>
 	<div class="qk-weather" v-show="requestOk">
-		<div class="easy-weather flexs" v-if="weatherType == 'easy'">
+		<div class="easy-weather flexs" :style="{transform:'scale('+ weatherScale+')'}" v-if="weatherType == 'easy'">
 			<div class="left_du flexs">
 				<div class="bignow">{{ weatherData.tempMin }}~{{ weatherData.tempMax }}℃</div>
 				<div class="maxminarea flexs">
@@ -41,6 +41,10 @@ export default {
 		weatherType: {
 			type: String,
 			default: 'easy'
+		},
+		weatherScale: {
+			type: Number,
+			default:1
 		}
 	},
 	data() {

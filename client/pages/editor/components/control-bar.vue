@@ -11,7 +11,8 @@
       <el-dropdown split-button size="small" type="" @command="changeSize">
         {{ ratioValue }}
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item v-for="(item, index) in screenRatio" :key="index" :command="item.value">{{ item.label
+          <el-dropdown-item v-for="(item, index) in screenRatio" :key="index" :command="item.value">{{
+            item.label
           }}</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -60,6 +61,16 @@
       <i class="iconfont icontuichu"></i>
       <p>退出</p>
     </div>
+    <el-dialog title="请输入分辨率" :visible.sync="dialogRate" width="30%">
+      <div style="display: flex;align-items:center;justify-content: center;">
+           <span>宽：</span> <el-input placeholder="输入宽度" v-model="screenRatio[3].toWidth" style="width: 20%;"></el-input>
+           <span style="width: 30px;"></span>
+          <span> 高：</span> <el-input placeholder="输入宽度" v-model="screenRatio[3].toHeight" style="width: 20%;"></el-input>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="confirms">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -86,25 +97,26 @@ export default {
       screenRatio: [{
         value: '16:9',
         label: '16:9',
-        toWidth:800,
-        toHeight:450
+        toWidth: 800,
+        toHeight: 450
       }, {
         value: '16:10',
         label: '16:10',
-        toWidth:800,
-        toHeight:500
+        toWidth: 800,
+        toHeight: 500
       }, {
         value: '9:16',
         label: '9:16',
-        toWidth:450,
-        toHeight:800
+        toWidth: 450,
+        toHeight: 800
       }, {
-        value: '手机端',
-        label: '手机端',
-        toWidth:375,
-        toHeight:664
+        value: '自定义',
+        label: '自定义',
+        toWidth: 1920,
+        toHeight: 1080
       }],
-      ratioValue: '16:9'
+      ratioValue: '16:9',
+      dialogRate: false
     }
   },
   computed: {
@@ -126,13 +138,37 @@ export default {
      * @param e 画布比例
      */
     changeSize(e) {
+      console.log("changeSize", e);
+      if (e == "自定义") {
+        this.ratioValue = e
+        this.dialogRate = true
+      } else {
         this.ratioValue = e
         let objTwow = {
           e,
-          arr:this.screenRatio
+          arr: this.screenRatio
+        }
+        console.log("this.objTwow",objTwow);
+        this.$emit('changeRatio', objTwow)
+      }
+
+    },
+        /**
+     * 自定义画板大小
+     */
+    confirms(){
+      console.log("this.screenRatio",this.screenRatio);
+      // if (this.screenRatio[3].toWidth/this.screenRatio[3].toHeight>4||this.screenRatio[3].toHeight/this.screenRatio[3].toWidth>4) {
+      //   this.$message.warning('比例不协调，最大比例为1:4')
+      //   return false;
+      // }
+      let objTwow = {
+          e:'自定义',
+          arr: this.screenRatio
         }
         this.$emit('changeRatio', objTwow)
-      },
+        this.dialogRate = false
+    },
     /**
      * 更新画板大小
      */
@@ -261,5 +297,11 @@ export default {
   &:hover {
     background: #dfdfdf;
   }
+}
+
+</style>
+<style>
+.v-modal{
+  z-index: 12 !important;
 }
 </style>

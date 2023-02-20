@@ -1,17 +1,30 @@
 <template>
 	<div @drop="drop($event)" @dragover="allowDrop($event)" @dragenter="dragenter($event)">
-		<div class="tip-drop">可将对应媒体资源拖拽至下方替换<span @click="changeSide"> 查看资源库</span></div>
-		<div :class="activeCss ? 'drag-info-box active-css':'drag-info-box'">
-			<img :src="tempValue" alt="">
-			<div class="media-indo">
-				<div class="media-name">{{ tempFileName }}</div>
-				<div class="media-size">{{ tempFileSize }}</div>
+		<div class="tip-drop">可将本地文件或媒体资源拖至下方替换<span @click="changeSide"> 查看资源库</span></div>
+		<el-upload ref="upload" drag style="height: 100px;" :action="uploadAction" accept="image/*" :auto-upload="false"
+			:on-change="beforePressUpload" :on-success="handleSuccess" :show-file-list="false" :multiple="false">
+			<div :class="activeCss ? 'drag-info-box active-css' : 'drag-info-box'">
+				<div class="inline-block cropper-res-img">
+					<div class="cropper-res-imgs">
+						<img v-if="tempValue" :src="tempValue" alt="">
+						<div v-else>
+							<i class="el-icon-plus" style="font-size: 20px;"></i>
+						</div>
+						<p v-show="!tempValue" class="cropper-res-img-title">上传图片</p>
+					</div>
+				</div>
+				<div class="media-indo">
+					<div class="media-name">{{ tempValue? tempFileName: '请点击或拖至此处上传' }}</div>
+					<div class="media-size">{{ tempValue? tempFileSize: '支持本地文件与已上传媒体资源' }}</div>
+				</div>
 			</div>
-		</div>
+		</el-upload>
 	</div>
 </template>
 
 <script>
+import * as imageConversion from 'image-conversion'
+const baseURL = process.env.VUE_APP_BASE_API
 export default {
 	name: "attr-qk-imageSrc",
 	props: {
@@ -23,12 +36,14 @@ export default {
 	},
 	data() {
 		return {
+			defaultCoverImage: require('@client/common/images/defimgs.png'),
+			uploadAction: baseURL + '/file/upload',
 			tempValue: '',
 			tempAndroidId: '',
 			tempLocalPath: "",
-			tempFileSize:"",
-			tempFileName:"",
-			activeCss:false
+			tempFileSize: "",
+			tempFileName: "",
+			activeCss: false
 		}
 	},
 	mounted() {
@@ -39,6 +54,9 @@ export default {
 		this.tempFileSize = this.fileSize
 	},
 	methods: {
+		logs(e) {
+			console.log("这是", e);
+		},
 		/**
 		* 资源列表拖拽联动，将对应图片数据覆盖至拖拽的节点数据
 		* @param ev 承载node节点数据
@@ -50,9 +68,10 @@ export default {
 		drop(ev) {
 			// nodeData：获取拖拽节点数据信息
 			let nodeStr = ev.dataTransfer.getData("node")
+			if (!nodeStr) return false
 			let nodeData = JSON.parse(nodeStr)
 			// 为图片则更改当前轮播项数据
-			!this.activeCss ?'' : this.activeCss = false
+			!this.activeCss ? '' : this.activeCss = false
 			if (nodeData.fileType != "I") {
 				this.$message.warning('请选择图片类型拖入覆盖');
 				return false
@@ -64,13 +83,60 @@ export default {
 			this.tempFileName = nodeData.resourceName
 			ev.preventDefault();
 		},
-		dragenter(){
+		dragenter() {
 			this.activeCss ? '' : this.activeCss = true
 		},
-		changeSide(){
+		changeSide() {
 			let nowSide = this.$store.state.editor.activeSideBar
-			if(nowSide!="resourceLibs") this.$store.commit('updateSideBar',"resourceLibs")
-		}
+			if (nowSide != "resourceLibs") this.$store.commit('updateSideBar', "resourceLibs")
+		},
+		beforePressUpload(files) {
+			console.log("file==", files);
+			let file = files.raw
+			return new Promise(resolve => {
+				this.loading = true;
+				let isLt2M = file.size / 1024 / 1024 < 1 // 判定图片大小是否小于1MB
+				const isJPG = file.type.includes('image')
+				const isGif = file.type.includes('gif')
+				if (isLt2M || !isJPG || isGif) {
+					this.$refs.upload.submit(file)
+					resolve(file)
+				} else {
+					// 可自定义kb
+					let toSize = Math.round(file.size / 1024 / 6);
+					imageConversion.compressAccurately(file, toSize).then(res => { // console.log(res)
+						this.$refs.upload.submit(res)
+						resolve(res)
+					})
+				}
+			})
+		},
+		handleSuccess(res) {
+			let response = res.data
+			console.log("file1==", response);
+			let param = {
+				resourceId: response.fileId,
+				resourceName: response.fileName,
+				resourceTypeId: "1",
+				resourceMd5: response.fileHash,
+				fileSize: response.fileSize,
+				fileType: response.fileId.substr(0, 1),
+				fileUrl: baseURL + '/file/download/' + response.fileId
+			}
+
+			this.$API.addResource(param).then(() => {
+				console.log("file2==", response);
+				this.$modal.msgSuccess("上传成功");
+				this.open = false;
+				this.tempValue = baseURL + '/file/download/' + response.fileId
+				this.tempAndroidId = response.fileId
+				this.tempFileName = response.fileName
+				this.tempFileSize = this.$mUtils.transFileSize(response.fileSize)
+				let arrs = response.fileName.split('.')
+				this.tempLocalPath = '../../resource/' + response.fileHash+'.'+arrs[arrs.length-1]
+			});
+			this.loading = false;
+		},
 	},
 	watch: {
 		/**
@@ -112,7 +178,12 @@ export default {
 	}
 }
 </script>
-
-<style scoped>
+<style>
+.el-upload-dragger {
+	width: auto !important;
+	height: auto !important;
+}
+</style>
+<style lang="scss" scoped>
 
 </style>

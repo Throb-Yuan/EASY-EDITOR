@@ -1,9 +1,11 @@
 <template>
   <div class="engine-template-wrapper hidden">
     <!--swiper-->
-    <div class="swiper-container">
-      <div class="swiper-wrapper">
-        <div class="swiper-slide flat relative hidden" v-for="(page, i) in pageData.pages" :key="i"
+    <!-- <div class="swiper-container">
+      <div class="swiper-wrapper"> -->
+        <!-- <div class="swiper-slide flat relative hidden" v-for="(page, i) in pageData.pages" :key="i"
+             :style="getCommonStyle(page.commonStyle)"> -->
+			 <div class="swiper-slide flat relative" v-for="(page, i) in pageData.pages" :key="i"
              :style="getCommonStyle(page.commonStyle)">
           <!--页面内容区域-->
           <div class="quark-page-wrapper"
@@ -17,9 +19,9 @@
                     :style="getCommonStyle(item.commonStyle, scalingRatio)">
             </componentsTemplate>
           </div>
-        </div>
-      </div>
-      <div class="swiper-pagination"></div><!--分页器。如果放置在swiper-container外面，需要自定义样式。-->
+        <!-- </div>
+      </div> -->
+      <!-- <div class="swiper-pagination"></div>分页器。如果放置在swiper-container外面，需要自定义样式。 -->
     </div>
   </div>
 </template>
@@ -46,16 +48,26 @@
 		},
 		created() {
 			let pageData = window._pageData;
-			this.scalingRatio = document.body.clientWidth / $config.canvasH5Width;
+			// this.scalingRatio = document.body.clientWidth / $config.canvasH5Width;
+			this.scalingRatio = document.body.clientWidth / pageData.width;
 			this.pageTop = (document.documentElement.clientHeight - pageData.height * this.scalingRatio) / 2
 			this.pageTop = Math.max(this.pageTop, 0);
-
-			// 将组件加个状态标识
+			setTimeout(() => {
+				console.log( " document.body.clientWidth===",document.body.clientWidth);
+				console.log( " document.body.clientHeight===",document.body.clientHeight);
+				console.log( " $config.canvasH5Width",$config.canvasH5Width);
+				console.log( " window.screen.availWidth===",window.screen.availWidth);
+				console.log( " window.screen.availHeight===",window.screen.availHeight);
+				console.log( " window.screen===",window.screen);
+				console.log( " document.body===",  document.body);
+				console.log( " $config===", $config);
+			}, 5000);
+			// 将组件加个状态标识 
 			pageData.pages.forEach((page, index) => {
 				page.elements.forEach(e => {
 					e._loaded = (index === 0);
         })
-      })
+      })	
       this.pageData = pageData;
 		},
 		mounted() {

@@ -2,12 +2,14 @@
 <template>
   <div class="qk-video">
 
-    <video id="video" width="100%" height="100%"  style="object-fit:cover" :src="notDevs ? localPath : videoSrc" 
-      :controls="videoControls" :autoplay="true" :muted="videoMuted" :loop="videoLoop">
+    <video v-if="videoSrc!=''"  id="video" width="100%" height="100%"  style="object-fit:cover;background-color: black;" :src="notDevs ? localPath : videoSrc" 
+      :controls="videoControls" :autoplay="videoAutoPlay" :muted="videoMuted" :loop="videoLoop">
       <p>当前浏览器不支持播放该视频</p>
-      <!-- <source   /> -->
-      <!-- <source :src="videoSrc" @canplay="isReady()" /> :autoplay="videoAutoPlay"在此处使用将造成视图不更新问题，将需要大量代码支撑 x5解决层级最高问题，但仅限x5内核-->
     </video>
+    <div class="def-medails" v-else-if="!notDevs">
+      <img :src="defaultImg"  style="object-fit:cover" alt=""/>
+      <span>请在右侧组件属性区域上传视频</span>
+    </div>
   </div>
 </template>
 
@@ -17,8 +19,7 @@ export default {
   props: {
     videoSrc: {
       type: String,
-      default: 'http://192.168.101.250:2501/file/download/V1C2864384FA34B2A95B812E0ADB5724A'
-      // default:'https://www.runoob.com/try/demo_source/movie.mp4'
+      default: ''
     },
     videoControls: {
       type: Boolean,
@@ -30,11 +31,11 @@ export default {
     },
     androidId: {
       type: String,
-      default: 'V1C2864384FA34B2A95B812E0ADB5724A'
+      default: ''
     },
     localPath: {
       type: String,
-      default: '../../resource/62783f8c09823931c3068d84c8668724.mp4'
+      default: ''
     },
     videoLoop: {
       type: Boolean,
@@ -46,16 +47,17 @@ export default {
     },
 		fileName: {
 			type: String,
-			default: '智慧海洋.mp4'
+			default: ''
 		},
 		fileSize: {
 			type: String,
-			default: '56.76MB'
+			default: ''
 		}
   },
   data() {
     return {
-      notDevs: false
+      notDevs: false,
+      defaultImg:require('@client/common/images/defvio.png'),
     }
   },
   created() {
@@ -74,6 +76,5 @@ export default {
 .qk-video {
   width: 100%;
   height: 100%;
-  background-color: black;
 }
 </style>

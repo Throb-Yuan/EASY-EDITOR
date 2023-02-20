@@ -13,7 +13,7 @@
           <!-- <div class="my-page-nav-item" @click="doSearch('cooperation')" :class="{active: searchParams.type === 'cooperation'}">
             参与作品({{shareCount}})
           </div> -->
-          <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch"
+          <el-form :model="queryParams" ref="queryParams" size="small" :inline="true" v-show="showSearch"
             label-width="68px">
             <el-form-item label="节目名称" prop="programName">
               <el-input v-model="queryParams.programName" placeholder="请输入节目名称" clearable
@@ -38,7 +38,7 @@
               <thumbnailPanel :pageType="searchParams.pageMode" />
             </div>
             <div class="page-item" v-for="(item, index) in pageList" :key="index">
-              <thumbnailPanel @refresh="getList" @showPreview="showPreviewFn" @terminalFun="terminalFun"
+              <thumbnailPanel @refresh="getList(1)" @showPreview="showPreviewFn" @terminalFun="terminalFun"
                 :pageData="item" :btnList="operationBtn(item.isPublish)" />
             </div>
           </div>
@@ -171,7 +171,7 @@ export default {
       let contentHeight = this.$refs.yrjccc.offsetHeight
       //.clientHeight - 滚动条外容器的高度
       //.scrollHeight - 滚动条高度
-      console.log("滚动监听==", high + window.innerHeight - 200, contentHeight);
+      // console.log("滚动监听==", high + window.innerHeight - 200, contentHeight);
       if (high + window.innerHeight - 200 > contentHeight && !this.loadingHui && this.myCount > this.pageList.length) {
         //自行定义
         this.queryParams.pageNum++
@@ -189,7 +189,8 @@ export default {
       });
     },
     /** 查询节目管理列表 */
-    getList() {
+    getList(ev) {
+      if(ev) this.queryParams.pageNum = 1
       this.loadingHui = true;
       this.$API.listProgram(this.queryParams).then(response => {
         // this.programList = response.rows;
@@ -244,7 +245,9 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm("queryForm");
+      this.resetForm("queryParams");
+      this.queryParams.sceneId = null
+      console.log(this.queryParams);
       this.handleQuery();
     },
     // 多选框选中数据
@@ -261,7 +264,7 @@ export default {
     },
     /**下发到终端操作 */
     handlePull(row) {
-      console.log("下发数据==", row);
+      // console.log("下发数据==", row);
       this.openPull = true
       this.programId = row.programId
       this.programName = row.programName
@@ -284,7 +287,6 @@ export default {
       this.$modal.msgSuccess("正在生成节目，请勿关闭页面");
       this.$API.programDownload(row.programId).then(
         response => {
-          console.log(response)
           // if (!response.data.size) {
           //   this.$message({
           //     message: "没有可下载文件",

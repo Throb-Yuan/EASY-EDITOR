@@ -1,5 +1,5 @@
 <template>
-	<div @drop="drop($event)" @dragover="allowDrop($event)" @dragenter="dragenter($event)">
+	<!-- <div @drop="drop($event)" @dragover="allowDrop($event)" @dragenter="dragenter($event)">
 		<div class="tip-drop">可将对应媒体资源拖拽至下方替换<span @click="changeSide"> 查看资源库</span></div>
 		<div :class="activeCss ? 'drag-info-box active-css':'drag-info-box'">
 			<img src="../../../../../../common/images/myicons/pdf.png" alt="">
@@ -9,6 +9,35 @@
 			</div>
 		</div>
 		<div style="display: flex;align-items: center;justify-content: space-between;padding-right: 30px;">
+			<div><span class="switch-labels">自动翻页</span><el-switch v-model="tempAutoPlay"></el-switch>	</div>
+			<div v-show="tempAutoPlay" style="font-size: 14px;">间隔：<el-input-number style="width:100px" size="mini" v-model="tempSpeed" controls-position="right" /></div>
+		</div>
+		<div style="display: flex;align-items: center;justify-content: space-between;padding-top: 8px;">
+			<div><span class="switch-labels">显示页码</span><el-switch v-model="tempShowPageNum"></el-switch></div>
+		</div>
+	</div> -->
+
+	<div @drop="drop($event)" @dragover="allowDrop($event)" @dragenter="dragenter($event)">
+		<div class="tip-drop">可将本地文件或媒体资源拖至下方替换<span @click="changeSide"> 查看资源库</span></div>
+		<el-upload ref="upload" drag style="height: 100px;" :action="uploadAction" accept="audio/*" :auto-upload="true"
+		 :on-success="handleSuccess" :show-file-list="false" :multiple="false">
+			<div :class="activeCss ? 'drag-info-box active-css' : 'drag-info-box'">
+				<div class="inline-block cropper-res-img">
+					<div class="cropper-res-imgs">
+						<img v-if="tempValue" src="../../../../../../common/images/myicons/pdf.png" alt="">
+						<div v-else>
+							<i class="el-icon-plus" style="font-size: 20px;"></i>
+						</div>
+						<p v-show="!tempValue" class="cropper-res-img-title">上传pdf</p>
+					</div>
+				</div>
+				<div class="media-indo">
+					<div class="media-name">{{ tempValue? tempFileName: '请点击或拖至此处上传' }}</div>
+					<div class="media-size">{{ tempValue? tempFileSize: '支持本地文件与已上传媒体资源' }}</div>
+				</div>
+			</div>
+		</el-upload>
+		<div style="display: flex;align-items: center;justify-content: space-between;padding-right: 30px;margin-top: 14px;">
 			<div><span class="switch-labels">自动翻页</span><el-switch v-model="tempAutoPlay"></el-switch>	</div>
 			<div v-show="tempAutoPlay" style="font-size: 14px;">间隔：<el-input-number style="width:100px" size="mini" v-model="tempSpeed" controls-position="right" /></div>
 		</div>

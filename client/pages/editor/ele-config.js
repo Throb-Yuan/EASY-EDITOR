@@ -20,10 +20,10 @@ export default [
 				icon: 'iconfont icontupian',
 				valueType: '', // 标识数据类型，用于表单组件,
 				defaultStyle: {
-					width: $config.canvasH5Width,
-					height: $config.canvasH5Height,
-					top: 0,
-					left: 0,
+					width: $config.canvasH5Width/2,
+					height: $config.canvasH5Height/2,
+					top: 80,
+					left: 180,
 					borderRadius: 6
 				}
 			},
@@ -141,12 +141,12 @@ export default [
 				icon: 'iconfont iconshipin',
 				valueType: '',
 				defaultStyle: {
-					width: $config.canvasH5Width,
-					height: $config.canvasH5Height,
+					width: $config.canvasH5Width/2,
+					height: $config.canvasH5Height/2,
 					paddingTop: 0,
 					paddingBottom: 0,
-					top: 0,
-					left: 0
+					top: 40,
+					left: 40
 				}
 			}, {
 				elName: 'qk-bg-music',
@@ -164,10 +164,10 @@ export default [
 				icon: 'iconfont iconshouyelunbotu',
 				valueType: '', // 标识数据类型，用于表单组件,
 				defaultStyle: {
-					width: $config.canvasH5Width,
-					height: $config.canvasH5Height,
-					top: 0,
-					left: 0
+					width: $config.canvasH5Width/2,
+					height: $config.canvasH5Height/2,
+					top: 20,
+					left: $config.canvasH5Width/2
 				}
 			},{
 				elName: 'qk-pdf-view',

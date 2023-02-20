@@ -21,21 +21,30 @@
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-table :data="props.row.terminalList"  style="width: 100%">
-              <el-table-column prop="terminalId" label="终端ID" width="200"> </el-table-column>
-              <el-table-column prop="terminalName" label="终端名称"></el-table-column>>
-              <el-table-column prop="terminalVersion" label="终端版本号"></el-table-column>>
-              <el-table-column prop="memory" label="终端内存"> </el-table-column>
-              <el-table-column prop="ip" label="IP"> </el-table-column>
-              <el-table-column prop="mac" label="MAC"> </el-table-column>
-              <el-table-column prop="os" label="系统"> </el-table-column>
-              <el-table-column prop="osVersion" label="系统版本"> </el-table-column>
-              <el-table-column prop="modifyTime" label="最后上报时间"> </el-table-column>
+              <el-table-column prop="terminalId" label="终端ID" width="300" align="center"/>
+              <el-table-column prop="terminalName" label="终端名称" align="center"/>
+              <!--<el-table-column prop="terminalVersion" label="终端版本号" align="center"></el-table-column>-->
+             <el-table-column prop="memory" label="存储空间" align="center"/>
+             <el-table-column prop="ip" label="IP" align="center"/>
+            <!-- <el-table-column prop="mac" label="MAC" align="center"> </el-table-column>
+             <el-table-column prop="os" label="系统" align="center"> </el-table-column>-->
+              <el-table-column prop="osVersion" label="系统版本" align="center"/>
+              <el-table-column prop="modifyTime" width="150" label="最后上报时间" align="center"/>
               <el-table-column align="center" width="200" label="操作">
                 <template slot-scope="scope">
-                  <el-button class="app-btn-size" type="text"  @click="controlTerminal(scope.row)">控制 </el-button>
-                  <el-button class="app-btn-size" type="text"  @click="controlTerminalList(scope.row)">记录查询</el-button>
-                  <el-button class="app-btn-size" type="text"  @click="addTerminal(scope.row)">编辑 </el-button>
-                  <el-button class="app-btn-size" type="text"  @click="deleteTerminal(scope.row)">删除 </el-button>
+                  <el-button size="mini"  type="text" icon="el-icon-s-operation"  @click="controlTerminalList(scope.row)">记录查询</el-button>
+                  <el-button size="mini"  type="text" icon="el-icon-c-scale-to-original"  @click="openShutdownPlanDialog(scope.row)">开关机</el-button>
+                  <el-dropdown size="mini" @command="(command) => handleCommand(command, scope.row)" >
+                <span class="el-dropdown-link" style="color: #1ab194">
+                  <i class="el-icon-d-arrow-right el-icon--right"></i>更多
+                </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item  command="controlTerminal" icon="el-icon-s-tools">控制 </el-dropdown-item>
+                      <el-dropdown-item  command="addTerminal" icon="el-icon-edit">编辑</el-dropdown-item>
+                      <el-dropdown-item  command="deleteTerminal" icon="el-icon-delete">删除 </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+
                 </template>
               </el-table-column>
             </el-table>
@@ -50,7 +59,7 @@
                   <i v-show="scope.row.terminalGroupId" class="el-icon-edit" style="color:#AEAEAE;font-size: 18px" @click="getTerminalDialog(scope.row)"></i>
                   <i v-show="scope.row.terminalGroupId" class="el-icon-delete" style="color:#AEAEAE;font-size: 18px" @click="deleteTerminalItem(scope.row)"></i>
                 </div>
-                <div v-show="scope.row.terminalGroupId">展示应用: {{ scope.row.appName }}</div>
+                <!--<div v-show="scope.row.terminalGroupId">展示应用: {{ scope.row.appName }}</div>-->
                 <div v-show="scope.row.terminalGroupId">创建时间: {{ scope.row.createTime }}</div>
               </div>
               <el-button size="mini" type="primary" v-show="scope.row.terminalGroupId"  icon="el-icon-plus" @click="addTerminal(scope.row)">新增终端 </el-button>
@@ -67,11 +76,11 @@
           <el-form-item label="终端组名称" prop="terminalGroupName">
             <el-input v-model.trim="terminalGroupForm.terminalGroupName" show-word-limit maxlength="15" placeholder="15个字以内"></el-input>
           </el-form-item>
-          <el-form-item label="所展示应用" prop="terminalGroup">
+          <!--<el-form-item label="所展示应用" prop="terminalGroup">
             <el-select class="custom-select-wrap" multiple collapse-tags v-model="terminalGroupForm.appIds">
               <el-option v-for="(item, index) in appList" :key="index" :label="item.appName" :value="item.appId"> </el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item>-->
           <el-form-item label="备注" prop="remark">
             <el-input
               type="textarea"
@@ -94,13 +103,19 @@
       <div class="content">
         <el-form :model="terminalForm" :rules="rulesTerminal" ref="terminalForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="终端ID" prop="terminalId">
-            <el-input v-model.trim="terminalForm.terminalId" show-word-limit maxlength="40" placeholder="40个字以内"></el-input>
+            <el-input v-model.trim="terminalForm.terminalId" show-word-limit maxlength="40" placeholder="40个字以内" :disabled="isDisabled"></el-input>
           </el-form-item>
           <el-form-item label="终端名称" prop="terminalName">
             <el-input v-model.trim="terminalForm.terminalName" show-word-limit maxlength="15" placeholder="15个字以内"></el-input>
           </el-form-item>
+          <el-form-item label="终端密码" prop="pwd">
+            <el-input v-model.trim="terminalForm.pwd"  type="password" maxlength="16" placeholder="最少输入6位数字/字母/特殊字符" />
+          </el-form-item>
+          <el-form-item label="确认密码" prop="confirmPwd">
+            <el-input v-model.trim="terminalForm.confirmPwd" type="password" maxlength="16"  placeholder="最少输入6位数字/字母/特殊字符" />
+          </el-form-item>
           <el-form-item label="所属终端组" prop="terminalGroup">
-            <el-select class="custom-select-wrap" collapse-tags v-model="terminalForm.terminalGroupId">
+            <el-select class="custom-select-wrap" collapse-tags v-model="terminalForm.terminalGroupId" clearable placeholder="请选择所属终端组">
               <el-option v-for="(item, index) in terminalGroupList" :key="index" :label="item.terminalGroupName" :value="item.terminalGroupId"> </el-option>
             </el-select>
           </el-form-item>
@@ -171,12 +186,12 @@
         <el-tab-pane label="节目推送记录" name="second">
           <el-table v-loading="loading" :data="programTerminalList">
             <el-table-column label="节目名称" align="center" prop="programName" />
-            <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat"/>
             <el-table-column label="操作类型" align="center" prop="businessType" :formatter="businessTypeFormat"/>
             <el-table-column label="推送时间"  width='150px' align="center" prop="createTime" :formatter="createTimeFormat"/>
             <el-table-column label="日程日期" width='180px' align="center" prop="beginDate" :formatter="beginDateFormat"/>
             <el-table-column label="日程时间" width='160px' align="center" prop="beginTime" :formatter="beginTimeFormat"/>
-            <el-table-column label="日程星期" align="center" prop="week" />
+            <el-table-column label="日程星期" align="center" prop="week" :formatter="weekFormat"/>
+            <el-table-column label="同步状态" align="center" prop="status" :formatter="statusFormat"/>
           </el-table>
           <pagination
             v-show="ptTotal>0"
@@ -187,30 +202,61 @@
           />
         </el-tab-pane>
 
-        <el-tab-pane label="开关机时间" name="third">
-            <el-button type="primary" Icon="el-icon-plus"  size="small"  @click="getShutdownPlanAddDialog(undefined)" style="margin-bottom: 10px">新增开关机时间</el-button>
-          <el-table v-loading="loading" :data="shutdownPlanList">
-            <el-table-column label="开机时间" align="center" prop="bootTime" />
-            <el-table-column label="关机时间" align="center" prop="shutdownTime" />
-            <el-table-column label="星期" align="center" width="400px" prop="week" :formatter="weekFormat"/>
-            <el-table-column label="是否启用"  width='150px' align="center" prop="enable" :formatter="enableFormat"/>
-            <el-table-column label="创建时间" width='180px' align="center" prop="createTime" :formatter="createTimeFormat"/>
-            <el-table-column align="center" width="200" label="操作">
+        <el-tab-pane label="字幕推送记录" name="third">
+          <el-table v-loading="loading" :data="subtitleTerminalList">
+            <el-table-column label="字幕内容" align="center" prop="content" >
               <template slot-scope="scope">
-                <el-button class="app-btn-size" type="text"  @click="getShutdownPlanAddDialog(scope.row)">编辑 </el-button>
-                <el-button class="app-btn-size" type="text"  @click="deleteShutdownPlan(scope.row)">删除 </el-button>
+                <el-tooltip class="item" effect="dark" :content="scope.row.content" placement="top-start">
+                  <span>{{scope.row.content.substring(0,25)}}<span v-if="scope.row.content.length>25">...</span></span>
+                </el-tooltip>
               </template>
             </el-table-column>
+
+            <el-table-column label="定位" align="center" width="100px" prop="location" :formatter="contentLocationFormat"/>
+            <el-table-column label="滚动方向" align="center" width="100px" prop="rollingDirection" :formatter="rollingDirectionFormat"/>
+            <el-table-column label="速度" align="center" width="50px" prop="speed" />
+            <el-table-column label="开始日期" align="center" width="100px" prop="beginDate" />
+            <el-table-column label="结束日期" align="center" width="100px" prop="endDate" />
+            <el-table-column label="开始时间" align="center" width="75px" prop="beginTime" />
+            <el-table-column label="结束时间" align="center" width="75px" prop="endTime" />
+            <el-table-column label="星期" align="center" prop="week" :formatter="weekFormat"/>
+            <el-table-column label="同步状态" align="center" width="100px" prop="status" :formatter="statusFormat"/>
           </el-table>
           <pagination
+              v-show="stTotal>0"
+              :total="stTotal"
+              :page.sync="querySubtitleTerminalParams.pageNum"
+              :limit.sync="querySubtitleTerminalParams.pageSize"
+              @pagination="getSubtitleTerminalList"
+          />
+        </el-tab-pane>
+      </el-tabs>
+    </el-dialog>
+
+
+    <el-dialog title="设置开关机时间" :visible.sync="shutdownPlanDialogOpen" width="1150px" append-to-body>
+        <el-button type="primary" Icon="el-icon-plus"  size="small"  @click="getShutdownPlanAddDialog(undefined)" style="margin-bottom: 10px">新增开关机时间</el-button>
+        <el-table v-loading="loading" :data="shutdownPlanList">
+          <el-table-column label="开机时间" align="center" prop="bootTime" />
+          <el-table-column label="关机时间" align="center" prop="shutdownTime" />
+          <el-table-column label="星期" align="center" width="400px" prop="week" :formatter="weekFormat"/>
+          <el-table-column label="是否启用"  width='150px' align="center" prop="enable" :formatter="enableFormat"/>
+          <el-table-column label="创建时间" width='180px' align="center" prop="createTime" :formatter="createTimeFormat"/>
+          <el-table-column align="center" width="200" label="操作">
+            <template slot-scope="scope">
+              <el-button size="mini" type="text" icon="el-icon-edit" @click="getShutdownPlanAddDialog(scope.row)">编辑 </el-button>
+              <el-button size="mini" type="text" icon="el-icon-delete" @click="deleteShutdownPlan(scope.row)">删除 </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <pagination
             v-show="sppTotal>0"
             :total="sppTotal"
             :page.sync="queryShutdownPlanParams.pageNum"
             :limit.sync="queryShutdownPlanParams.pageSize"
             @pagination="getShutdownPlanList"
-          />
-        </el-tab-pane>
-      </el-tabs>
+        />
+
     </el-dialog>
 
 
@@ -268,13 +314,25 @@
 
 <script>
 
+import {listSubtitlTerminal} from "@/api";
+
 export default {
   name: "terminal",
-  dicts: ['content_control_command'],
+  dicts: ['content_control_command','content_rolling_direction','content_location'],
   data() {
+
+    var validatePass = (rule, value, callback) => {
+      if (value !== this.terminalForm.pwd) {
+        callback(new Error('两次输入密码不一致!'));
+      } else {
+        callback();
+      }
+    };
+
     return {
       activeName: 'first',
       shutdownPlanTitle: '新增开关机时间',
+      shutdownPlanDialogOpen: false,
       shutdownPlanOpen: false,
       shutdownPlanForm: {
         bootTime:'',
@@ -298,12 +356,14 @@ export default {
       total: 0,
       ptTotal: 0,
       sppTotal: 0,
+      stTotal: 0,
       // 遮罩层
       loading: true,
       terminalControlDialogTitle: '',
       // 终端控制记录表格数据
       controlList: [],
       programTerminalList: [],
+      subtitleTerminalList: [],
       shutdownPlanList: [],
       queryParams: {
         pageNum: 1,
@@ -321,6 +381,11 @@ export default {
         pageSize: 10,
         terminalId: null
       },
+      querySubtitleTerminalParams: {
+          pageNum: 1,
+          pageSize: 10,
+          terminalId: null
+    },
       terminalGroupList: [],
       appList: [],
       viewVisible: false,
@@ -344,6 +409,7 @@ export default {
         }
       },
       terminalDialogTitle: '新增终端',
+      isDisabled: false,
       terminalGroupDialogTitle: '新增终端组',
       terminalGroupVisible: false,
       terminalVisible: false,
@@ -356,8 +422,16 @@ export default {
 
       },
       terminalForm: {
+        terminalGroupId: '',
         terminalId: '',
-        terminalName: ''
+        terminalName: '',
+        pwd: '',
+        confirmPwd: ''
+      },
+      conmitTerminalForm: {
+        terminalId: '',
+        terminalName: '',
+        pwd: ''
       },
       rulesTerminalGroup: {
         terminalGroupName: [
@@ -373,17 +447,47 @@ export default {
         terminalName: [
           {required: true, message: '请输入终端名称', trigger: 'blur'},
           {max: 50, message: '名称长度在50个以内', trigger: 'blur'}
+        ],
+        pwd: [
+          {required: false, message: '请输入终端密码\n', trigger: 'blur'},
+          {min: 6, message: '终端密码在6-16个字符以内', trigger: 'blur'}
+        ],
+        confirmPwd: [
+          {required: false, validator: validatePass, trigger: 'blur'}
         ]
       },
       tableData: []
     }
   },
   mounted() {
-    console.log("这是新网页");
     this.getGroupList()
   },
 
   methods: {
+    rollingDirectionFormat(row)
+    {
+      return this.selectDictLabel(this.dict.type.content_rolling_direction, row.rollingDirection);
+    },
+    contentLocationFormat(row)
+    {
+      return this.selectDictLabel(this.dict.type.content_location, row.location);
+    },
+    // 更多操作触发
+    handleCommand(command, row) {
+      switch (command) {
+        case "addTerminal":
+          this.addTerminal(row);
+          break;
+        case "deleteTerminal":
+          this.deleteTerminal(row);
+          break;
+        case "controlTerminal":
+          this.controlTerminal(row);
+          break;
+        default:
+          break;
+      }
+    },
     beginDateFormat(row){
       if(row.beginDate && row.endDate)
       {
@@ -573,6 +677,16 @@ export default {
       }
       this.terminalControlVisible = true
     },
+    openShutdownPlanDialog(item) {
+      this.queryShutdownPlanParams = {
+        pageNum: 1,
+        pageSize: 10,
+        terminalId: item.terminalId
+      }
+      this.getShutdownPlanList()
+      this.shutdownPlanForm.terminalId =  item.terminalId
+      this.shutdownPlanDialogOpen = true;
+    },
     controlTerminalList(item) {
       this.activeName = 'first'
       this.terminalControlDialogTitle = item.terminalName
@@ -589,15 +703,23 @@ export default {
           pageSize: 10,
           terminalId: item.terminalId
       }
-      this.queryShutdownPlanParams = {
+      this.querySubtitleTerminalParams = {
         pageNum: 1,
         pageSize: 10,
         terminalId: item.terminalId
       }
       this.getTerminalControlList()
       this.getProgramTerminalList()
-      this.getShutdownPlanList()
-      this.shutdownPlanForm.terminalId =  item.terminalId
+      this.getSubtitleTerminalList()
+
+    },
+    getSubtitleTerminalList(){
+      this.loading = true;
+      this.$API.listSubtitlTerminal(this.querySubtitleTerminalParams).then(response => {
+        this.subtitleTerminalList = response.rows;
+        this.stTotal = response.total;
+        this.loading = false;
+      });
     },
     getProgramTerminalList(){
       this.loading = true;
@@ -623,20 +745,21 @@ export default {
       });
     },
     addTerminal(item) {
-      this.terminalForm = {}
+
       this.terminalDialogTitle = item.terminalId ? '编辑终端' : '新增终端'
+      this.isDisabled = item.terminalId ? true : false
       if (item.terminalId) {
-        this.terminalForm = {
-          terminalId: item.terminalId,
-          terminalGroupId: item.terminalGroupId,
-          terminalName: item.terminalName
-        }
+        this.terminalForm.terminalId=item.terminalId
+        this.terminalForm.terminalGroupId=item.terminalGroupId
+        this.terminalForm.terminalName=item.terminalName
+        this.terminalForm.pwd=item.pwd
+        this.terminalForm.confirmPwd=item.pwd
       } else {
-        this.terminalForm = {
-          terminalGroupId: item.terminalGroupId,
-          terminalName: '',
-          terminalId: ''
-        }
+        this.terminalForm.terminalGroupId=item.terminalGroupId
+        this.terminalForm.terminalId=''
+        this.terminalForm.terminalName=''
+        this.terminalForm.pwd=''
+        this.terminalForm.confirmPwd=''
       }
       this.terminalVisible = true
       // 重置表单校验
@@ -723,15 +846,20 @@ export default {
         })
     },
     submitTerminalForm() {
+      console.log(this.terminalForm)
       this.$refs.terminalForm.validate(valid => {
         if (valid) {
-          const {terminalId,terminalGroupId, terminalName} = this.terminalForm
+          const {terminalId,terminalGroupId, terminalName, pwd} = this.terminalForm
+          console.log(this.terminalForm)
           let param = {
-            terminalName: terminalName
+            terminalName: terminalName,
           }
           if (terminalId) {
             param.terminalId = terminalId
             param.terminalGroupId = terminalGroupId
+            if( pwd == null || pwd.length!=32){
+              param.pwd = pwd;
+            }
             this.$API.terminalUpdate(param)
               .then(() => {
                 this.$message({
@@ -754,7 +882,7 @@ export default {
               .then(() => {
                 this.$message({
                   type: 'success',
-                  message: '新增终端组成功'
+                  message: '新增终端成功'
                 })
                 this.getGroupList()
                 this.terminalVisible = false
@@ -1015,10 +1143,6 @@ export default {
 
     .el-divider {
       background-color: #55bbfa;
-    }
-
-    .app-btn-size {
-      color: #55bbfa;
     }
 
     // tabel样式覆盖

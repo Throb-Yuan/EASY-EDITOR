@@ -1,10 +1,16 @@
 <!--test.vue-->
 <template>
-  <div class="qk-pdf-view">
+  <div  class="qk-pdf-view">
+    <div v-if="pdfSrc">
     <div @click="prePage" class="next-hidden pre-hidden"></div>
     <div @click="nextPage" class="next-hidden"></div>
     <pdf v-if="!reSet" ref="pdf" :src="notDevs ? pdfSrc : pdfSrc" :page="pageNum" @progress="loadedRatio = $event"  @num-pages="pageTotalNum=$event"></pdf>
     <div class="footed" v-if="showPageNum">第{{pageNum}}页,共{{pageTotalNum}}页</div>
+  </div>
+  <div v-else-if="!notDevs" class="noimg" style="justify-content: center;">
+      <img :src="defaultImg"  style="object-fit:cover;width: 50%;height: 40%;" alt=""/>
+      <span>请在右侧组件属性区域上传文档</span>
+    </div>
   </div>
 </template>
 
@@ -18,23 +24,23 @@ export default {
   props: {
     pdfSrc: {
       type: String,
-      default: 'http://192.168.101.250:2501/file/download/D469F02C582134D42A04B9F6AD6911AE1'
+      default: ''
     },
     androidId: {
       type: String,
-      default: 'D469F02C582134D42A04B9F6AD6911AE1'
+      default: ''
     },
     localPath: {
       type: String,
-      default: '../../resource/e2be05f213c312a82f0a1169615fe541.pdf'
+      default: ''
     },
     fileName: {
       type: String,
-      default: '2023政府补贴细则.pdf'
+      default: ''
     },
     fileSize: {
       type: String,
-      default: '6.34MB'
+      default: ''
     },
     autoPlay: {
       type: Boolean,
@@ -51,6 +57,7 @@ export default {
   },
   data() {
     return {
+      defaultImg:require('@client/common/images/defpdf.png'),
       notDevs: false,
       pageNum: 1,
       pageTotalNum: 1,
@@ -136,9 +143,9 @@ export default {
 .pre-hidden{
   left: 0;
 }
-img {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
+// img {
+//   display: block;
+//   width: 100%;
+//   height: 100%;
+// }
 </style>

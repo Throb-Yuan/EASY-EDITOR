@@ -1,11 +1,17 @@
 <template>
 	<div class="qk-bg-music" :class="{ playing: playing }" @click="handleMusicPlay">
-		<div class="video-play-audio" v-if="musicSrc">
-			<audio ref="audioPlayer" id="video-play-audio" :src="notDevs ? localPath : musicSrc" style="opacity: 0;"
-				:controls="musicControls" :autoplay="musicAutoPlay" :loop="musicLoop" preload></audio>
+		<div>
+			<div class="video-play-audio">
+				<audio ref="audioPlayer" id="video-play-audio" :src="notDevs ? localPath : musicSrc" style="opacity: 0;"
+					:controls="musicControls" :autoplay="musicAutoPlay" :loop="musicLoop" preload></audio>
+			</div>
+			<img class="yinyue-img" :src="muimageSrc" alt="bg">
 		</div>
-		<img class="yinyue-img" :src="muimageSrc" alt="bg">
-	</div>
+		<!-- <div class="def-medails" v-else-if="!notDevs">
+			<img :src="defaultImg" style="object-fit:cover" alt="" />
+			<span>请在右侧组件属性区域上传视频</span>
+		</div> -->
+</div>
 </template>
 
 <script>
@@ -14,7 +20,7 @@ export default {
 	props: {
 		musicSrc: {
 			type: String,
-			default: 'http://192.168.101.250:2501/file/download/VEB24E7A9AF994CD8AD6C2A7E102EC15B'
+			default: ''
 		},
 		muimageSrc: {
 			type: String,
@@ -34,57 +40,69 @@ export default {
 		},
 		androidId: {
 			type: String,
-			default: 'VEB24E7A9AF994CD8AD6C2A7E102EC15B'
+			default: ''
 		},
 		localPath: {
 			type: String,
-			default: '../../resource/7dfe04d852b10ffa052991a9f8aae4d0.mp3'
+			default: ''
 		},
 		fileName: {
 			type: String,
-			default: 'BEYOND-光辉岁月.mp3'
+			default: ''
 		},
 		fileSize: {
 			type: String,
-			default: '11.57MB'
+			default: ''
 		}
 	},
 	data() {
 		return {
 			audioEl: undefined,
-			playing: true,
-			notDevs: false
+			playing: false,
+			notDevs: false,
+			defaultImg: require('@client/common/images/defmus.png'),
 		}
+	},
+	watch:{
+		musicSrc() {
+			this.playing ? '' :  this.playing = true
+		},
 	},
 	created() {
 		// process.env.NODE_ENV == 'development' ? "" : this.notDevs = true
-		if (!window.location.href.includes('http')) this.notDevs = true
+		if (!window.location.href.includes('http')) {
+			this.notDevs = true
+			this.playing = true
+		}
 	},
 	mounted() {
-		this.audioEl = document.getElementById('video-play-audio')
-		this.audioEl.load();
-		const audio = this.$refs.audioPlayer;
-		audio.play().catch(() => {
-			this.playError = true;
-			let event = ["click", "WeixinJSBridgeReady"];// "touchstart"
-			let pageClick = () => {
-				if (this.playError) {
-					this.playError = false;
-					audio.load();
-					audio.play().catch(() => {
-						this.playError = true;
-					});
-					event.forEach((item) => {
-						document.removeEventListener(item, pageClick);
-					});
-				}
-			};
-			event.forEach((item) => {
-				document.addEventListener(item, pageClick);
-			});
-		})
+		if (this.musicSrc) this.firstPlay()
 	},
 	methods: {
+		firstPlay() {
+			this.audioEl = document.getElementById('video-play-audio')
+			this.audioEl.load();
+			const audio = this.$refs.audioPlayer;
+			audio.play().catch(() => {
+				this.playError = true;
+				let event = ["click", "WeixinJSBridgeReady"];// "touchstart"
+				let pageClick = () => {
+					if (this.playError) {
+						this.playError = false;
+						audio.load();
+						audio.play().catch(() => {
+							this.playError = true;
+						});
+						event.forEach((item) => {
+							document.removeEventListener(item, pageClick);
+						});
+					}
+				};
+				event.forEach((item) => {
+					document.addEventListener(item, pageClick);
+				});
+			})
+		},
 		handleMusicPlay() {
 			if (!this.musicSrc) return;
 			if (this.playing) {
