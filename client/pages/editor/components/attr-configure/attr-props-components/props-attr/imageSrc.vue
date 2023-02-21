@@ -72,7 +72,7 @@ export default {
 			let nodeData = JSON.parse(nodeStr)
 			// 为图片则更改当前轮播项数据
 			!this.activeCss ? '' : this.activeCss = false
-			if (nodeData.fileType != "I") {
+			if (nodeData.resourceTypeId != "1") {
 				this.$message.warning('请选择图片类型拖入覆盖');
 				return false
 			}

@@ -110,10 +110,11 @@ export default {
 		drop(ev) {
 			// nodeData：获取拖拽节点数据信息
 			let nodeStr = ev.dataTransfer.getData("node")
+			if (!nodeStr) return false
 			let nodeData = JSON.parse(nodeStr)
 			// 为图片则更改当前轮播项数据
 			!this.activeCss ?'' : this.activeCss = false
-			if (nodeData.resourceTypeName != "视频") {
+			if (nodeData.resourceTypeId != "2") {
 				this.$message.warning('请选择视频类型拖入覆盖');
 				return false
 			}

@@ -296,6 +296,17 @@ const mutations = {
 		state.activeElementUUID = data;
 	},
 	/**
+	 * 页面返回，重置 currentHistoryIndex
+	 * @param commit
+	 * @param url
+	 */
+	 resetHistoryIndex(state, index){
+		state.currentHistoryIndex = index
+	},
+	resetHistoryCache(state, data){
+		state.historyCache = data
+	},
+	/**
 	 * 更新项目主图
 	 * @param commit
 	 * @param url

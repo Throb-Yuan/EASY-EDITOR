@@ -60,14 +60,16 @@ export default [
 				}
 			},
 			{
-				elName: 'qk-rectangle-border',
+				elName: 'qk-rectangle-line',
 				title: '分割线',
 				icon: 'iconfont icon758bianjiqi_fengexian',
 				valueType: '',
 				defaultStyle: {
-					height: 1,
+					height: 31,
 					width: 300,
-					backgroundColor: '#999999'
+					// backgroundColor: '#999999',
+					paddingTop:15,
+					paddingBottom:15
 				}
 			},
 			{

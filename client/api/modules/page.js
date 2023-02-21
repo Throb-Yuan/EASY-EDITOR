@@ -49,29 +49,29 @@ export const delGroup = p => $axios.delete('/content/group/'+p, {})
 */
 
 // 获取终端组列表
-export const terminalDetailListGet = p => $axios.post('/content/terminal/detail/list/get', p)
+export const terminalDetailListGet = p => $axios.get('/content/terminal/detail/list/get', p)
 // 获取终端组列表
-export const terminalGroupListGet = p => $axios.post('/content/terminal/group/list/get', p)
+export const terminalGroupListGet = p => $axios.get('/content/terminal/group/list/get', p)
 // 添加终端
 export const terminalAdd = p => $axios.post('/content/terminal/add', p)
 // 获取终端组下终端列表
-export const terminalByGroupListGet = p => $axios.post('/content/terminal/by/group/list/get', p)
+export const terminalByGroupListGet = p => $axios.get('/content/terminal/by/group/list/get', p)
 // 添加终端组
 export const terminalGroupAdd = p => $axios.post('/content/terminal/group/add', p)
 // 删除终端组
-export const terminalGroupDelete = p => $axios.post('/content/terminal/group/delete', p)
+export const terminalGroupDelete = p => $axios.delete('/content/terminal/group/delete', p)
 // 删除终端
-export const terminalDelete = p => $axios.post('/content/terminal/delete', p)
+export const terminalDelete = p => $axios.delete('/content/terminal/delete', p)
 // 获取终端详情
-export const terminalDetailGet = p => $axios.post('/content/terminal/detail/get', p)
+export const terminalDetailGet = p => $axios.get('/content/terminal/detail/get', p)
 // 获取终端树列表
-export const terminalTreeListGet = p => $axios.post('/content/terminal/tree/list/get', p)
+export const terminalTreeListGet = p => $axios.get('/content/terminal/tree/list/get', p)
 // 编辑终端
-export const terminalUpdate = p => $axios.post('/content/terminal/update', p)
+export const terminalUpdate = p => $axios.put('/content/terminal/update', p)
 // 编辑终端组
-export const terminalGroupUpdate = p => $axios.post('/content/terminal/group/update', p)
+export const terminalGroupUpdate = p => $axios.put('/content/terminal/group/update', p)
 // 获取终端组与应用的关系列表
-export const terminalGroupAppListGet = p => $axios.post('/content/terminal/group/app/list/get', p)
+export const terminalGroupAppListGet = p => $axios.get('/content/terminal/group/app/list/get', p)
 // 添加终端组与应用的关系
 export const terminalGroupAppAdd = p => $axios.post('/content/terminal/group/app/add', p)
 // 新增终端控制记录

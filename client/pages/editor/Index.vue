@@ -148,6 +148,11 @@ export default {
 		this.getSceneList();
 		// this.id ? this.initPageData() : this.$store.dispatch('setPrjectData', {...this.$programInit})
 	},
+	beforeDestroy(){
+		console.log("输入===");
+		this.$store.commit('resetHistoryIndex',-1)
+		this.$store.commit('resetHistoryCache',[])
+	},
 	methods: {
 		/**
 			* 更改画布大小，更新editorPan组件大小与projectData数据

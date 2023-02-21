@@ -105,6 +105,7 @@ export default {
 		drop(ev) {
 			// nodeData：获取拖拽节点数据信息
 			let nodeStr = ev.dataTransfer.getData("node")
+			if (!nodeStr) return false
 			let nodeData = JSON.parse(nodeStr)
 			// 为图片则更改当前轮播项数据
 			!this.activeCss ?'' : this.activeCss = false

@@ -1,9 +1,6 @@
 <template>
 	<div class="qk-notice">
 		<div class="advert-top" v-if="noticeText">
-			<!-- <div class="ico-horn">
-				<img src="https://t7.baidu.com/it/u=2222012502,2910942051&fm=193" alt="">
-			</div> -->
 			<!-- 滚动文字区域 -->
 			<div class="marquee-wrap" :id="sportType">
 				<ul class="marquee-box" :id="'marquee-box' + uuid">
@@ -44,17 +41,14 @@ export default {
 			/**
 			 * 速度改变，重置定时器使用新速度播放
 			 */
-			console.log("speed", this.speed);
+			// 控制连续写入时setContent的触发频率
 			clearInterval(this.interFuns)
-			setTimeout(() => {
-				this.runMarquee();
-			}, 500);
+			this.runMarquee();
 		},
 		sportType() {
 			/**
 			 * 方向改变，重置定时器使用新速度播放
 			 */
-			console.log("sportType", this.sportType);
 			clearInterval(this.interFuns)
 			setTimeout(() => {
 				this.runMarquee();
@@ -97,16 +91,16 @@ export default {
 				let width = document.getElementById(`marquee${this.uuid}`).getBoundingClientRect().width,
 					marquee = document.getElementById(`marquee-box${this.uuid}`),
 					disx = 0; // 位移距离
-				if(this.sportType == 'right') disx = width*5+100
+				if (this.sportType == 'right') disx = width * 5 + 100
 				//设置位移
 				this.interFuns = setInterval(() => {
 					disx--; // disx-=1; 滚动步长
 					// console.log("disx==",disx);
-					if (-disx >= width * 5 ) {
+					if (-disx >= width * 5) {
 						disx = 0; // 如果位移超过文字宽度，则回到起点  marquee-list的margin值
 					}
-					if (this.sportType == 'right' && disx == 0 ) {
-						disx = width*5+100; // 如果位移超过文字宽度，则回到起点  marquee-list的margin值
+					if (this.sportType == 'right' && disx == 0) {
+						disx = width * 5 + 100; // 如果位移超过文字宽度，则回到起点  marquee-list的margin值
 					}
 					marquee.style.top = '50%'
 					// marquee.style.transform = 'translateX(' + disx + 'px)'

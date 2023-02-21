@@ -6,6 +6,7 @@ import Text from './text'
 import Image from './image'
 import ImageCarousel from './image-carousel'
 import RectangleBorder from './rectangle-border'
+import RectangleLine from './rectangle-line'
 import Iframe from './iframe'
 import Button from './button'
 import bgMusic from './bg-music'
@@ -24,6 +25,7 @@ const components = [
 	Image,
 	ImageCarousel,
 	RectangleBorder,
+	RectangleLine,
 	Iframe,
 	Button,
 	bgMusic,
@@ -62,6 +64,7 @@ export {
 	Image,
 	ImageCarousel,
 	RectangleBorder,
+	RectangleLine,
 	Iframe,
 	Button,
 	bgMusic,
