@@ -70,11 +70,11 @@ export default {
 	},
 	created() {
 		// process.env.NODE_ENV == 'development' ? "" : this.notDevs = true
-		console.log("I'm bgmusic");
 		if (!window.location.href.includes('http')) {
 			this.notDevs = true
 			this.playing = true
 		}
+		if (this.musicSrc) this.playing = true
 	},
 	mounted() {
 		if (this.musicSrc) this.firstPlay()
