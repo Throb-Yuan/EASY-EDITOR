@@ -4,14 +4,6 @@ const fs = require('fs')
 const port = process.env.port || process.env.npm_config_port || 80 // 端口
 let devServer = {
 	proxy: { // 代理
-		// [process.env.VUE_APP_BASE_API]: {
-		// 	target: `http://localhost:8080`,
-		// 	changeOrigin: true,
-		// 	pathRewrite: {
-		// 	  ['^' + process.env.VUE_APP_BASE_API]: ''
-		// 	}
-		//   },
-		//   disableHostCheck: true
 		'/': {
 			target: 'http://192.168.101.250:2501',//设置你调用的接口域名和端口号 别忘了加httphttp://192.168.101.250:2501
 			ws: false,
@@ -22,23 +14,6 @@ let devServer = {
 		}
 	}
 }
-let devServerPl = {
-	host: '0.0.0.0',
-	port: port,
-	open: true,
-	proxy: {
-		// detail: https://cli.vuejs.org/config/#devserver-proxy
-		[process.env.VUE_APP_BASE_API]: {
-			target: `http://localhost:8080`,
-			changeOrigin: true,
-			pathRewrite: {
-				['^' + process.env.VUE_APP_BASE_API]: ''
-			}
-		}
-	},
-	disableHostCheck: true
-}
-
 module.exports = {
 	publicPath: process.env.NODE_ENV === "production" ? "/" : "/",
 	// 在npm run build 或 yarn build 时 ，生成文件的目录名称（要和baseUrl的生产环境路径一致）（默认dist）
@@ -55,6 +30,7 @@ module.exports = {
 	// 修改 pages 入口
 	pages: {
 		index: {
+			// entry: ['babel-polyfill', 'client/main.js'],
 			entry: 'client/main.js', // 入口
 			template: 'public/engine-h5-long.html', // 模板
 			filename: 'index.html' // 输出文件

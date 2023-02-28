@@ -19,6 +19,7 @@ import countDownTmie from './count-down'
 import pdfView from './pdf-view'
 import Weather from './weather'
 import NoticeRss from './noticeRss'
+import Streaming from './streaming'
 // 所有组件列表
 const components = [
 	Text,
@@ -37,7 +38,8 @@ const components = [
 	countDownTmie,
 	pdfView,
 	NoticeRss,
-	Weather
+	Weather,
+	Streaming
 ]
 // 定义 install 方法，接收 Vue 作为参数
 const install = function (Vue) {
@@ -77,6 +79,7 @@ export {
 	pdfView,
 	Weather,
 	NoticeRss,
+	Streaming,
 	_qk_register_components_object
 }
 

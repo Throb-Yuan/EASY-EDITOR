@@ -131,7 +131,7 @@ export default {
 				case 'exports':
 					this.exports()
 					break;
-				case 'copysId':
+				case 'copys':
 					this.copys('节目主键');
 					break;
 				case 'copysHTML':

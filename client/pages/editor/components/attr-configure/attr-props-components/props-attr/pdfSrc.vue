@@ -19,7 +19,7 @@
 
 	<div @drop="drop($event)" @dragover="allowDrop($event)" @dragenter="dragenter($event)">
 		<div class="tip-drop">可将本地文件或媒体资源拖至下方替换<span @click="changeSide"> 查看资源库</span></div>
-		<el-upload ref="upload" drag style="height: 100px;" :action="uploadAction" accept="audio/*" :auto-upload="true"
+		<el-upload ref="upload" drag style="height: 100px;" :action="uploadAction" accept=".pdf" :auto-upload="true"
 		 :on-success="handleSuccess" :show-file-list="false" :multiple="false">
 			<div :class="activeCss ? 'drag-info-box active-css' : 'drag-info-box'">
 				<div class="inline-block cropper-res-img">
@@ -48,6 +48,7 @@
 </template>
 
 <script>
+const baseURL = process.env.VUE_APP_BASE_API
 export default {
 	name: "attr-qk-pdfSrc",
 	props: {
@@ -70,7 +71,8 @@ export default {
 			tempAutoPlay:false,
 			tempSpeed:3000,
 			tempShowPageNum:true,
-			activeCss:false
+			activeCss:false,
+			uploadAction: baseURL + '/file/upload',
 		}
 	},
 	mounted() {
@@ -119,7 +121,33 @@ export default {
 		changeSide(){
 			let nowSide = this.$store.state.editor.activeSideBar
 			if(nowSide!="resourceLibs") this.$store.commit('updateSideBar',"resourceLibs")
-		}
+		},
+		handleSuccess(res) {
+			let response = res.data
+			console.log("file1==", response);
+			let param = {
+				resourceId: response.fileId,
+				resourceName: response.fileName,
+				resourceTypeId: "4",
+				resourceMd5: response.fileHash,
+				fileSize: response.fileSize,
+				fileType: response.fileId.substr(0, 1),
+				fileUrl: baseURL + '/file/download/' + response.fileId
+			}
+
+			this.$API.addResource(param).then(() => {
+				console.log("file2==", response);
+				this.$modal.msgSuccess("上传成功");
+				this.open = false;
+				this.tempValue = baseURL + '/file/download/' + response.fileId
+				this.tempAndroidId = response.fileId
+				this.tempFileName = response.fileName
+				this.tempFileSize = this.$mUtils.transFileSize(response.fileSize)
+				let arrs = response.fileName.split('.')
+				this.tempLocalPath = '../../resource/' + response.fileHash+'.'+arrs[arrs.length-1]
+			});
+			this.loading = false;
+		},
 	},
 	watch: {
 		/**

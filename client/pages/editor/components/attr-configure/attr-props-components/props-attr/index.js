@@ -11,6 +11,8 @@ import weekType from './weekType'
 import countDownTime from './countDownTime'
 import pdfSrc from './pdfSrc'
 import weatherArea from './weatherArea'
+import streamingSrc from './streamingSrc'
+import noticeUrl from './noticeUrl'
 
 export default {
 	[Text.name]: Text,
@@ -25,5 +27,7 @@ export default {
 	[weekType.name]: weekType,
 	[countDownTime.name]: countDownTime,
 	[pdfSrc.name]: pdfSrc,
-	[weatherArea.name]: weatherArea
+	[weatherArea.name]: weatherArea,
+	[streamingSrc.name]: streamingSrc,
+	[noticeUrl.name]: noticeUrl
 }

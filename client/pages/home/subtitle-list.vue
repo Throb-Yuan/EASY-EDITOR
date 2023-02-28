@@ -64,7 +64,7 @@
       <el-table-column label="字幕内容" align="center" prop="content" >
         <template slot-scope="scope">
           <el-tooltip class="item" effect="dark" :content="scope.row.content" placement="top-start">
-            <span>{{scope.row.content.substring(0,84)}}...</span>
+            <span>{{scope.row.content.substring(0,84)}}<span v-if="scope.row.content.length>84">...</span></span>
           </el-tooltip>
         </template>
       </el-table-column>
@@ -98,7 +98,8 @@
     <el-dialog :title="title" :visible.sync="open" width="720px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="字幕内容" prop="content">
-          <textarea  v-model="form.content" cols="80" rows="5"  maxlength="2000" placeholder="请输入紧急字幕内容，2000字以内"></textarea>
+          <el-input  type="textarea" v-model="form.content" cols="80" rows="5"  maxlength="2000" placeholder="请输入紧急字幕内容，2000字以内">
+          </el-input>
         </el-form-item>
         <el-form-item label="定位" prop="location">
           <el-select v-model="form.location" >
@@ -248,7 +249,7 @@ export default {
       rules: {
         content: [
           {required: true, message: '请输入紧急字幕内容', trigger: 'blur'},
-          {max: 50, message: '紧急字幕内容在2000字以内', trigger: 'blur'}
+          {max: 2000, message: '紧急字幕内容在2000字以内', trigger: 'blur'}
         ],location: [
           {required: true, message: '请选择定位', trigger: 'blur'}
         ],

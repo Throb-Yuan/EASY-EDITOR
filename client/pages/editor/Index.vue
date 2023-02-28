@@ -19,9 +19,8 @@
 		<!--页面编辑区域-->
 		<div class="editor-main">
 			<div class="control-bar-wrapper">
-				<controlBar :scale.sync="canvasConfig.scale" @import-psd-data="importPsdData"
-					@showPreview="showPreviewFn" @cancel="cancelFn" @publish="publishFn" @save="saveFn"
-					@changeRatio="changeRatioFn" />
+				<controlBar :scale.sync="canvasConfig.scale" @import-psd-data="importPsdData" @showPreview="showPreviewFn"
+					@cancel="cancelFn" @publish="publishFn" @save="saveFn" @changeRatio="changeRatioFn" />
 			</div>
 			<div id="div1" @drop="drop($event)" @dragover="allowDrop($event)">
 				<editorPan :scale.sync="canvasConfig.scale" />
@@ -148,10 +147,15 @@ export default {
 		this.getSceneList();
 		// this.id ? this.initPageData() : this.$store.dispatch('setPrjectData', {...this.$programInit})
 	},
-	beforeDestroy(){
+	beforeDestroy() {
 		console.log("输入===");
-		this.$store.commit('resetHistoryIndex',-1)
-		this.$store.commit('resetHistoryCache',[])
+		let body = deepClone(this.$programInit.body)
+		body.pages[0].uuid = createUUID()
+		this.$store.dispatch('setPrjectData', {
+			...body
+		})
+		this.$store.commit('resetHistoryIndex', -1)
+		this.$store.commit('resetHistoryCache', [])
 	},
 	methods: {
 		/**
@@ -175,22 +179,22 @@ export default {
 						console.log("checkData3", checkData)
 						rate = checkData.toWidth / 800
 						checkData.toWidth = 800
-						checkData.toHeight = checkData.toHeight / rate<1 ? 1 : heckData.toHeight / rate
+						checkData.toHeight = checkData.toHeight / rate < 1 ? 1 : heckData.toHeight / rate
 					} else {
 						rate = 800 / checkData.toWidth
 						checkData.toWidth = 800
-						checkData.toHeight = checkData.toHeight * rate<1 ? 1 : heckData.toHeight * rate
+						checkData.toHeight = checkData.toHeight * rate < 1 ? 1 : heckData.toHeight * rate
 					}
 				} else {
 					// 宽<高,以高比例缩小 800*800
 					if (checkData.toHeight >= 800) {
 						rate = checkData.toHeight / 800
 						checkData.toHeight = 800
-						checkData.toWidth = checkData.toWidth / rate<1 ? 1 : heckData.toWidth / rate
+						checkData.toWidth = checkData.toWidth / rate < 1 ? 1 : heckData.toWidth / rate
 					} else {
 						rate = 800 / checkData.toHeight
 						checkData.toHeight = 800
-						checkData.toWidth = checkData.toWidth * rate<1 ? 1 : heckData.toWidth * rate
+						checkData.toWidth = checkData.toWidth * rate < 1 ? 1 : heckData.toWidth * rate
 					}
 				}
 				// return false
@@ -201,8 +205,8 @@ export default {
 			this.projectData.height = checkData.toHeight
 			this.$config.canvasH5Width = checkData.toWidth
 			this.$config.canvasH5Height = checkData.toHeight
-			eleConfig[0].components[1].defaultStyle.width = checkData.toWidth/2
-			eleConfig[0].components[1].defaultStyle.height = checkData.toHeight/2
+			eleConfig[0].components[1].defaultStyle.width = checkData.toWidth / 2
+			eleConfig[0].components[1].defaultStyle.height = checkData.toHeight / 2
 			eleConfig[1].components[0].defaultStyle.width = checkData.toWidth
 			eleConfig[1].components[2].defaultStyle.width = checkData.toWidth
 			eleConfig[1].components[7].defaultStyle.width = checkData.toWidth
@@ -225,7 +229,7 @@ export default {
 			// 节点基础信息写入
 			let a = {
 				defaultStyle: {
-					height: 450, paddingBottom: 0, paddingTop: 0, width: 800, top: 0, left: 0
+					height: this.$config.canvasH5Height / 2, paddingBottom: 0, paddingTop: 0, width: this.$config.canvasH5Width / 2, top: 10, left: 10
 				},
 				elName: nodeData.fileType == 'I' ? "qk-image" : "qk-video",
 				icon: "iconfont iconshipin",
@@ -361,7 +365,7 @@ export default {
 		 */
 		async publishFn() {
 			// 提交数据再预览 后台新增节目管理
-			let startHtml = '\x3C!DOCTYPE html>\x3Chtml lang="en">\x3Chead>\x3Cmeta charset="UTF-8">\x3Ctitle>\x3C/title>\x3Clink rel="shortcut icon" href=" ../../assets/public/favicon.ico" type="image/x-icon">\x3Cmeta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">\x3Cmeta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">\x3Cmeta name="keywords" content="">\x3Cmeta name="description" content="">\x3Cmeta name="renderer" content="webkit">\x3Cmeta name="robots" content="index, follow">\x3Cmeta name="format-detection" content="telephone=no">\x3Cscript src=" ../../assets/public/third-libs/vue.js">\x3C/script>\x3Cscript src=" ../../assets/public/third-libs/vconsole.js">\x3C/script>\x3Clink rel="stylesheet" href=" ../../assets/public/third-libs/animate.min.css">\x3Clink rel="stylesheet" href=" ../../assets/public/third-libs/weatherfont/qweather-icons.css">\x3Clink rel="stylesheet" href=" ../../assets/public/third-libs/swiper.min.css">\x3Cscript src=" ../../assets/public/third-libs/swiper.min.js">\x3C/script>\x3C!--引入模板-->\x3Cscript src=" ../../assets/public/engine_libs/h5-swiper/page-engine.umd.js">\x3C/script>\x3Clink rel="stylesheet" href=" ../../assets/public/engine_libs/h5-swiper/page-engine.css">\x3Cstyle>* {padding: 0;margin: 0;box-sizing: border-box;}html, body, #app{position: relative;width: 100%;height: 100%;}\x3C/style>\x3Cscript>window._pageData = '
+			let startHtml = '\x3C!DOCTYPE html>\x3Chtml lang="en">\x3Chead>\x3Cmeta charset="UTF-8">\x3Ctitle>\x3C/title>\x3Clink rel="shortcut icon" href=" ../../assets/public/favicon.ico" type="image/x-icon">\x3Cmeta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">\x3Cmeta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">\x3Cmeta name="keywords" content="">\x3Cmeta name="description" content="">\x3Cmeta name="renderer" content="webkit">\x3Cmeta name="robots" content="index, follow">\x3Cmeta name="format-detection" content="telephone=no">\x3Cscript>this.globalThis || (this.globalThis = this)\x3C/script>\x3Cscript src=" ../../assets/public/third-libs/vue.js">\x3C/script>\x3Cscript src=" ../../assets/public/third-libs/vconsole.js">\x3C/script>\x3Clink rel="stylesheet" href=" ../../assets/public/third-libs/animate.min.css">\x3Clink rel="stylesheet" href=" ../../assets/public/third-libs/weatherfont/qweather-icons.css">\x3Clink rel="stylesheet" href=" ../../assets/public/third-libs/swiper.min.css">\x3Cscript src=" ../../assets/public/third-libs/swiper.min.js">\x3C/script>\x3C!--引入模板-->\x3Cscript src=" ../../assets/public/engine_libs/h5-swiper/page-engine.umd.js">\x3C/script>\x3Clink rel="stylesheet" href=" ../../assets/public/engine_libs/h5-swiper/page-engine.css">\x3Cstyle>* {padding: 0;margin: 0;box-sizing: border-box;}html, body, #app{position: relative;width: 100%;height: 100%;}\x3C/style>\x3Cscript>window._pageData = '
 			let endHtmls = '\x3C/script>\x3C/head>\x3Cbody>\x3Cdiv id="app">\x3Cengine-h5-swiper  />\x3C/div>\x3Cscript>new Vue({el:"#app"})\x3C/script>\x3Cscript>eval(window._pageData.script);\x3C/script>\x3Cscript>var vConsole = new VConsole();\x3C/script>\x3C/body>\x3C/html>'
 			let theProjectData = JSON.parse(JSON.stringify(this.projectData))
 			theProjectData.notDevs = true
@@ -586,20 +590,23 @@ export default {
 		}
 	}
 }
-.tip-modal{
+
+.tip-modal {
 	position: fixed;
 	width: 100%;
 	height: 100%;
 	background-color: rgba(0, 0, 0, 0.6);
 	z-index: 2000;
-	img{
+
+	img {
 		width: 200px;
 		position: absolute;
 		left: 0;
 	}
-	.left_tip{
+
+	.left_tip {
 		left: 28px;
-   		top: 66px;
+		top: 66px;
 	}
 }
 </style>

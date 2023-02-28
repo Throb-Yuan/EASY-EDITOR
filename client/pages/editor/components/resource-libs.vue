@@ -3,37 +3,43 @@
     <p class="page-title text-center">媒体资源列表</p>
     <el-scrollbar class="scroll-wrapper page-list-wrapper" style="height: 1000px;padding-bottom: 120px;">
       <div class="block">
-        <el-tree ref="tree" :data="resourcetypeList" node-key="dictCode" :label="'dictLabel'"
-          children="children" accordion :expand-on-click-node="true" @node-expand="openNodes">
+        <el-tree ref="tree" :data="resourcetypeList" node-key="dictCode" :label="'dictLabel'" children="children"
+          accordion :expand-on-click-node="true" @node-expand="openNodes">
           <div class="custom-tree-node" slot-scope="{ node, data }">
             <!-- 自定义节点信息start -->
             <span v-if="node.childNodes.length || node.data.dictLabel == '加载中...'" draggable="true"
               @dragstart="drag($event, node)">{{ node.data.dictLabel }}</span>
-            <el-tooltip v-else-if="node.data.dictLabel != '加载中...' && node.data.fileType == 'I'" draggable="true"
-              id="" class="item" effect="dark" :content="node.data.resourceName" placement="top-start">
-              <img @dragstart="drag($event, node, data)"
-                style="width: 120px;height: 80px;object-fit:cover;padding-top: 5px;" v-lazy="node.data.fileUrl"
-                :key="node.data.fileUrl" alt="">
+            <el-tooltip v-else-if="node.data.dictLabel != '加载中...' && node.data.fileType == 'I'" draggable="true" id=""
+              class="item" effect="dark" :content="node.data.resourceName" placement="top-start">
+
+              <div class="fl_line" style="justify-content: start;" draggable="true" @dragstart="drag($event, node)">
+                <img style="width: 120px;height: 80px;object-fit:cover;padding-top: 5px;" v-lazy="node.data.fileUrl"
+                  :key="node.data.fileUrl" alt="">
+                <div class="fl_rei fl_line_img" style="margin-left: 10px;"><i class="el-icon-edit hoverb"></i> <i
+                    class="el-icon-delete hoverb" @click="handleDelete(node, data)"></i>
+                </div>
+              </div>
             </el-tooltip>
             <div v-else>
               <el-tooltip v-if="node.data.resourceName && node.data.resourceName.length > 8" class="item" effect="dark"
                 :content="node.data.resourceName" placement="top-start">
-                <span draggable="true" @dragstart="drag($event, node)">{{
-                  node.data.resourceName.substring(0, 7)
-                }}...</span>
+                <div class="fl_line" draggable="true" @dragstart="drag($event, node)">
+                  <span class="fl_lef">{{ node.data.resourceName.substring(0, 7) }}...</span>
+                  <div class="fl_rei"><i class="el-icon-edit hoverb"></i> <i class="el-icon-delete hoverb"
+                      style="margin-left: 6px;" @click="handleDelete(node, data)"></i> </div>
+                </div>
               </el-tooltip>
-              <span v-else-if="node.data.resourceName" draggable="true" @dragstart="drag($event, node)">{{
-                node.data.resourceName
-              }}</span>
+
+              <div class="fl_line" v-else-if="node.data.resourceName" draggable="true" @dragstart="drag($event, node)">
+                <span class="fl_lef">{{ node.data.resourceName }}</span>
+                <div class="fl_rei"><i class="el-icon-edit hoverb" @click="handleUpdate(node, data)"></i> <i class="el-icon-delete hoverb"
+                    style="margin-left: 6px;" @click="handleDelete(node, data)"></i> </div>
+              </div>
+
               <span v-else style="font-size: 14px;color: #888;">{{ node.data.dictLabel }}</span>
             </div>
-            <!-- 尾部状态 查看更多 -->
-            <!-- <div v-if="total>node.childNodes&&"></div> -->
-            <!-- 自定义节点信息end -->
           </div>
         </el-tree>
-        <!-- <el-pagination small layout="prev, pager, next" :total="50">
-        </el-pagination> -->
       </div>
     </el-scrollbar>
     <div class="fixbom-add">
@@ -44,19 +50,43 @@
         <el-form-item label="资源类型">
           <el-select v-model="dictCode" placeholder="请选择资源类型" clearable>
             <el-option v-for="(dict, index) in resourcetypeList" :key="index" :label="dict.dictLabel"
-              :value="dict.dictCode" />
+              :value="dict.dictValue" />
           </el-select>
         </el-form-item>
         <el-form-item>
           <el-upload ref="upload" drag :action="uploadAction" :before-upload="beforeAvatarUpload"
-            :on-success="handleSuccess" :file-list="fileList" :auto-upload="false" multiple>
+            :on-success="handleSuccess" :file-list="fileList" :auto-upload="false" style="display: block;" multiple>
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
 
           </el-upload>
-          <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
+          <!-- <el-button style="margin-top: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button> -->
         </el-form-item>
       </el-form>
+      <div slot="footer" class="dialog-footer" style="padding-top: 0;">
+        <el-button size="small" type="success" @click="submitUpload">上传到服务器</el-button>
+    </div>
+    </el-dialog>
+     <!-- 添加或修改资源列表对话框 -->
+     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body :close-on-click-modal="false">
+      <el-form ref="form" :model="form"  label-width="100px">
+        <el-form-item label="资源名称" prop="resourceName">
+          <el-input v-model="form.resourceName" placeholder="请输入资源名称" />
+        </el-form-item>
+
+        <el-form-item label="资源类型">
+          <el-select v-model="form.resourceTypeId" placeholder="请选择资源类型" clearable>
+            <el-option v-for="(dict, index) in resourcetypeList" :key="index" :label="dict.dictLabel" :value="dict.dictValue" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="文件大小" prop="fileSizeStr">
+          {{ form.fileSizeStr }}
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -73,13 +103,114 @@ export default {
       fileList: [],
       resourceTypes: [],
       addOpen: false,
-      total: 0
+      total: 0,
+      form: {},
+      title: "",
+      // 是否显示弹出层
+      open: false,
     }
   },
   created() {
     this.getList();
+    // this.$axios.get('https://www.zhihu.com/rss').then(res => {
+    //   console.log("zhihu", res);
+    // })
   },
   methods: {
+        /** 提交按钮 */
+    submitForm() {
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          if (this.form.resourceId != null) {
+            this.$API.updateResource(this.form).then(() => {
+              this.$modal.msgSuccess("修改成功");
+              this.open = false;
+              this.form =this.$options.data.call(this).form
+              
+              this.getList();
+            });
+          }
+        }
+      });
+    },
+    // 取消按钮
+    cancel() {
+      this.open = false;
+      this.reset();
+    },
+    // 表单重置
+    reset() {
+      // this.resourceTypeId = ''
+      // this.fileList = []
+      this.form = {
+        resourceId: null,
+        resourceName: null,
+        resourceTypeId: null,
+        resourceMd5: null,
+        fileType: null,
+        fileUrl: null,
+        creatorId: null,
+        creator: null,
+        createTime: null,
+        modifyId: null,
+        modifier: null,
+        modifyTime: null,
+        version: null,
+        delStatus: 0
+      };
+      this.resetForm("form");
+    },
+    changeFileSize(limit) {
+      let size = "";
+      if (limit < 1024) {                            //小于1KB，则转化成B
+        size = limit.toFixed(2) + "B"
+      } else if (limit < 1024 * 1024) {            //小于1MB，则转化成KB
+        size = (limit / 1024).toFixed(2) + "KB"
+      } else if (limit < 1024 * 1024 * 1024) {        //小于1GB，则转化成MB
+        size = (limit / (1024 * 1024)).toFixed(2) + "MB"
+      } else {                                            //其他转化成GB
+        size = (limit / (1024 * 1024 * 1024)).toFixed(2) + "GB"
+      }
+
+      var sizeStr = size + "";                        //转成字符串
+      var index = sizeStr.indexOf(".");                    //获取小数点处的索引
+      var dou = sizeStr.substr(index + 1, 2)            //获取小数点后两位的值
+      if (dou == "00") {                                //判断后两位是否为00，如果是则删除00
+        return sizeStr.substring(0, index) + sizeStr.substr(index + 3, 2)
+      }
+      return size;
+    },
+    handleUpdate(node, data) {
+      // this.reset();
+      const resourceId = node.data.resourceId
+      this.$API.getResource(resourceId).then(response => {
+        this.form = response.data;
+        this.form.fileSizeStr = this.changeFileSize(this.form.fileSize);
+        this.open = true;
+        this.title = "修改资源";
+      });
+    },
+    /** 删除按钮操作 */
+    handleDelete(node, data) {
+      let row = node.data
+      const resourceIds = row.resourceId;
+      let message = row.resourceName ? '是否确认删除资源为"' + row.resourceName + '"的数据项？' : '是否确认删除资源列表编号为"' + resourceIds + '"的数据项？';
+      this.$alert(message, '操作提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        showCancelButton: true,
+        type: 'warning',
+      }).then(() => {
+        this.$API.delResource(resourceIds).then(() => {
+          this.$message.success('删除成功！');
+          // this.getList();
+          const parent = node.parent;
+          const children = parent.data.children || parent.data;
+          const index = children.findIndex(d => d.id === data.id);
+          children.splice(index, 1);
+        })
+      })
+    },
     /**
     * 节点展开事件
     * @param me 节点所对应的对象
@@ -125,7 +256,7 @@ export default {
           //     if (!ele.children) ele.children = [{ dictCode: ele.dictCode + idx, dictLabel: "加载中...", dictValue: ele.dictValue }]
           //   })
           // }
-          if (!cur.children) cur.children = [{ dictCode: cur.dictCode*idx , dictLabel: "加载中...", dictValue: cur.dictValue }]
+          if (!cur.children) cur.children = [{ dictCode: cur.dictCode * idx, dictLabel: "加载中...", dictValue: cur.dictValue }]
         })
         this.resourcetypeList = resourcetypeList
       });
@@ -147,7 +278,7 @@ export default {
       // this.title = "添加资源";
     },
     submitUpload() {
-        this.$refs.upload.submit();
+      this.$refs.upload.submit();
     },
     beforeAvatarUpload(file) {
       return new Promise(resolve => {
@@ -202,7 +333,8 @@ export default {
   font-size: 14px;
   padding-right: 8px; */
 }
-.fixbom-add{
+
+.fixbom-add {
   position: relative;
   bottom: 200px;
   width: 100%;
@@ -212,5 +344,69 @@ export default {
   justify-content: center;
   background-color: #fff;
   /* border-top: 0.5px solid #787878; */
+}
+
+.custom-tree-node {
+  width: 100%;
+}
+.el-upload {
+    display: block;
+}
+</style>
+<style scoped lang="scss">
+.fl_line {
+  padding-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &:hover .fl_rei {
+    display: inline-block;
+  }
+
+  &:hover .fl_line_img {
+    display: flex !important;
+  }
+
+  .fl_lef {}
+
+  .fl_rei {
+    display: none;
+
+    .hoverb:hover {
+      animation: mymove 0.5s 1;
+      color: #409EFF;
+    }
+
+    .el-icon-delete:hover {
+      color: #F56C6C;
+    }
+  }
+}
+
+.fl_line_img {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  height: 80px;
+  padding: 10px 2px;
+}
+
+@keyframes mymove {
+  0% {
+    // color: #c6e2ff;
+    opacity: 0.6;
+  }
+
+  50% {
+    //  color: #a0cfff;
+    opacity: 0.8;
+  }
+
+  100% {
+    //  color: #409EFF;
+    opacity: 1;
+  }
 }
 </style>

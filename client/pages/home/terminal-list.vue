@@ -23,11 +23,8 @@
             <el-table :data="props.row.terminalList"  style="width: 100%">
               <el-table-column prop="terminalId" label="终端ID" width="300" align="center"/>
               <el-table-column prop="terminalName" label="终端名称" align="center"/>
-              <!--<el-table-column prop="terminalVersion" label="终端版本号" align="center"></el-table-column>-->
-             <el-table-column prop="memory" label="存储空间" align="center"/>
+             <el-table-column prop="freeSpace" label="剩余空间" align="center" :formatter="freeSpaceFormat"/>
              <el-table-column prop="ip" label="IP" align="center"/>
-            <!-- <el-table-column prop="mac" label="MAC" align="center"> </el-table-column>
-             <el-table-column prop="os" label="系统" align="center"> </el-table-column>-->
               <el-table-column prop="osVersion" label="系统版本" align="center"/>
               <el-table-column prop="modifyTime" width="150" label="最后上报时间" align="center"/>
               <el-table-column align="center" width="200" label="操作">
@@ -40,6 +37,7 @@
                 </span>
                     <el-dropdown-menu slot="dropdown">
                       <el-dropdown-item  command="controlTerminal" icon="el-icon-s-tools">控制 </el-dropdown-item>
+                      <el-dropdown-item  command="detailTerminal" icon="el-icon-magic-stick">详情 </el-dropdown-item>
                       <el-dropdown-item  command="addTerminal" icon="el-icon-edit">编辑</el-dropdown-item>
                       <el-dropdown-item  command="deleteTerminal" icon="el-icon-delete">删除 </el-dropdown-item>
                     </el-dropdown-menu>
@@ -59,7 +57,6 @@
                   <i v-show="scope.row.terminalGroupId" class="el-icon-edit" style="color:#AEAEAE;font-size: 18px" @click="getTerminalDialog(scope.row)"></i>
                   <i v-show="scope.row.terminalGroupId" class="el-icon-delete" style="color:#AEAEAE;font-size: 18px" @click="deleteTerminalItem(scope.row)"></i>
                 </div>
-                <!--<div v-show="scope.row.terminalGroupId">展示应用: {{ scope.row.appName }}</div>-->
                 <div v-show="scope.row.terminalGroupId">创建时间: {{ scope.row.createTime }}</div>
               </div>
               <el-button size="mini" type="primary" v-show="scope.row.terminalGroupId"  icon="el-icon-plus" @click="addTerminal(scope.row)">新增终端 </el-button>
@@ -76,11 +73,6 @@
           <el-form-item label="终端组名称" prop="terminalGroupName">
             <el-input v-model.trim="terminalGroupForm.terminalGroupName" show-word-limit maxlength="15" placeholder="15个字以内"></el-input>
           </el-form-item>
-          <!--<el-form-item label="所展示应用" prop="terminalGroup">
-            <el-select class="custom-select-wrap" multiple collapse-tags v-model="terminalGroupForm.appIds">
-              <el-option v-for="(item, index) in appList" :key="index" :label="item.appName" :value="item.appId"> </el-option>
-            </el-select>
-          </el-form-item>-->
           <el-form-item label="备注" prop="remark">
             <el-input
               type="textarea"
@@ -106,7 +98,7 @@
             <el-input v-model.trim="terminalForm.terminalId" show-word-limit maxlength="40" placeholder="40个字以内" :disabled="isDisabled"></el-input>
           </el-form-item>
           <el-form-item label="终端名称" prop="terminalName">
-            <el-input v-model.trim="terminalForm.terminalName" show-word-limit maxlength="15" placeholder="15个字以内"></el-input>
+            <el-input v-model.trim="terminalForm.terminalName" show-word-limit maxlength="100" placeholder="100个字以内"></el-input>
           </el-form-item>
           <el-form-item label="终端密码" prop="pwd">
             <el-input v-model.trim="terminalForm.pwd"  type="password" maxlength="16" placeholder="最少输入6位数字/字母/特殊字符" />
@@ -204,7 +196,7 @@
 
         <el-tab-pane label="字幕推送记录" name="third">
           <el-table v-loading="loading" :data="subtitleTerminalList">
-            <el-table-column label="字幕内容" align="center" prop="content" >
+            <el-table-column label="字幕内容" align="center" prop="content" width="220px" >
               <template slot-scope="scope">
                 <el-tooltip class="item" effect="dark" :content="scope.row.content" placement="top-start">
                   <span>{{scope.row.content.substring(0,25)}}<span v-if="scope.row.content.length>25">...</span></span>
@@ -212,15 +204,14 @@
               </template>
             </el-table-column>
 
-            <el-table-column label="定位" align="center" width="100px" prop="location" :formatter="contentLocationFormat"/>
-            <el-table-column label="滚动方向" align="center" width="100px" prop="rollingDirection" :formatter="rollingDirectionFormat"/>
-            <el-table-column label="速度" align="center" width="50px" prop="speed" />
-            <el-table-column label="开始日期" align="center" width="100px" prop="beginDate" />
-            <el-table-column label="结束日期" align="center" width="100px" prop="endDate" />
-            <el-table-column label="开始时间" align="center" width="75px" prop="beginTime" />
-            <el-table-column label="结束时间" align="center" width="75px" prop="endTime" />
+            <el-table-column label="定位" align="center" width="50px" prop="location" :formatter="contentLocationFormat"/>
+            <el-table-column label="滚动方向" align="center" width="80px" prop="rollingDirection" :formatter="rollingDirectionFormat"/>
+            <el-table-column label="速度" align="center" width="80px" prop="speed" />
+            <el-table-column label="字幕日期" align="center" width='180px' prop="beginDate" :formatter="beginDateFormat"/>
+            <el-table-column label="字幕时间" align="center" width='160px' prop="beginTime" :formatter="beginTimeFormat"/>
             <el-table-column label="星期" align="center" prop="week" :formatter="weekFormat"/>
-            <el-table-column label="同步状态" align="center" width="100px" prop="status" :formatter="statusFormat"/>
+            <el-table-column label="操作类型" align="center" prop="businessType" width="105px" :formatter="subtitleBusinessTypeFormat"/>
+            <el-table-column label="同步状态" align="center" width="80px" prop="status" :formatter="statusFormat"/>
           </el-table>
           <pagination
               v-show="stTotal>0"
@@ -309,12 +300,73 @@
       </div>
     </el-dialog>
 
+
+    <!-- 添加或修改开关机计划对话框 -->
+    <el-dialog title="终端详情" :visible.sync="detailVisible" width="800px" append-to-body>
+      <el-form label-position="right" size="medium" label-width="100px" :model="terminalDetailForm" ref="terminalDetailForm" >
+        <div class="indent pad">
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="终端主键：">{{terminalDetailForm.terminalId}}
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="终端名称：">{{terminalDetailForm.terminalName}}
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="总空间：">{{terminalDetailForm.totalSpace}}
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="剩余空间：">{{terminalDetailForm.freeSpace}}
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="IP地址：">{{terminalDetailForm.ip}}
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="MAC地址：">{{terminalDetailForm.mac}}
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="系统：">{{terminalDetailForm.os}}
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="系统版本：">{{terminalDetailForm.osVersion}}
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="设备版本号：">{{terminalDetailForm.terminalVersion}}
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="上报时间：">{{terminalDetailForm.modifyTime}}
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </div>
+      </el-form>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 
-import {listSubtitlTerminal} from "@/api";
 
 export default {
   name: "terminal",
@@ -391,6 +443,7 @@ export default {
       viewVisible: false,
       terminalControlVisible: false,
       terminalControlListVisible: false,
+      detailVisible: false,
       searchVal: '',
       startTime: '',
       endTime: '',
@@ -446,17 +499,18 @@ export default {
         ],
         terminalName: [
           {required: true, message: '请输入终端名称', trigger: 'blur'},
-          {max: 50, message: '名称长度在50个以内', trigger: 'blur'}
+          {max: 100, message: '名称长度在100个以内', trigger: 'blur'}
         ],
         pwd: [
-          {required: false, message: '请输入终端密码\n', trigger: 'blur'},
+          {required: true, message: '请输入终端密码\n', trigger: 'blur'},
           {min: 6, message: '终端密码在6-16个字符以内', trigger: 'blur'}
         ],
         confirmPwd: [
-          {required: false, validator: validatePass, trigger: 'blur'}
+          {required: true, validator: validatePass, trigger: 'blur'}
         ]
       },
-      tableData: []
+      tableData: [],
+      terminalDetailForm: {}
     }
   },
   mounted() {
@@ -464,6 +518,9 @@ export default {
   },
 
   methods: {
+    freeSpaceFormat(row) {
+      return this.changeFileSize(row.freeSpace)
+    },
     rollingDirectionFormat(row)
     {
       return this.selectDictLabel(this.dict.type.content_rolling_direction, row.rollingDirection);
@@ -483,6 +540,9 @@ export default {
           break;
         case "controlTerminal":
           this.controlTerminal(row);
+          break;
+        case "detailTerminal":
+          this.detailTerminal(row);
           break;
         default:
           break;
@@ -608,6 +668,18 @@ export default {
           break
       }
     },
+    subtitleBusinessTypeFormat(row){
+      switch (row.businessType) {
+        case 'INSERT':
+          return '新增紧急字幕'
+        case 'UPDATE':
+          return '修改紧急字幕'
+        case 'DELETE':
+          return '删除紧急字幕'
+        default:
+          break
+      }
+    },
     getTerminalDialog(item) {
       this.terminalGroupForm = {}
       this.terminalGroupDialogTitle = item ? '编辑终端组' : '新增终端组'
@@ -676,6 +748,34 @@ export default {
         controlCommand: '1'
       }
       this.terminalControlVisible = true
+    },
+    detailTerminal(item) {
+      this.detailVisible = true
+      this.$API.terminalDetailGet({terminalId: item.terminalId}).then(response => {
+        this.terminalDetailForm = response.data;
+        this.terminalDetailForm.totalSpace = this.changeFileSize(this.terminalDetailForm.totalSpace)
+        this.terminalDetailForm.freeSpace = this.changeFileSize(this.terminalDetailForm.freeSpace)
+      });
+    },
+    changeFileSize(limit) {
+      let size = "";
+      if (limit < 1024) {                            //小于1KB，则转化成B
+        size = limit.toFixed(2) + "B"
+      } else if (limit < 1024 * 1024) {            //小于1MB，则转化成KB
+        size = (limit / 1024).toFixed(2) + "KB"
+      } else if (limit < 1024 * 1024 * 1024) {        //小于1GB，则转化成MB
+        size = (limit / (1024 * 1024)).toFixed(2) + "MB"
+      } else {                                            //其他转化成GB
+        size = (limit / (1024 * 1024 * 1024)).toFixed(2) + "GB"
+      }
+
+      var sizeStr = size + "";                        //转成字符串
+      var index = sizeStr.indexOf(".");                    //获取小数点处的索引
+      var dou = sizeStr.substr(index + 1, 2)            //获取小数点后两位的值
+      if (dou == "00") {                                //判断后两位是否为00，如果是则删除00
+        return sizeStr.substring(0, index) + sizeStr.substr(index + 3, 2)
+      }
+      return size;
     },
     openShutdownPlanDialog(item) {
       this.queryShutdownPlanParams = {

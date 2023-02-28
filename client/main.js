@@ -1,3 +1,4 @@
+import 'babel-polyfill'
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
@@ -15,6 +16,9 @@ import '@/common/styles/ruoyi.scss'
 import '@/common/styles/element-variables.scss'
 import '@/common/styles/index.scss' // 自定义 css
 import 'animate.css'
+
+// import 'video.js/dist/video-js.css'
+
 import VueClipboard from 'vue-clipboard2'
 import VueLazyload from 'vue-lazyload'//懒加载
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, addBeginAndEndTime, handleTree } from '@client/common/js/ruoyi';
@@ -24,6 +28,9 @@ import DictData from '@client/common/js/DictData';
 import Pagination from '@client/components/Pagination';
 // 自定义表格工具组件
 import RightToolbar from '@client/components/RightToolbar'
+// import VideoPlayer from 'vue-video-player'
+// require('video.js/dist/video-js.css')
+// Vue.use(VideoPlayer)
 Vue.use(Element);
 Vue.use(VueClipboard)
 Vue.use(pluginsHui)

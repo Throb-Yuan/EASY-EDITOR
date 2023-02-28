@@ -9,3 +9,5 @@ export const areaList = p => $axios.get('/content/chinacity/list/get', {})
 export const weatherList = p => $axios.get('/content/weather/list/'+p, {})
 // 获取当日天气
 export const todayWeather = p => $axios.get('/content/weather/today/get/'+p, {})
+// 获取rss内容
+export const getRssUrl = p => $axios.get('/content/resource/by/url/get', p)

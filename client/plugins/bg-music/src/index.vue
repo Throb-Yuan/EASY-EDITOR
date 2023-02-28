@@ -70,6 +70,7 @@ export default {
 	},
 	created() {
 		// process.env.NODE_ENV == 'development' ? "" : this.notDevs = true
+		console.log("I'm bgmusic");
 		if (!window.location.href.includes('http')) {
 			this.notDevs = true
 			this.playing = true

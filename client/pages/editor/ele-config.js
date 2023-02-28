@@ -264,17 +264,32 @@ export default [
 					color:'#0d7fef'
 				}
 			},
-			// {
-			// 	elName: 'qk-notice-rss',
-			// 	title: 'RSS',
-			// 	icon: 'hjiconfont iconrss',
-			// 	valueType: '',
-			// 	defaultStyle: {
-			// 		height: 180,
-			// 		width: 180,
-			// 		color:'#0d7fef'
-			// 	}
-			// }
+			{
+				elName: 'qk-notice-rss',
+				title: 'RSS',
+				icon: 'hjiconfont iconrss',
+				valueType: '',
+				defaultStyle: {
+					width: $config.canvasH5Width,
+					height: 40,
+					paddingTop: 0,
+					paddingBottom: 0,
+					color: '#f90',
+					fontSize: 22,
+					fontWeight: 600,
+					top: 20,
+					left: 0
+				}
+			},{
+				elName: 'qk-streaming',
+				title: '流媒体',
+				icon: 'hjiconfont iconduomeiti-',
+				valueType: '',
+				defaultStyle: {
+					width: $config.canvasH5Width/2,
+					height: $config.canvasH5Height/2
+				}
+			}
 		]
 	},
 

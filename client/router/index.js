@@ -87,5 +87,6 @@ export default new Router({
 			trust: true,
 			noNeedLogin: true
 		}
-	}]
+	}
+]
 })

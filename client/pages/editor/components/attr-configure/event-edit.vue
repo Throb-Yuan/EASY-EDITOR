@@ -118,6 +118,7 @@ export default {
       let a = JSON.parse(JSON.stringify(this.activeElement))
       if (a.events.length && a.events[0].type == 'linkLoacl' && a.events[0].url) {
         this.value == a.events[0].url ? '' : this.value = a.events[0].url
+        !this.programList.length ? this.getList() : ''
       }
     }
   },
@@ -169,6 +170,7 @@ export default {
      * @param item 单个事件本身
      */
     checkProgram(e, item) {
+      console.log('checkProgram',e,this.value);
       item.url = e
     },
     /**

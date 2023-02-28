@@ -195,7 +195,7 @@ const actions = {
 			commit('setActiveElementUUID', '')
 		}
 		// 先将页面元素zIndex 重置下再删除元素
-		commit('resetElementZIndex', {uuid: uuid, type: 'set0'})
+		// commit('resetElementZIndex', {uuid: uuid, type: 'set0'})
 
 		commit('deleteElement', uuid)
 		commit('addHistoryCache')
