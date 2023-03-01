@@ -1005,6 +1005,7 @@ export default {
         this.$confirm('确认删除当前终端组？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
+          showCancelButton: true,
           type: 'warning'
         }).then(() => {
             this.deleteGroup(item)
@@ -1012,6 +1013,8 @@ export default {
       } else {
         this.$alert('当前终端组下有终端，不允许删除', '提示', {
           confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          showCancelButton: true,
           type: 'warning'
         })
       }
@@ -1038,6 +1041,7 @@ export default {
         this.$confirm('确认删除【'+terminalName+'】终端？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
+          showCancelButton: true,
           type: 'warning'
         }).then(() => {
           this.$API
@@ -1111,6 +1115,7 @@ export default {
       this.$confirm('确认删除【'+shutdownPlanName+'】的开关机时间？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
+        showCancelButton: true,
         type: 'warning'
       }).then(() => {
         this.$API.delShutdownPlan( item.terminalShutdownPlanId)

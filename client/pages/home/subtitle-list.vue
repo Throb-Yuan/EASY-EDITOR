@@ -1,16 +1,24 @@
 <template>
   <div class="app-container">
     <el-scrollbar class="scroll-wrapper page-list-wrapper">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="定位" prop="location">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch">
+      <el-form-item label="字幕内容" prop="content">
         <el-input
-            v-model="queryParams.location"
-            placeholder="请输入定位"
+            v-model="queryParams.content"
+            placeholder="请输入字幕内容"
             clearable
             @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-
+      <el-form-item label="字幕播放日期：">
+        <el-date-picker
+            v-model="date"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"  value-format="yyyy-MM-dd">
+        </el-date-picker>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -216,6 +224,7 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      date: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -355,10 +364,16 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
+      if(this.date)
+      {
+        this.queryParams.beginDate=this.date[0]
+        this.queryParams.endDate=this.date[1]
+      }
       this.getList();
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.date = []
       this.resetForm("queryForm");
       this.handleQuery();
     },

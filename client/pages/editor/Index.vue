@@ -461,6 +461,7 @@ export default {
 			this.$confirm('确认退出编辑?', '提示', {
 				confirmButtonText: '确定',
 				cancelButtonText: '取消',
+       			showCancelButton: true,
 				type: 'warning'
 			}).then(() => {
 				this.$router.push({ name: 'Home' })

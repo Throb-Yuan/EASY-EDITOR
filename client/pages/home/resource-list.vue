@@ -8,12 +8,8 @@
         </el-form-item>
         <el-form-item label="资源类型" prop="resourceTypeId">
           <el-select v-model="queryParams.resourceTypeId" placeholder="请选择资源类型" clearable>
-            <el-option
-                v-for="dict in dict.type.content_resource_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-            />
+            <el-option v-for="dict in dict.type.content_resource_type" :key="dict.value" :label="dict.label"
+              :value="dict.value" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -44,7 +40,7 @@
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="资源主键" align="center" prop="resourceId" />
         <el-table-column label="资源名称" align="center" prop="resourceName" />
-        <el-table-column label="资源类型" align="center" prop="resourceTypeId"  :formatter="resourceTypeFormat"/>
+        <el-table-column label="资源类型" align="center" prop="resourceTypeId" :formatter="resourceTypeFormat" />
         <el-table-column label="MD5值" align="center" prop="resourceMd5" />
         <el-table-column label="文件大小" align="center" width="100" prop="fileSize" :formatter="fileSizeFormat" />
         <el-table-column label="文件预览" align="center" prop="fileUrl">
@@ -78,21 +74,14 @@
         @pagination="getList" />
 
     </el-scrollbar>
-    <el-dialog :title="title" :visible.sync="addOpen" width="450px" append-to-body>
+    <el-dialog :title="title" :visible.sync="addOpen" width="410px" append-to-body @close="resetPage">
       <el-form ref="form">
-        <el-form-item label="资源类型">
-          <el-select v-model="resourceTypeId" placeholder="请选择资源类型" clearable>
-            <el-option    v-for="dict in dict.type.content_resource_type" :key="dict.value" :label="dict.label" :value="dict.value" />
-          </el-select>
-        </el-form-item>
         <el-form-item>
-          <el-upload ref="upload" drag :action="uploadAction" :before-upload="beforeAvatarUpload"
-            :on-success="handleSuccess" :file-list="fileList" :auto-upload="false" multiple>
-            <i class="el-icon-upload"></i>
-            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-
-          </el-upload>
-          <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
+          <uploadBreakpoint v-if="addOpen" />
+        </el-form-item>
+        <el-form-item style="text-align: right;width:360px;">
+          <el-button @click="addOpen = false">取消</el-button>
+          <el-button type="primary" @click="addOpen = false">完成</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -111,7 +100,8 @@
 
         <el-form-item label="资源类型">
           <el-select v-model="form.resourceTypeId" placeholder="请选择资源类型" clearable>
-            <el-option    v-for="dict in dict.type.content_resource_type" :key="dict.value" :label="dict.label" :value="dict.value" />
+            <el-option v-for="dict in dict.type.content_resource_type" :key="dict.value" :label="dict.label"
+              :value="dict.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="MD5值" prop="resourceMd5">
@@ -137,11 +127,15 @@
 
 <script>
 import * as imageConversion from 'image-conversion'
+import uploadBreakpoint from '@/components/upload-breakpoint'
 const baseURL = process.env.VUE_APP_BASE_API
 
 export default {
   name: "Resource",
   dicts: ['sys_del_status', 'content_resource_type'],
+  components: {
+    uploadBreakpoint
+  },
   data() {
     return {
       videoSrc: "",
@@ -195,6 +189,10 @@ export default {
     this.getList();
   },
   methods: {
+    resetPage() {
+      this.queryParams = this.$options.data().queryParams
+      this.getList()
+    },
     openUrl(url, type) {
       if (type == 'V') {
         this.videoSrc = url
@@ -240,10 +238,10 @@ export default {
       return size;
     },
     submitUpload() {
-        this.$refs.upload.submit();
+      this.$refs.upload.submit();
     },
     beforeAvatarUpload(file) {
-      console.log("file==",file);
+      console.log("file==", file);
       return new Promise(resolve => {
         this.loading = true;
         let isLt2M = file.size / 1024 / 1024 < 1 // 判定图片大小是否小于1MB
@@ -378,9 +376,13 @@ export default {
         showCancelButton: true,
         type: 'warning',
       }).then(() => {
-        this.$API.delResource(resourceIds).then(() => {
-          this.$message.success('删除成功！');
-          this.getList();
+        this.$API.delResource(resourceIds).then(res => {
+          if (res.code == 200) {
+            this.$message.success('删除成功！');
+            this.getList();
+          } else {
+            this.$message.error(res.msg);
+          }
         })
       })
     },

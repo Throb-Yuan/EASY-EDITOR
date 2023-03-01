@@ -242,6 +242,7 @@ export default {
 			this.$alert('确认删除节目？删除后，将无法恢复此节目?', '操作提示', {
 				confirmButtonText: '确定',
 				cancelButtonText: '取消',
+				showCancelButton:true,
 				type: 'warning',
 			}).then(() => {
 				this.$API.delProgram(this.pageData.programId).then(() => {

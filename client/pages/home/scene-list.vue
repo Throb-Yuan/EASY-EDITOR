@@ -10,7 +10,7 @@
         />
       </el-form-item>
       <el-form-item>
-	    <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
@@ -225,17 +225,35 @@ export default {
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          if(this.form.sceneId == this.form.parentId)
+          {
+            this.$modal.msgError("不能将父级场景设置成自己");
+            return;
+          }
           if (this.form.sceneId != null) {
-            this.$API.updateScene(this.form).then(() => {
-              this.$modal.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
+            this.$API.updateScene(this.form).then(res => {
+              if(res.code==200)
+              {
+                this.$modal.msgSuccess("修改成功");
+                this.open = false;
+                this.getList();
+              }else
+              {
+                this.$modal.msgError(res.msg);
+              }
             });
           } else {
-            this.$API.addScene(this.form).then(() => {
-              this.$modal.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
+            this.$API.addScene(this.form).then(res => {
+              if(res.code==200)
+              {
+                this.$modal.msgSuccess("新增成功");
+                this.open = false;
+                this.getList();
+              }else
+              {
+                this.$modal.msgError(res.msg);
+              }
+
             });
           }
         }
@@ -246,6 +264,7 @@ export default {
       this.$alert('是否确认删除资源类型为"' + row.sceneName + '"的数据项？', '操作提示', {
 				confirmButtonText: '确定',
 				cancelButtonText: '取消',
+        showCancelButton: true,
 				type: 'warning',
 			}).then(() => {
 				this.$API.delScene(row.sceneId).then(() => {

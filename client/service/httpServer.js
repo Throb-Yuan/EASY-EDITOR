@@ -1,4 +1,5 @@
-import axios from 'axios'
+// import axios from 'axios'
+import axios from 'axios-extra'
 import store from '@/store/index'
 import $config from "@/config/index";
 import userModel from '@/libs/userModel'
@@ -13,10 +14,19 @@ if (process.env.NODE_ENV !== 'development') {
 axios.defaults.headers['Content-Type'] = 'application/json;charse=UTF-8'
 axios.defaults.timeout = 30000; // 超时时间
 
+const httpExtra = axios.create({
+    maxConcurrent: 5, //并发为1
+    queueOptions: {
+        retry: 3, //请求失败时,最多会重试3次
+        retryIsJump: false //是否立即重试, 否则将在请求队列尾部插入重试请求
+    }
+})
 //请求拦截器
 axios.interceptors.request.use(config => {
 	if(config.url.includes('content/program/download')) config.timeout = 300000;
 	// config.headers.Authorization = store.getters.authorization;
+	// console.log("axios===>",axios);
+	// console.log("config===>",config);
 	if (getToken()) {
 		// 有token则携带token
 		config.headers['Authorization'] = 'Bearer ' + getToken()

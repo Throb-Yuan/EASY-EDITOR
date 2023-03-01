@@ -11,7 +11,7 @@ let devServer = {
 			pathRewrite: {
 				"^/": "",///content
 			},
-		}
+		},
 	}
 }
 module.exports = {

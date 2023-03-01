@@ -45,27 +45,16 @@
     <div class="fixbom-add">
       <el-button type="primary" plain icon="el-icon-plus" @click="handleAdd">添加资源</el-button>
     </div>
-    <el-dialog :title="'添加资源'" :visible.sync="addOpen" width="450px" append-to-body>
+    <el-dialog :title="title" :visible.sync="addOpen" width="410px" append-to-body @close="resetPage">
       <el-form ref="form">
-        <el-form-item label="资源类型">
-          <el-select v-model="dictCode" placeholder="请选择资源类型" clearable>
-            <el-option v-for="(dict, index) in resourcetypeList" :key="index" :label="dict.dictLabel"
-              :value="dict.dictValue" />
-          </el-select>
-        </el-form-item>
         <el-form-item>
-          <el-upload ref="upload" drag :action="uploadAction" :before-upload="beforeAvatarUpload"
-            :on-success="handleSuccess" :file-list="fileList" :auto-upload="false" style="display: block;" multiple>
-            <i class="el-icon-upload"></i>
-            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-
-          </el-upload>
-          <!-- <el-button style="margin-top: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button> -->
+          <uploadBreakpoint v-if="addOpen" />
+        </el-form-item>
+        <el-form-item style="text-align: right;width:360px;">
+          <el-button @click="addOpen = false">取消</el-button>
+          <el-button type="primary" @click="addOpen = false">完成</el-button>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer" style="padding-top: 0;">
-        <el-button size="small" type="success" @click="submitUpload">上传到服务器</el-button>
-    </div>
     </el-dialog>
      <!-- 添加或修改资源列表对话框 -->
      <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body :close-on-click-modal="false">
@@ -91,10 +80,14 @@
   </div>
 </template>
 <script>
+import uploadBreakpoint from '@/components/upload-breakpoint'
 const baseURL = process.env.VUE_APP_BASE_API
 let idx = 1;
 
 export default {
+  components: {
+    uploadBreakpoint
+  },
   data() {
     return {
       resourcetypeList: [],
@@ -105,7 +98,7 @@ export default {
       addOpen: false,
       total: 0,
       form: {},
-      title: "",
+      title: "上传资源文件",
       // 是否显示弹出层
       open: false,
     }
@@ -117,6 +110,10 @@ export default {
     // })
   },
   methods: {
+    resetPage() {
+      // this.queryParams = this.$options.data().queryParams
+      this.getList()
+    },
         /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
