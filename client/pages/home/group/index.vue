@@ -332,7 +332,7 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const programScheduleGroupIds = row.programScheduleGroupId || this.ids;
-      let message = row.programScheduleName ? '是否确认删除排程组为"' + row.programScheduleName + '"的数据项？删除排程组会同步删除组下所有的排程。' :'是否确认删除排程组主键为"' + programScheduleGroupIds + '"的数据项？删除排程组会同步删除组下所有的排程。';
+      let message = row.programScheduleName ? '是否确认删除排程组为"' + row.programScheduleName + '"的数据项？删除排程组会同步删除组下所有的排程。' :'是否确认删除所勾选的排程组数据？删除排程组会同步删除组下所有的排程。';
       this.$modal.confirm(message).then(() => {
         this.$API.delGroup(programScheduleGroupIds).then(() => {
             this.getList();

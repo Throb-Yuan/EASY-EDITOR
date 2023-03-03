@@ -179,22 +179,22 @@ export default {
 						console.log("checkData3", checkData)
 						rate = checkData.toWidth / 800
 						checkData.toWidth = 800
-						checkData.toHeight = checkData.toHeight / rate < 1 ? 1 : heckData.toHeight / rate
+						checkData.toHeight = checkData.toHeight / rate < 1 ? 1 : checkData.toHeight / rate
 					} else {
 						rate = 800 / checkData.toWidth
 						checkData.toWidth = 800
-						checkData.toHeight = checkData.toHeight * rate < 1 ? 1 : heckData.toHeight * rate
+						checkData.toHeight = checkData.toHeight * rate < 1 ? 1 : checkData.toHeight * rate
 					}
 				} else {
 					// 宽<高,以高比例缩小 800*800
 					if (checkData.toHeight >= 800) {
 						rate = checkData.toHeight / 800
 						checkData.toHeight = 800
-						checkData.toWidth = checkData.toWidth / rate < 1 ? 1 : heckData.toWidth / rate
+						checkData.toWidth = checkData.toWidth / rate < 1 ? 1 : checkData.toWidth / rate
 					} else {
 						rate = 800 / checkData.toHeight
 						checkData.toHeight = 800
-						checkData.toWidth = checkData.toWidth * rate < 1 ? 1 : heckData.toWidth * rate
+						checkData.toWidth = checkData.toWidth * rate < 1 ? 1 : checkData.toWidth * rate
 					}
 				}
 				// return false
@@ -238,6 +238,7 @@ export default {
 
 			}
 			let b = {} //节点信息带入
+			const txtList = ['txt','xls', 'xlsx','doc', 'docx','pdf','html','ppt', 'pptx'];
 			// 判断节点类型，添加至画布
 			if (nodeData.resourceTypeId === "1") {
 				b.localPath = nodeData.filePath
@@ -283,6 +284,18 @@ export default {
 				a.defaultStyle.height = 450
 				a.elName = "qk-pdf-view"
 				a.title = "PDF"
+			} else if (nodeData.resourceTypeId == 4) {
+				b.localPath = nodeData.filePath
+				b.documentSrc = nodeData.fileUrl
+				b.androidId = nodeData.resourceId
+				b.fileName = nodeData.resourceName
+				b.md5 = nodeData.resourceMd5
+				b.fileSize = this.$mUtils.transFileSize(nodeData.fileSize)
+				// 调整大小与模板名称
+				a.defaultStyle.width = this.$config.canvasH5Width / 2
+				a.defaultStyle.height = this.$config.canvasH5Height / 2
+				a.elName = "qk-document-view"
+				a.title = "文档"
 			} else {
 				console.log("暂未支持的文件==>", nodeData);
 				this.$message.warning('暂未支持的文件格式')

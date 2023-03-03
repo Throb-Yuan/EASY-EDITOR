@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-form-item label="流媒体链接：">
-			<el-input type="textarea" :rows="2" placeholder="请输入流媒体资源链接" v-model="tempValueNow" @blur="changeValue">
+			<el-input type="textarea" :rows="2" placeholder="请输入流媒体资源链接" v-model="tempValueNow" @focus="oldInputValue = tempValueNow" @blur="changeValue">
 			</el-input>
 		</el-form-item>
 		<div
@@ -36,7 +36,8 @@ export default {
 			tempConytols: null,
 			tempAutoPlay: null,
 			tempVideoLoop: null,
-			tempVideoMuted: false
+			tempVideoMuted: false,
+			oldInputValue:''
 		}
 	},
 	mounted() {
@@ -53,16 +54,15 @@ export default {
 			var re = new RegExp(strRegex);
 			return re.test(str_url);
 		},
-		changeValue(){
+		changeValue(event){
+			console.log("event",event);
 			let isurls = this.isURL(this.tempValueNow)
-			console.log("isurls==",this.isurls);
-			if(isurls){
-				console.log("isurls111==",!this.isurls);
+			if(!this.tempValueNow||isurls){
 				this.tempValue = this.tempValueNow
 				// this.$emit('update:streamingSrc', this.tempValue)
 			}else{
-				console.log("isurls211==",!this.isurls);
 				this.$message.warning('请输入正确格式的链接');
+				this.tempValueNow = this.oldInputValue
 			}
 			// this.tempValue = this.tempValueNow
 		}

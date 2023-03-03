@@ -20,8 +20,8 @@ export default [
 				icon: 'iconfont icontupian',
 				valueType: '', // 标识数据类型，用于表单组件,
 				defaultStyle: {
-					width: $config.canvasH5Width/2,
-					height: $config.canvasH5Height/2,
+					width: $config.canvasH5Width / 2,
+					height: $config.canvasH5Height / 2,
 					top: 80,
 					left: 180,
 					borderRadius: 6
@@ -68,8 +68,8 @@ export default [
 					height: 31,
 					width: 300,
 					// backgroundColor: '#999999',
-					paddingTop:15,
-					paddingBottom:15
+					paddingTop: 15,
+					paddingBottom: 15
 				}
 			},
 			{
@@ -143,8 +143,8 @@ export default [
 				icon: 'iconfont iconshipin',
 				valueType: '',
 				defaultStyle: {
-					width: $config.canvasH5Width/2,
-					height: $config.canvasH5Height/2,
+					width: $config.canvasH5Width / 2,
+					height: $config.canvasH5Height / 2,
 					paddingTop: 0,
 					paddingBottom: 0,
 					top: 40,
@@ -166,12 +166,21 @@ export default [
 				icon: 'iconfont iconshouyelunbotu',
 				valueType: '', // 标识数据类型，用于表单组件,
 				defaultStyle: {
-					width: $config.canvasH5Width/2,
-					height: $config.canvasH5Height/2,
+					width: $config.canvasH5Width / 2,
+					height: $config.canvasH5Height / 2,
 					top: 20,
-					left: $config.canvasH5Width/2
+					left: $config.canvasH5Width / 2
 				}
-			},{
+			}, {
+				elName: 'qk-streaming',
+				title: '流媒体',
+				icon: 'hjiconfont iconduomeiti-1',
+				valueType: '',
+				defaultStyle: {
+					width: $config.canvasH5Width / 2,
+					height: $config.canvasH5Height / 2
+				}
+			}, {
 				elName: 'qk-pdf-view',
 				title: 'PDF',
 				icon: 'hjiconfont iconPDF',
@@ -184,9 +193,21 @@ export default [
 				}
 			},
 			{
+				elName: 'qk-document-view',
+				title: '文档',
+				icon: 'hjiconfont icontubiaozhizuomobanyihuifu-',
+				valueType: '', // 标识数据类型，用于表单组件,
+				defaultStyle: {
+					width: Math.floor($config.canvasH5Width / 3),
+					height: Math.floor($config.canvasH5Height / 3),
+					top: 0,
+					left: 0
+				}
+			},
+			{
 				elName: 'qk-date-time',
 				title: '日期时间',
-				icon: 'iconfont iconriqishijian',
+				icon: 'hjiconfont icona-ziyuan22',
 				// 每个组件设置props来展示哪些显示哪些编辑项
 				valueType: '', // 标识数据类型，用于表单组件
 				defaultStyle: {
@@ -196,7 +217,7 @@ export default [
 					fontSize: 32,
 					fontWeight: 600
 				}
-			},{
+			}, {
 				elName: 'qk-week-time',
 				title: '星期',
 				icon: 'hjiconfont iconwodeyizhou',
@@ -209,20 +230,6 @@ export default [
 					fontSize: 32,
 					top: 240,
 					fontWeight: 600
-				}
-			},{
-				elName: 'qk-count-down',
-				title: '倒计时',
-				icon: 'hjiconfont iconjishishalou',
-				// 每个组件设置props来展示哪些显示哪些编辑项
-				valueType: '', // 标识数据类型，用于表单组件
-				defaultStyle: {
-					width: 180,
-					height: 32,
-					color: "#3e8dd3",
-					fontSize: 24,
-					fontWeight: 600,
-					top: 280,
 				}
 			},
 			{
@@ -242,18 +249,7 @@ export default [
 					top: 400,
 					left: 0
 				}
-			},
-			{
-				elName: 'qk-qrcode',
-				title: '二维码',
-				icon: 'iconfont iconfengexian',
-				valueType: '',
-				defaultStyle: {
-					height: 120,
-					width: 120,
-				}
-			},
-			{
+			}, {
 				elName: 'qk-weather',
 				title: '天气',
 				icon: 'hjiconfont iconduoyun',
@@ -261,13 +257,37 @@ export default [
 				defaultStyle: {
 					height: 80,
 					width: 180,
-					color:'#0d7fef'
+					color: '#0d7fef'
+				}
+			},
+			{
+				elName: 'qk-qrcode',
+				title: '二维码',
+				icon: 'hjiconfont iconerweima',
+				valueType: '',
+				defaultStyle: {
+					height: 120,
+					width: 120,
+				}
+			}, {
+				elName: 'qk-count-down',
+				title: '倒计时',
+				icon: 'hjiconfont iconjishishalou',
+				// 每个组件设置props来展示哪些显示哪些编辑项
+				valueType: '', // 标识数据类型，用于表单组件
+				defaultStyle: {
+					width: 180,
+					height: 32,
+					color: "#3e8dd3",
+					fontSize: 24,
+					fontWeight: 600,
+					top: 280,
 				}
 			},
 			{
 				elName: 'qk-notice-rss',
 				title: 'RSS',
-				icon: 'hjiconfont iconrss',
+				icon: 'hjiconfont iconrss1',
 				valueType: '',
 				defaultStyle: {
 					width: $config.canvasH5Width,
@@ -279,15 +299,6 @@ export default [
 					fontWeight: 600,
 					top: 20,
 					left: 0
-				}
-			},{
-				elName: 'qk-streaming',
-				title: '流媒体',
-				icon: 'hjiconfont iconduomeiti-',
-				valueType: '',
-				defaultStyle: {
-					width: $config.canvasH5Width/2,
-					height: $config.canvasH5Height/2
 				}
 			}
 		]

@@ -13,6 +13,7 @@ import pdfSrc from './pdfSrc'
 import weatherArea from './weatherArea'
 import streamingSrc from './streamingSrc'
 import noticeUrl from './noticeUrl'
+import documentSrc from './documentSrc'
 
 export default {
 	[Text.name]: Text,
@@ -29,5 +30,6 @@ export default {
 	[pdfSrc.name]: pdfSrc,
 	[weatherArea.name]: weatherArea,
 	[streamingSrc.name]: streamingSrc,
-	[noticeUrl.name]: noticeUrl
+	[noticeUrl.name]: noticeUrl,
+	[documentSrc.name]: documentSrc
 }

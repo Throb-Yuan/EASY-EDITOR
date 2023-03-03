@@ -110,6 +110,8 @@
           this.name = this.userInfo.nickName
           this.userHeadImage =  `${process.env.VUE_APP_BASE_API}/file/download/${res.data.avatar}`
           this.$emit('changeImg',this.userHeadImage)
+          res.data.avatars = this.userHeadImage
+          this.$store.commit("UPDATE_USER_INFO", res.data)
         })
 			},
 			//保存头像
@@ -149,7 +151,7 @@
 		},
 		watch: {
 			userData(val) {
-				this.userHeadImage = val.avatar || this.userHeadImage;
+				this.userHeadImage = val.avatars || this.userHeadImage;
 				this.name = val.name;
 			}
 		}

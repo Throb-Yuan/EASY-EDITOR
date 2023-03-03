@@ -77,11 +77,10 @@
     <el-dialog :title="title" :visible.sync="addOpen" width="410px" append-to-body @close="resetPage">
       <el-form ref="form">
         <el-form-item>
-          <uploadBreakpoint v-if="addOpen" />
+          <uploadBreakpoint  @completion="uploadFinsh" v-if="addOpen" />
         </el-form-item>
         <el-form-item style="text-align: right;width:360px;">
-          <el-button @click="addOpen = false">取消</el-button>
-          <el-button type="primary" @click="addOpen = false">完成</el-button>
+          <el-button :type="isUpload ? 'primary':''" @click="addOpen = false">{{isUpload ? '完成' : '取消'}}</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -95,11 +94,11 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="资源名称" prop="resourceName">
-          <el-input v-model="form.resourceName" placeholder="请输入资源名称" />
+          <el-input maxlength="50" v-model="form.resourceName" placeholder="请输入资源名称" />
         </el-form-item>
 
         <el-form-item label="资源类型">
-          <el-select v-model="form.resourceTypeId" placeholder="请选择资源类型" clearable>
+          <el-select v-model="form.resourceTypeId" placeholder="请选择资源类型">
             <el-option v-for="dict in dict.type.content_resource_type" :key="dict.value" :label="dict.label"
               :value="dict.value" />
           </el-select>
@@ -181,7 +180,9 @@ export default {
       form: {},
       // 表单校验
       rules: {
-      }
+      },
+      // 断点续传状态
+      isUpload:false
     };
   },
   created() {
@@ -189,9 +190,18 @@ export default {
     this.getList();
   },
   methods: {
+    // 断点续传组件通讯--是否已上传文件
+    uploadFinsh(booleans){
+      console.log('uploadFinsh',booleans);
+      this.isUpload ? '' :  this.isUpload = booleans
+    },
     resetPage() {
       this.queryParams = this.$options.data().queryParams
-      this.getList()
+      if(this.isUpload){
+        this.getList()
+        this.isUpload = false
+      }
+      
     },
     openUrl(url, type) {
       if (type == 'V') {
@@ -368,8 +378,9 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
+      console.log(this.ids);
       const resourceIds = row.resourceId || this.ids;
-      let message = row.resourceName ? '是否确认删除资源为"' + row.resourceName + '"的数据项？' : '是否确认删除资源列表编号为"' + resourceIds + '"的数据项？';
+      let message = row.resourceName ? '是否确认删除资源为"' + row.resourceName + '"的数据项？' : '是否确认删除已选中的' + resourceIds.length + '个资源项？';
       this.$alert(message, '操作提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

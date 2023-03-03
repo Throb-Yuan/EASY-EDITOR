@@ -3,7 +3,7 @@
     <el-dropdown v-if="isLogined">
       <div class="inline-block">
         <div class="user-head-btn-img">
-          <img :src="userData.avatar || userHeadImage" alt="">
+          <img :src="userData.avatars || userHeadImage" alt="">
         </div>
         <span class="user-head-btn-name">{{userData.name}}</span>
       </div>

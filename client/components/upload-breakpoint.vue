@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-upload class="upload-demo" drag action="/" multiple :http-request="handleHttpRequest"
+    <el-upload class="upload-demo" drag action="/" :multiple="multiple" :http-request="handleHttpRequest"
       :on-remove="handleRemoveFile">
       <i class="el-icon-upload"></i>
       <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -11,7 +11,7 @@
 import md5 from "../common/js/md5";
 import { taskInfo, initTask, preSignUrl, merge } from '../api/modules/breakpoint';
 import { addResource } from '../api/modules/page';
-import { Notification } from "element-ui";
+import { Notification, Loading } from "element-ui";
 import Queue from 'promise-queue-plus';
 import axios from 'axios'
 import { ref } from 'vue'
@@ -19,12 +19,20 @@ const axiosReq = axios.create()
 // 文件上传分块任务的队列（用于移除文件时，停止该文件的上传队列） key：fileUid value： queue object
 const fileUploadChunkQueue = ref({}).value
 export default {
+  name:'uploadBreakpoint',
+  props: {
+    multiple: {
+      type: Boolean,
+      default: true
+    },
+  },
   data() {
     return {
     }
   },
   methods: {
     async getTaskInfo(file) {
+      console.log("getTaskInfo===11", file);
       let task;
       const fileMd5 = await md5(file)
       const { code, data, msg } = await taskInfo(fileMd5)
@@ -39,6 +47,7 @@ export default {
           }
           const { code, data, msg } = await initTask(initTaskData)
           if (code === 200) {
+            console.log("getTaskInfo===21", data);
             task = data
           } else {
             Notification.error({
@@ -56,6 +65,7 @@ export default {
       return task
     },
     handleUpload(file, taskRecord, options) {
+      console.log("handleUpload11", file, taskRecord, options);
       let lastUploadedSize = 0; // 上次断点续传时上传的总大小
       let uploadedSize = 0 // 已上传的大小
       const totalSize = file.size || 0 // 文件总大小
@@ -143,6 +153,7 @@ export default {
         if (queue.getLength() == 0) {
           // 所有分片都上传完，但未合并，直接return出去，进行合并操作
           resolve(failArr);
+          console.log("handleUpload12", failArr);
           return;
         }
         queue.start()
@@ -157,15 +168,24 @@ export default {
     },
     async handleHttpRequest(options) {
       const file = options.file
+      const loadingBox = Loading.service({
+        lock: true,
+        text: '文件正在上传中',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
       const task = await this.getTaskInfo(file)
       if (task) {
         const { finished, path, taskRecord } = task
         const { fileHash: fileHash } = taskRecord
         if (finished) {
+          this.addResource(task.sysFile)
+          loadingBox.close()
           return path
         } else {
           const errorList = await this.handleUpload(file, taskRecord, options)
           if (errorList.length > 0) {
+            loadingBox.close()
             Notification.error({
               title: '文件上传错误',
               message: '部分分片上次失败，请尝试重新上传文件'
@@ -175,22 +195,10 @@ export default {
           const { code, data, msg } = await merge(fileHash)
           if (code === 200) {
             // 上传完后添加至资源列表
-            let fileTs = this.getFileType(data.fileName)
-            let param = {
-              resourceId: data.fileId,
-              resourceName: data.fileName,
-              resourceTypeId: fileTs.resourceTypeId,
-              resourceMd5: data.fileHash,
-              fileSize: data.fileSize,
-              fileType: fileTs.fileType,
-              fileUrl: process.env.VUE_APP_BASE_API + '/file/download/' + data.fileId
-            }
-            addResource(param).then(() => {
-              this.$modal.msgSuccess("新增成功");
+            this.addResource(data)
             return path;
-              
-            });
           } else {
+            loadingBox.close()
             Notification.error({
               title: '文件上传错误',
               message: msg
@@ -198,11 +206,29 @@ export default {
           }
         }
       } else {
+        loadingBox.close()
         Notification.error({
           title: '文件上传错误',
           message: '获取上传任务失败'
         })
       }
+    },
+    // 文件断点续传完成后添加至资源列表
+    addResource(data) {
+      let fileTs = this.getFileType(data.fileName)
+      let param = {
+        resourceId: data.fileId,
+        resourceName: data.fileName,
+        resourceTypeId: fileTs.resourceTypeId,
+        resourceMd5: data.fileHash,
+        fileSize: data.fileSize,
+        fileType: fileTs.fileType,
+        fileUrl: process.env.VUE_APP_BASE_API + '/file/download/' + data.fileId
+      }
+      addResource(param).then(() => {
+        this.$emit('completion', true);
+        this.$modal.msgSuccess("新增成功");
+      });
     },
     getFileType(fileName) {
       let suffix = ''; // 后缀获取
@@ -216,26 +242,26 @@ export default {
       // 匹配图片
       const imgList = ['png', 'jpg', 'jpeg', 'bmp', 'gif']; // 图片格式
       result = imgList.find(item => item === suffix);
-      if (result) return {fileType:'I',resourceTypeId:'1'};
-      // 匹配文档
-      const txtList = ['txt','xls', 'xlsx','doc', 'docx','pdf','html','ppt', 'pptx'];
-      result = txtList.find(item => item === suffix);
-      if (result) return {fileType:'D',resourceTypeId:'4'};
+      if (result) return { fileType: 'I', resourceTypeId: '1' };
       // 匹配视频
       const videoList = ['mp4', 'm2v', 'mkv', 'rmvb', 'wmv', 'avi', 'flv', 'mov', 'm4v'];
       result = videoList.find(item => item === suffix);
-      if (result) return {fileType:'V',resourceTypeId:'2'};
+      if (result) return { fileType: 'V', resourceTypeId: '2' };
       // 匹配音频
       const radioList = ['mp3', 'wav', 'wmv'];
       result = radioList.find(item => item === suffix);
-      if (result) return {fileType:'M',resourceTypeId:'3'};
-      // 匹配音频
-      const apkList = ['apk', 'pxl','ipa','sis','sisx','jar'];
+      if (result) return { fileType: 'M', resourceTypeId: '3' };
+      // 匹配文档
+      const txtList = ['txt', 'xls', 'xlsx', 'doc', 'docx', 'pdf', 'html', 'ppt', 'pptx'];
+      result = txtList.find(item => item === suffix);
+      if (result) return { fileType: 'D', resourceTypeId: '4' };
+      // 匹配应用
+      const apkList = ['apk', 'pxl', 'ipa', 'sis', 'sisx', 'jar'];
       result = apkList.find(item => item === suffix);
-      if (result) return {fileType:'A',resourceTypeId:'5'};
+      if (result) return { fileType: 'A', resourceTypeId: '5' };
       // 其他文件类型
-      return {fileType:'O',resourceTypeId:'6'};
-}
+      return { fileType: 'O', resourceTypeId: '6' };
+    }
   }
 }
 </script>

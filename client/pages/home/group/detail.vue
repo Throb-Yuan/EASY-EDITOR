@@ -547,7 +547,7 @@ export default {
     },
     handleScheduleDelete(row){
       const programScheduleIds = row.programScheduleId || this.ids;
-      let message = row.programName ? '是否确认删除节目名为"' + row.programName + '"的数据项？' :'是否确认删除节目排程编号为"' + programScheduleIds + '"的数据项？';
+      let message = row.programName ? '是否确认删除节目名为"' + row.programName + '"的数据项？' :'是否确认删除所勾选的节目排程数据？';
       this.$modal.confirm(message ).then(() =>{
         this.$API.delSchedule(programScheduleIds).then(() => {
           this.getScheduleList()

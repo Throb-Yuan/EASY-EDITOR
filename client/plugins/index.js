@@ -20,6 +20,7 @@ import pdfView from './pdf-view'
 import Weather from './weather'
 import NoticeRss from './noticeRss'
 import Streaming from './streaming'
+import DocumentView from './document-view'
 // 所有组件列表
 const components = [
 	Text,
@@ -39,7 +40,8 @@ const components = [
 	pdfView,
 	NoticeRss,
 	Weather,
-	Streaming
+	Streaming,
+	DocumentView
 ]
 // 定义 install 方法，接收 Vue 作为参数
 const install = function (Vue) {
@@ -80,6 +82,7 @@ export {
 	Weather,
 	NoticeRss,
 	Streaming,
+	DocumentView,
 	_qk_register_components_object
 }
 

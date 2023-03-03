@@ -1,4 +1,3 @@
-// import axios from 'axios'
 import axios from 'axios-extra'
 import store from '@/store/index'
 import $config from "@/config/index";
@@ -24,9 +23,6 @@ const httpExtra = axios.create({
 //请求拦截器
 axios.interceptors.request.use(config => {
 	if(config.url.includes('content/program/download')) config.timeout = 300000;
-	// config.headers.Authorization = store.getters.authorization;
-	// console.log("axios===>",axios);
-	// console.log("config===>",config);
 	if (getToken()) {
 		// 有token则携带token
 		config.headers['Authorization'] = 'Bearer ' + getToken()
@@ -49,7 +45,7 @@ axios.interceptors.response.use(response => {
 			type: 'error',
 			data: response.data.message || response.data.msg || response.data.errMsg
 		});
-		return Promise.reject("error")
+		return Promise.reject(response.data)
 	}
 
 }, err => {
@@ -75,7 +71,7 @@ axios.interceptors.response.use(response => {
 				err.message = '请求超时';
 				break;
 			case 500:
-				err.message = err.response.data.message;
+				err.message = err.response.msg || err.response.data.message;
 				break;
 			case 501:
 				err.message = '网络未实现';

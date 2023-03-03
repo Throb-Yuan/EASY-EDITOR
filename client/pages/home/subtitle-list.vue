@@ -130,7 +130,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="速度" prop="speed">
-          <el-input-number  v-model="form.speed" controls-position="right" :min="1"/>
+          <el-input-number  v-model="form.speed" controls-position="right" :min="1"/><span>  在此时间内播完，单位为秒</span>
         </el-form-item>
 
         <el-form-item label="起始日期" prop="beginDate">
@@ -481,7 +481,7 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const subtitleIds = row.subtitleId || this.ids;
-      this.$modal.confirm('是否确认删除紧急字幕编号为 "' + subtitleIds + '" 的数据项？').then(() =>{
+      this.$modal.confirm('是否确认删除紧急字幕？').then(() =>{
         this.$API.delSubtitle(subtitleIds).then(() => {
           this.getList();
           this.$modal.msgSuccess("删除成功");

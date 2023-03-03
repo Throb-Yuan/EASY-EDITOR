@@ -1,13 +1,9 @@
 <template>
   <div class="app-container">
+    <el-scrollbar class="scroll-wrapper page-list-wrapper">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="90px">
       <el-form-item label="模板版本号" prop="tplVersion">
-        <el-input
-          v-model="queryParams.tplVersion"
-          placeholder="请输入模板版本号"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+        <el-input v-model="queryParams.tplVersion" placeholder="请输入模板版本号" clearable @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -17,105 +13,70 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-        >新增</el-button>
+        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-        >修改</el-button>
+        <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single"
+          @click="handleUpdate">修改</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-        >删除</el-button>
+        <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple"
+          @click="handleDelete">删除</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-        >导出</el-button>
+        <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="versionList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="模板版本号" align="center" prop="tplVersion" width="150"/>
-      <el-table-column label="模板大小" align="center" prop="size" :formatter="fileSizeFormat" width="150"/>
+      <el-table-column label="模板版本号" align="center" prop="tplVersion" width="150" />
+      <el-table-column label="模板大小" align="center" prop="size" :formatter="fileSizeFormat" width="150" />
       <el-table-column label="版本描述" align="center" prop="imprint" />
-      <el-table-column label="下载地址" align="center" prop="downloadUrl" :formatter="downloadUrlFormat"/>
-      <el-table-column label="更新人" align="center" prop="modifier" width="200"/>
-      <el-table-column label="更新时间" align="center" prop="modifyTime" width="150"/>
+      <el-table-column label="下载地址" align="center" prop="downloadUrl" :formatter="downloadUrlFormat" >
+        <template slot-scope="scope">
+            <div class="demo-image__preview">
+              <el-button @click="openUrl(downloadUrlFormat(scope.row),'D')" type="primary"
+                icon="el-icon-download">下载</el-button>
+            </div>
+          </template>
+      </el-table-column>
+      <el-table-column label="更新人" align="center" prop="modifier" width="200" />
+      <el-table-column label="更新时间" align="center" prop="modifyTime" width="150" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="150">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-          >删除</el-button>
+          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
+          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-
+    <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize"
+      @pagination="getList" />
+    </el-scrollbar>
     <!-- 添加或修改模板版本信息对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+      <el-form v-if="open" ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="版本号" prop="tplVersion">
           <el-input-number v-model="form.tplVersion" placeholder="请输入模板版本号" controls-position="right"></el-input-number>
         </el-form-item>
         <el-form-item label="模板大小" prop="size">
-          <el-input-number v-model="form.size" placeholder="请输入模板大小" controls-position="right" :min="1"></el-input-number> 单位：字节（Byte）
+          <!-- <el-input-number v-model="form.size" placeholder="请输入模板大小" controls-position="right" :min="0" :disabled="true"></el-input-number>  -->
+          <el-input placeholder="请上传模板文件" v-model="form.size" :disabled="true">
+            <template slot="append">单位：字节（Byte）</template>
+          </el-input>
         </el-form-item>
         <el-form-item label="版本描述" prop="imprint">
           <el-input v-model="form.imprint" type="textarea" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="模板上传" prop="downloadUrl">
-          <el-upload
-            ref="upload"
-            drag
-            :action="uploadAction"
-            :on-success="handleSuccess"
-            :before-upload="beforeAvatarUpload"
-            :auto-upload="false" multiple>
+          <el-upload ref="upload" drag :action="uploadAction" :on-success="handleSuccess" :on-remove="handleRemove"
+            :before-upload="beforeAvatarUpload" :auto-upload="true" :multiple="false" :limit="1">
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
 
           </el-upload>
-          <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -131,8 +92,9 @@ export default {
   name: "Version",
   data() {
     return {
+      pageWindow:window,
       todayVersion: 0,
-      uploadAction: process.env.VUE_APP_BASE_API+'/file/upload',
+      uploadAction: process.env.VUE_APP_BASE_API + '/file/upload',
       // 遮罩层
       loading: true,
       // 选中数组
@@ -168,9 +130,13 @@ export default {
     };
   },
   created() {
+    console.log('userInfo',this.$store.getters.userInfo);
     this.getList();
   },
   methods: {
+    openUrl(url) {
+        window.open(url, "_blank");
+    },
     getNowDate() {
       const timeOne = new Date()
       const year = timeOne.getFullYear()
@@ -187,36 +153,37 @@ export default {
         resolve(file)
       })
     },
-    handleSuccess(res, file, fileList) {
+    handleSuccess(res) {
       this.loading = false;
       this.form.downloadUrl = res.data.fileId
       this.form.size = res.data.fileSize
     },
-    submitUpload() {
-      this.$refs.upload.submit();
+    handleRemove() {
+      this.form.downloadUrl = ''
+      this.form.size = ''
     },
-    fileSizeFormat(row){
+    fileSizeFormat(row) {
       return this.changeFileSize(row.size)
-    },downloadUrlFormat(row){
-      return process.env.VUE_APP_BASE_API+'/file/download/'+row.downloadUrl
+    }, downloadUrlFormat(row) {
+      return process.env.VUE_APP_BASE_API + '/file/download/' + row.downloadUrl
     },
-    changeFileSize(limit){
-      limit=parseInt(limit)
+    changeFileSize(limit) {
+      limit = parseInt(limit)
       let size = "";
-      if(limit <  1024){                            //小于1KB，则转化成B
+      if (limit < 1024) {                            //小于1KB，则转化成B
         size = limit.toFixed(2) + "B"
-      }else if(limit <  1024 * 1024){            //小于1MB，则转化成KB
-        size = (limit/1024).toFixed(2) + "KB"
-      }else if(limit <  1024 * 1024 * 1024){        //小于1GB，则转化成MB
-        size = (limit/(1024 * 1024)).toFixed(2) + "MB"
-      }else{                                            //其他转化成GB
-        size = (limit/(1024 * 1024 * 1024)).toFixed(2) + "GB"
+      } else if (limit < 1024 * 1024) {            //小于1MB，则转化成KB
+        size = (limit / 1024).toFixed(2) + "KB"
+      } else if (limit < 1024 * 1024 * 1024) {        //小于1GB，则转化成MB
+        size = (limit / (1024 * 1024)).toFixed(2) + "MB"
+      } else {                                            //其他转化成GB
+        size = (limit / (1024 * 1024 * 1024)).toFixed(2) + "GB"
       }
 
       var sizeStr = size + "";                        //转成字符串
       var index = sizeStr.indexOf(".");                    //获取小数点处的索引
-      var dou = sizeStr.substr(index + 1 ,2)            //获取小数点后两位的值
-      if(dou == "00"){                                //判断后两位是否为00，如果是则删除00
+      var dou = sizeStr.substr(index + 1, 2)            //获取小数点后两位的值
+      if (dou == "00") {                                //判断后两位是否为00，如果是则删除00
         return sizeStr.substring(0, index) + sizeStr.substr(index + 3, 2)
       }
       return size;
@@ -237,6 +204,7 @@ export default {
     },
     // 表单重置
     reset() {
+      const {userId,nickName} = this.$store.getters.userInfo
       this.form = {
         tplId: null,
         tplVersion: null,
@@ -244,11 +212,11 @@ export default {
         imprint: null,
         isUpdate: "0",
         downloadUrl: null,
-        creatorId: null,
-        creator: null,
+        creatorId: userId,
+        creator: nickName,
         createTime: null,
-        modifyId: null,
-        modifier: null,
+        modifyId: userId,
+        modifier: nickName,
         modifyTime: null,
         version: null,
         delStatus: "0"
@@ -268,7 +236,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.tplId)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -276,7 +244,7 @@ export default {
       this.reset();
       this.open = true;
       this.title = "添加模板版本信息";
-      this.form.tplVersion=parseInt(this.getNowDate()+'01')
+      this.form.tplVersion = parseInt(this.getNowDate() + '01')
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -295,14 +263,13 @@ export default {
         if (valid) {
           if (this.form.tplId != null) {
             this.$API.updateVersion(this.form).then(() => {
-                this.$modal.msgSuccess("修改成功");
-                this.open = false;
-                this.getList();
-              });
+              this.$modal.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            });
 
           } else {
-            if(this.form.downloadUrl==null)
-            {
+            if (this.form.downloadUrl == null) {
               this.$modal.msgError("请先上传模板");
               return
             }
@@ -320,7 +287,9 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const tplIds = row.tplId || this.ids;
-      this.$modal.confirm('是否确认删除版本号为 "' + row.tplVersion + '" 的数据项？').then(() =>{
+      let oneTmp = '是否确认删除版本号为 "' + row.tplVersion + '" 的数据项？'
+      let moreTmp = '是否确认删除已选中的' + this.ids.length + '个数据项？'
+      this.$modal.confirm(row.tplId ? oneTmp : moreTmp).then(() => {
         this.$API.delVersion(tplIds).then(() => {
           this.getList();
           this.$modal.msgSuccess("删除成功");
