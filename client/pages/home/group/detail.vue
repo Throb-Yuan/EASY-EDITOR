@@ -90,8 +90,8 @@
     <!-- 添加或修改节目排程对话框 -->
     <el-dialog :title="title" :visible.sync="scheduleOptOpen" width="720px" append-to-body>
       <el-form ref="scheduleForm" :model="scheduleForm" :rules="scheduleFormRules" label-width="80px">
-        <el-form-item label="节目名称" prop="programName">
-          <el-select v-model="scheduleForm.programId" placeholder="请选择">
+        <el-form-item label="节目" prop="programId">
+          <el-select v-model="scheduleForm.programId" placeholder="请选择节目">
             <el-option-group
               v-for="scene in sceneProgramList"
               :key="scene.sceneName"
@@ -241,6 +241,17 @@ export default {
       rules: {
       },
       scheduleFormRules: {
+        programId: [
+          {required: true, message: '请选择节目', trigger: 'change',type: "string"}
+        ],beginDate: [
+          {required: true, message: '请选择起始日期', trigger: 'blur'}
+        ],beginTime: [
+          {required: true, message: '请选择起始时间', trigger: 'blur'}
+        ],week: [
+          {required: true, message: '请选择星期', trigger: 'blur'}
+        ],insertFlag: [
+          {required: true, message: '请选择是否插播', trigger: 'blur'}
+        ],
       }
     };
   },
@@ -444,8 +455,8 @@ export default {
       this.title = "添加节目排程";
       this.resetSchedule()
       this.scheduleForm.week = ['1','2','3','4','5','6','7']
+      this.scheduleForm.insertFlag = '0'
       this.$forceUpdate();
-      console.log(this.scheduleForm)
     },
     /** 修改按钮操作 */
     handleScheduleUpdate(row) {
@@ -484,65 +495,70 @@ export default {
     },
     /** 提交按钮 */
     submitScheduleForm() {
+      this.$refs["scheduleForm"].validate(valid => {
+        if (valid) {
+          let param = JSON.parse(JSON.stringify(this.scheduleForm));
+          if(!this.scheduleForm.programId)
+          {
+            this.$message.error("请选择节目");
+            return
+          }
 
-        let param = JSON.parse(JSON.stringify(this.scheduleForm));
-        if(!this.scheduleForm.programId)
-        {
-          this.$message.error("请选择节目");
-          return
-        }
+          if(this.scheduleForm.week.length==0)
+          {
+            this.$message.error("星期至少选择一个");
+            return
+          }else
+          {
+            param.week=this.scheduleForm.week.toString()
+          }
 
-        if(this.scheduleForm.week.length==0)
-        {
-          this.$message.error("星期至少选择一个");
-          return
-        }else
-        {
-          param.week=this.scheduleForm.week.toString()
-        }
+          if( this.scheduleForm.beginTime==null || this.scheduleForm.beginTime.length == 0)
+          {
+            this.$message.error("请选择起始时间");
+            return
+          }else
+          {
+            let times = this.scheduleForm.beginTime;
+            param.beginTime=times[0];
+            param.endTime=times[1];
+          }
 
-        if( this.scheduleForm.beginTime==null || this.scheduleForm.beginTime.length == 0)
-        {
-          this.$message.error("请选择起始时间");
-          return
-        }else
-        {
-          let times = this.scheduleForm.beginTime;
-          param.beginTime=times[0];
-          param.endTime=times[1];
-        }
+          if(this.scheduleForm.beginDate==null || this.scheduleForm.beginDate.length == 0)
+          {
+            this.$message.error("请选择起始日期");
+            return
+          }else{
+            let dates = this.scheduleForm.beginDate;
+            param.beginDate=dates[0];
+            param.endDate=dates[1];
+          }
 
-        if(this.scheduleForm.beginDate==null || this.scheduleForm.beginDate.length == 0)
-        {
-          this.$message.error("请选择起始日期");
-          return
-        }else{
-          let dates = this.scheduleForm.beginDate;
-          param.beginDate=dates[0];
-          param.endDate=dates[1];
-        }
+          if(this.scheduleForm.insertFlag)
+          {
+            param.insertFlag = 0
+          }else
+          {
+            param.insertFlag = 1
+          }
 
-        if(this.scheduleForm.insertFlag)
-        {
-          param.insertFlag = 0
-        }else
-        {
-          param.insertFlag = 1
+          if (this.scheduleForm.programScheduleId != null) {
+            this.$API.updateSchedule(param).then(() => {
+              this.$modal.msgSuccess("修改成功");
+              this.scheduleOptOpen = false;
+              this.getScheduleList()
+            });
+          } else {
+            this.$API.addSchedule(param).then(() => {
+              this.$modal.msgSuccess("新增成功");
+              this.scheduleOptOpen = false;
+              this.getScheduleList()
+            });
+          }
         }
+      });
 
-        if (this.scheduleForm.programScheduleId != null) {
-          this.$API.updateSchedule(param).then(() => {
-            this.$modal.msgSuccess("修改成功");
-            this.scheduleOptOpen = false;
-            this.getScheduleList()
-          });
-        } else {
-          this.$API.addSchedule(param).then(() => {
-            this.$modal.msgSuccess("新增成功");
-            this.scheduleOptOpen = false;
-            this.getScheduleList()
-          });
-        }
+
 
     },
     handleScheduleDelete(row){

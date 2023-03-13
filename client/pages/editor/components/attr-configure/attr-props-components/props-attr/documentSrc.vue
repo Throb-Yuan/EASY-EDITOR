@@ -1,22 +1,4 @@
 <template>
-	<!-- <div @drop="drop($event)" @dragover="allowDrop($event)" @dragenter="dragenter($event)">
-		<div class="tip-drop">可将对应媒体资源拖拽至下方替换<span @click="changeSide"> 查看资源库</span></div>
-		<div :class="activeCss ? 'drag-info-box active-css':'drag-info-box'">
-			<img src="../../../../../../common/images/myicons/pdf.png" alt="">
-			<div class="media-indo">
-				<div class="media-name">{{ tempFileName }}</div>
-				<div class="media-size">{{ tempFileSize }}</div>
-			</div>
-		</div>
-		<div style="display: flex;align-items: center;justify-content: space-between;padding-right: 30px;">
-			<div><span class="switch-labels">自动翻页</span><el-switch v-model="tempAutoPlay"></el-switch>	</div>
-			<div v-show="tempAutoPlay" style="font-size: 14px;">间隔：<el-input-number style="width:100px" size="mini" v-model="tempSpeed" controls-position="right" /></div>
-		</div>
-		<div style="display: flex;align-items: center;justify-content: space-between;padding-top: 8px;">
-			<div><span class="switch-labels">显示页码</span><el-switch v-model="tempShowPageNum"></el-switch></div>
-		</div>
-	</div> -->
-
 	<div @drop="drop($event)" @dragover="allowDrop($event)" @dragenter="dragenter($event)">
 		<div class="tip-drop">可将本地文件或媒体资源拖至下方替换<span @click="changeSide"> 查看资源库</span></div>
 		<el-upload ref="upload" drag style="height: 100px;" :action="uploadAction" accept=".pdf" :auto-upload="true"

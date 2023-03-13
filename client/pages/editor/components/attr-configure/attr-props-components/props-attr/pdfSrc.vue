@@ -1,21 +1,4 @@
 <template>
-	<!-- <div @drop="drop($event)" @dragover="allowDrop($event)" @dragenter="dragenter($event)">
-		<div class="tip-drop">可将对应媒体资源拖拽至下方替换<span @click="changeSide"> 查看资源库</span></div>
-		<div :class="activeCss ? 'drag-info-box active-css':'drag-info-box'">
-			<img src="../../../../../../common/images/myicons/pdf.png" alt="">
-			<div class="media-indo">
-				<div class="media-name">{{ tempFileName }}</div>
-				<div class="media-size">{{ tempFileSize }}</div>
-			</div>
-		</div>
-		<div style="display: flex;align-items: center;justify-content: space-between;padding-right: 30px;">
-			<div><span class="switch-labels">自动翻页</span><el-switch v-model="tempAutoPlay"></el-switch>	</div>
-			<div v-show="tempAutoPlay" style="font-size: 14px;">间隔：<el-input-number style="width:100px" size="mini" v-model="tempSpeed" controls-position="right" /></div>
-		</div>
-		<div style="display: flex;align-items: center;justify-content: space-between;padding-top: 8px;">
-			<div><span class="switch-labels">显示页码</span><el-switch v-model="tempShowPageNum"></el-switch></div>
-		</div>
-	</div> -->
 
 	<div @drop="drop($event)" @dragover="allowDrop($event)" @dragenter="dragenter($event)">
 		<div class="tip-drop">可将本地文件或媒体资源拖至下方替换<span @click="changeSide"> 查看资源库</span></div>
@@ -39,7 +22,11 @@
 		</el-upload>
 		<div style="display: flex;align-items: center;justify-content: space-between;padding-right: 30px;margin-top: 14px;">
 			<div><span class="switch-labels">自动翻页</span><el-switch v-model="tempAutoPlay"></el-switch>	</div>
-			<div v-show="tempAutoPlay" style="font-size: 14px;">间隔：<el-input-number style="width:100px" size="mini" v-model="tempSpeed" controls-position="right" /></div>
+			<div v-show="tempAutoPlay" style="font-size: 14px; display: flex;align-items: center;"><span>间隔：</span>
+				<el-form  @submit.native.prevent>
+					<el-input-number  @submit.native.prevent style="width:100px" size="mini" v-model="tempSpeed" :min="1000" controls-position="right" />
+				</el-form>
+			</div>
 		</div>
 		<div style="display: flex;align-items: center;justify-content: space-between;padding-top: 8px;">
 			<div><span class="switch-labels">显示页码</span><el-switch v-model="tempShowPageNum"></el-switch></div>
@@ -101,12 +88,22 @@ export default {
 			let nodeData = JSON.parse(nodeStr)
 			// 为图片则更改当前轮播项数据
 			!this.activeCss ?'' : this.activeCss = false
-			if (!nodeData.resourceName.includes('.pdf')) {
-				this.$message.warning('请选择PDF文档拖入替换');
+			const sustainFm = [ '.xls', '.xlsx', '.doc', '.docx', '.pdf', '.ppt', '.pptx'];
+			let isSustain = sustainFm.find(item => nodeData.resourceName.includes(item));
+			if (!isSustain) {
+				this.$message.warning('请选择office文档拖入替换');
 				return false
 			}
-			this.tempValue = nodeData.fileUrl
+			if (!nodeData.resourceName.includes('.pdf')) {
+				console.log("Not Pdf");
+				this.tempValue = nodeData.fileUrl.replace('/download/','/preview/')
+				console.log("Not Pdf",this.tempValue);
+			}else{
+				console.log("Is Pdf");
+				this.tempValue = nodeData.fileUrl
+			}
 			this.tempLocalPath = nodeData.filePath
+			// this.tempValue = nodeData.fileUrl
 			this.tempAndroidId = nodeData.resourceId
 			this.tempFileSize = this.$mUtils.transFileSize(nodeData.fileSize)
 			this.tempFileName = nodeData.resourceName

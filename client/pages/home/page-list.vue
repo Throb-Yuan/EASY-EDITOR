@@ -7,7 +7,7 @@
     <el-scrollbar class="scroll-wrapper page-list-wrapper" ref="celia" id="resultScroll">
       <div class="page-content">
         <div class="my-page-nav-list">
-          <div class="my-page-nav-item" @click="doSearch('my')" :class="{active: searchParams.type === 'my'}">
+          <div class="my-page-nav-item" @click="doSearch('my')" :class="{ active: searchParams.type === 'my' }">
             我的节目({{ myCount }})
           </div>
           <!-- <div class="my-page-nav-item" @click="doSearch('cooperation')" :class="{active: searchParams.type === 'cooperation'}">
@@ -33,7 +33,7 @@
         </div>
         <!--页面列表-->
         <div class="yrj_ccc" ref="yrjccc" style="overflow: hidden;">
-          <div class="page-item-wrapper" ref="content" v-loading="loadingHui">
+          <div class="page-item-wrapper" ref="content">
             <div class="page-item">
               <thumbnailPanel :pageType="searchParams.pageMode" />
             </div>
@@ -44,6 +44,14 @@
           </div>
         </div>
 
+        <div class="loading_bar" v-if="pageList.length > 5">
+          <div class="linel"></div>
+          <div class="icon_text">
+            <i :class="loadingBar[loadStatus].icon"></i>
+            <span>{{ loadingBar[loadStatus].text }}</span>
+          </div>
+          <div class="linel"></div>
+        </div>
       </div>
     </el-scrollbar>
     <!-- 添加或修改节目管理对话框 -->
@@ -94,7 +102,17 @@ export default {
   },
   data() {
     return {
-      loading: false,
+      loadingBar: [{
+        icon: 'el-icon-arrow-down',
+        text: '下拉加载更多节目'
+      }, {
+        icon: 'el-icon-loading',
+        text: '节目正在拼命加载中'
+      }, {
+        icon: 'el-icon-finished',
+        text: '节目已全部加载完成'
+      }],
+      loadStatus: 0,
       pageList: [],
       myCount: 0,
       shareCount: 0,
@@ -172,7 +190,7 @@ export default {
       //.clientHeight - 滚动条外容器的高度
       //.scrollHeight - 滚动条高度
       // console.log("滚动监听==", high + window.innerHeight - 200, contentHeight);
-      if (high + window.innerHeight - 200 > contentHeight && !this.loadingHui && this.myCount > this.pageList.length) {
+      if (high + window.innerHeight - 200 > contentHeight && this.loadStatus==0 && this.myCount > this.pageList.length) {
         //自行定义
         this.queryParams.pageNum++
         this.getList()
@@ -190,15 +208,24 @@ export default {
     },
     /** 查询节目管理列表 */
     getList(ev) {
-      if(ev) this.queryParams.pageNum = 1
-      this.loadingHui = true;
+      this.loadStatus = 1//加载中
+      if (ev) {
+        this.queryParams.pageNum = 1
+      }
       this.$API.listProgram(this.queryParams).then(response => {
-        // this.programList = response.rows;
-        this.queryParams.pageNum == 1 ? this.pageList = response.rows || [] : this.pageList = this.pageList.concat(response.rows)
-
-        // this.total = response.total;
-        this.myCount = response.total;
-        this.loadingHui = false;
+        this.myCount ? '' : this.myCount = response.total;
+        console.log('this.myCount',this.pageList.length);
+        if (response.rows.length<20) {
+          setTimeout(() => {
+            this.queryParams.pageNum == 1 ? this.pageList = response.rows || [] : this.pageList = this.pageList.concat(response.rows)
+            this.loadStatus = 2
+          }, 500);
+        } else {
+          setTimeout(() => {
+            this.queryParams.pageNum == 1 ? this.pageList = response.rows || [] : this.pageList = this.pageList.concat(response.rows)
+            this.loadStatus = 0
+          }, 500);
+        }
       });
     },
     getSceneList() {
@@ -482,6 +509,29 @@ export default {
     float: left;
     margin-right: 20px;
     margin-bottom: 40px;
+  }
+}
+
+.loading_bar {
+  width: 60%;
+  margin-left: 20%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #888888;
+
+  .linel {
+    flex: 1;
+    height: 1px;
+    background-color: #e6ebed;
+  }
+
+  .icon_text {
+    padding: 0 20px;
+
+    span {
+      margin-left: 4px;
+    }
   }
 }
 </style>

@@ -88,6 +88,10 @@ export default {
     scale: {
       type: Number,
       default: 1
+    },
+    getValue:{
+      type:String,
+      default:'16:9'
     }
   },
   data() {
@@ -128,6 +132,12 @@ export default {
   created() {
     this.scaleValue = this.scale;
   },
+  mounted(){
+    setTimeout(() => {
+      this.ratioValue = this.getValue
+    }, 800);
+    
+  },
   methods: {
     ...mapActions([
       'editorUndo',
@@ -138,7 +148,6 @@ export default {
      * @param e 画布比例
      */
     changeSize(e) {
-      console.log("changeSize", e);
       if (e == "自定义") {
         this.ratioValue = e
         this.dialogRate = true
@@ -148,7 +157,6 @@ export default {
           e,
           arr: this.screenRatio
         }
-        console.log("this.objTwow",objTwow);
         this.$emit('changeRatio', objTwow)
       }
 

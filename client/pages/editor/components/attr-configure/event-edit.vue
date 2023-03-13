@@ -47,8 +47,8 @@
                   <p class="attr-item-title">选择应用：</p>
                   <div class="col-1  attr-item-edit-input">
                     <el-select v-model="apkValue" filterable placeholder="请选择" @change="checkApk($event, item)">
-                      <el-option v-for="(item, index) in apkList" :key="item.resourceId" :label="item.resourceName"
-                        :value="index">
+                      <el-option v-for="(its, index) in apkList" :key="its.resourceId" :label="its.resourceName"
+                        :value="its.resourceId">
                       </el-option>
                     </el-select>
                   </div>
@@ -114,12 +114,21 @@ export default {
   },
   watch: {
     activeElement() {
+      console.log("activeElementIndex",this.activeElementIndex);
       if (!this.activeElement) return false;
       let a = JSON.parse(JSON.stringify(this.activeElement))
-      if (a.events.length && a.events[0].type == 'linkLoacl' && a.events[0].url) {
-        this.value == a.events[0].url ? '' : this.value = a.events[0].url
+      if (a.events.length && a.events[0].type == 'linkLoacl') {
+        this.value == a.events[0].url ? '' : this.value = a.events[0].url||''
         !this.programList.length ? this.getList() : ''
+      }else if (a.events.length && a.events[0].type == 'openApp') {
+       this.apkValue == a.events[0].resourceId ? '' : this.apkValue = a.events[0].resourceId||''
+       console.log("this.apkValue",this.apkValue,a.events[0]);
+       !this.programList.length ? this.getApkList() : ''
+      }else{
+        this.value ? this.value = '' : ''
+        this.apkValue ? this.apkValue = '' : ''
       }
+      
     }
   },
   methods: {
@@ -170,20 +179,20 @@ export default {
      * @param item 单个事件本身
      */
     checkProgram(e, item) {
-      console.log('checkProgram',e,this.value);
       item.url = e
     },
     /**
  * 节APK选中，拼接URL,透传
- * @param e 节目ID,html名称
+ * @param e apk resourceIdID,
  * @param item 单个事件本身 
  */
     checkApk(e, item) {
       // item.info = item
-      // 需存储 mdk+'.apk',resourceId 
-      console.log("check==", e, item);
-      item.mdkName = this.apkList[e].resourceMd5 + '.apk'
-      item.resourceId = this.apkList[e].resourceId
+      // 需存储安卓--》 mdk+'.apk',接口--》resourceId
+      let objData = this.apkList.find(cur=>cur.resourceId==e) 
+      // item.resourceName = e.resourceName
+      item.mdkName = objData.resourceMd5 + '.apk'
+      item.resourceId = e
     },
     /**
      * 添加事件

@@ -252,12 +252,12 @@
                              v-model="activeElement.commonStyle.backgroundColor"></el-color-picker>
           </div>
         </div>
-        <div class="attr-item-edit-wrapper">
+        <!-- <div class="attr-item-edit-wrapper">
           <p class="attr-item-title">背景图片：</p>
           <div class="attr-item-edit-input">
             <imageSelect :url.sync="activeElement.commonStyle.backgroundImage" @change="throttleAddHistory" />
           </div>
-        </div>
+        </div> -->
 
         <div class="attr-item-edit-wrapper">
           <p class="attr-item-title">透明度：</p>
@@ -276,12 +276,8 @@
 <script>
 	import {mapState, mapGetters} from 'vuex'
 	import {ceil, subtract, divide, throttle} from 'lodash'
-  import imageSelect from '@client/components/image-select'
 
 	export default {
-		components: {
-			imageSelect
-    },
 		data() {
 			return {
 				activeNames: ['1'],

@@ -4,6 +4,14 @@ const fs = require('fs')
 const port = process.env.port || process.env.npm_config_port || 80 // 端口
 let devServer = {
 	proxy: { // 代理
+		'/myprox': {
+			target: 'http://192.168.101.250:2503',//设置你调用的接口域名和端口号 别忘了加httphttp://192.168.101.250:2501
+			ws: true,
+			changeOrigin: true,               // needed for virtual hosted sites
+			pathRewrite: {
+				"^/myprox": "/",///content
+			},
+		},
 		'/': {
 			target: 'http://192.168.101.250:2501',//设置你调用的接口域名和端口号 别忘了加httphttp://192.168.101.250:2501
 			ws: false,

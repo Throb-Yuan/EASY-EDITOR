@@ -80,8 +80,10 @@ export default [
 				defaultStyle: {
 					width: $config.canvasH5Width / 2,
 					height: 300,
+					left:10,
+					top:20,
 					paddingTop: 10,
-					paddingBottom: 10
+					// paddingBottom: 10
 				}
 			},
 			// {
@@ -169,7 +171,7 @@ export default [
 					width: $config.canvasH5Width / 2,
 					height: $config.canvasH5Height / 2,
 					top: 20,
-					left: $config.canvasH5Width / 2
+					left: 40
 				}
 			}, {
 				elName: 'qk-streaming',
@@ -182,7 +184,7 @@ export default [
 				}
 			}, {
 				elName: 'qk-pdf-view',
-				title: 'PDF',
+				title: 'office',
 				icon: 'hjiconfont iconPDF',
 				valueType: '', // 标识数据类型，用于表单组件,
 				defaultStyle: {

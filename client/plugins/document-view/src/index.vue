@@ -3,7 +3,6 @@
   <div class="qk-pdf-view">
     <div v-if="documentSrc" class="noimg backimg">
       <img src="../../../common/images/docoment.png" class="bg_img" alt="">
-      <!-- <span class="tips">请在右侧组件属性区域上传文档</span> -->
       <span class="names">{{ fileName }}</span>
       <span class="btns" @click="viewDocs">立即查看</span>
     </div>
@@ -11,13 +10,21 @@
       <img src="../../../common/images/docoment.png" class="bg_img" alt="">
       <span class="tips">请在右侧组件属性区域上传文档</span>
     </div>
+    <Dialog :title="fileName" :visible.sync="open" :lock-scroll="true" :modal="true" width="90%" top="2vh" append-to-body>
+      <iframe style="width: 100%;height:80vh;" :src="openUrl" frameborder="0"></iframe>
+    </Dialog>
   </div>
 </template>
 
 <script>
 import base from "../../../common/js/base64Encode";
+import '../../../common/styles/element-variables.scss'
+import { Dialog } from 'element-ui';
 export default {
   name: 'QkDocumentView',
+  components: {
+    Dialog
+  },
   props: {
     documentSrc: {
       type: String,
@@ -51,7 +58,9 @@ export default {
       pageTotalNum: 1,
       loadedRatio: 0,
       setIntervalFun: null,
-      reSet: false
+      reSet: false,
+      open: false,
+      openUrl: ''
 
     }
   },
@@ -86,8 +95,10 @@ export default {
       suffix = flieArr[flieArr.length - 1]; // 取最后一个
       console.log("md5===", this.md5);
       let baseUrl = `${process.env.VUE_APP_BASE_API}/file/download?fileId=${this.androidId}&fullfilename=${this.md5}.${suffix}`
-      // window.open('http://192.168.101.250:8012/onlinePreview?url=' + encodeURIComponent(base1.encode(baseUrl)));
-      this.notDevs ? window.location.href = 'http://192.168.101.250:8012/onlinePreview?url=' + encodeURIComponent(base1.encode(baseUrl)) : window.open('http://192.168.101.250:8012/onlinePreview?url=' + encodeURIComponent(base1.encode(baseUrl)));
+      this.openUrl = 'http://192.168.101.250:8012/onlinePreview?url=' + encodeURIComponent(base1.encode(baseUrl))
+      console.log("this.open",this.open);
+      this.open = true
+      // this.notDevs ? window.location.href = 'http://192.168.101.250:8012/onlinePreview?url=' + encodeURIComponent(base1.encode(baseUrl)) : window.open('http://192.168.101.250:8012/onlinePreview?url=' + encodeURIComponent(base1.encode(baseUrl)));
     },
     prePage() {
       let page = this.pageNum
@@ -109,7 +120,6 @@ export default {
   }
 }
 </script>
-
 <style lang="scss" scoped>
 .noimg {
   display: flex;
@@ -121,7 +131,8 @@ export default {
   background-color: #fff;
   width: 100%;
   height: 100%;
-  }
+}
+
 .backimg {
   // background: url(../../../common/images/docoment.png) no-repeat;
   // background-size: contain;
@@ -211,9 +222,27 @@ export default {
   left: 0;
 }
 
+.iframe-box {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, .5);
+  z-index: 9999;
+  top: 0;
+  left: 0;
+}
+
 // img {
 //   display: block;
 //   width: 100%;
 //   height: 100%;
 // }
+</style>
+<style>
+.el-dialog__body{
+    width: 100%;
+    height: 100%;
+    padding-bottom: 0;
+    padding-top: 10px;
+}
 </style>

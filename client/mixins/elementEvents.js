@@ -68,11 +68,13 @@ export default {
 		 */
 		_event_openApp(eventData) {
 			return new Promise((resolve) => {
-				if (window.location.href.includes('http')) {
-					window.alert('预览暂不支持节目与应用跳转')
-					return false
-				}else{
-					window.terminal.openApp(eventData.mdkName)
+				if(eventData.mdkName){
+					if (window.location.href.includes('http')) {
+						window.alert('预览暂不支持节目与应用跳转')
+						return false
+					}else{
+						window.terminal.openApp(eventData.mdkName)
+					}
 				}
 				resolve()
 			})

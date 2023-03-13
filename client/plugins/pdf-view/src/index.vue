@@ -4,7 +4,7 @@
     <div v-if="pdfSrc">
     <div @click="prePage" class="next-hidden pre-hidden"></div>
     <div @click="nextPage" class="next-hidden"></div>
-    <pdf v-if="!reSet" ref="pdf" :src="notDevs ? pdfSrc : pdfSrc" :page="pageNum" @progress="loadedRatio = $event"  @num-pages="pageTotalNum=$event"></pdf>
+    <pdf v-if="!reSet" ref="pdf" @error="pdfErrors($event)" :src="notDevs ? pdfSrc : pdfSrc" :page="pageNum" @progress="loadedRatio = $event"  @num-pages="pageTotalNum=$event"></pdf>
     <div class="footed" v-if="showPageNum">第{{pageNum}}页,共{{pageTotalNum}}页</div>
   </div>
   <div v-else-if="!notDevs" class="noimg" style="justify-content: center;">
@@ -94,6 +94,9 @@ export default {
     this.autoPlay ? this.playPdf() : ''
   },
   methods:{
+    pdfErrors(error) {
+      this.$message.warning(`文件正在转换中，请稍后重试`);
+    },
     prePage() {
       let page = this.pageNum
       page = page > 1 ? page - 1 : this.pageTotalNum

@@ -65,7 +65,7 @@ export default {
 		if(!window.location.href.includes('http')){
 			todayWeather(this.weatherArea.locationId).then(response => {
 				console.log("weather In request",response);
-				if(!response.data) return false
+				if(!response.data&&!response.data.textDay) return false
 				this.weatherData =  response.data
 				this.requestOk = true
 			});

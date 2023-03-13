@@ -1,13 +1,15 @@
 <template>
 	<div>
-		<el-form-item label="切换时间(毫秒)：" style="margin-bottom:0">
-			<el-input-number size="mini" v-model="tempInterval" controls-position="right" />
-		</el-form-item>
-		<el-form-item label="轮播指针：">
-			<el-switch v-model="tempIndicator">
-			</el-switch>
-		</el-form-item>
-		<div class="tip-drop" style="padding: 0 0 10px 0;">可将媒体资源拖拽至下方替换<span @click="changeSide"> 查看资源库</span></div>
+		<el-form @submit.native.prevent>
+			<el-form-item label="切换时间(毫秒)：" style="margin-bottom:0">
+				<el-input-number size="mini" v-model="tempInterval" controls-position="right" :min="1000" />
+			</el-form-item>
+			<el-form-item label="轮播指针：">
+				<el-switch v-model="tempIndicator">
+				</el-switch>
+			</el-form-item>
+		</el-form>
+		<div class="tip-drop" style="padding: 0 0 10px 0;">可将媒体资源拖拽至下方替换2<span @click="changeSide"> 查看资源库</span></div>
 
 		<div v-for="(item, index) in tempValue" :key="index" @drop="drop($event, item, index)"
 			@dragover="allowDrop($event, item)" @dragenter="dragenter(item)">
@@ -19,7 +21,7 @@
 				<div :class="item.activeCss ? 'drag-info-box active-css' : 'drag-info-box'">
 					<div class="inline-block cropper-res-img">
 						<div class="cropper-res-imgs">
-							<img v-if="item.urls&&item.fileType=='I'" :src="item.urls" alt="">
+							<img v-if="item.urls && item.fileType == 'I'" :src="item.urls" alt="">
 							<img v-else-if="item.urls" src="../../../../../../common/images/myicons/videosss.jpg" alt="">
 							<div v-else>
 								<i class="el-icon-plus" style="font-size: 20px;"></i>
@@ -50,7 +52,7 @@
 
 		</div>
 
-</div>
+	</div>
 </template>
 
 <script>
@@ -63,7 +65,7 @@ const defaultEle = {
 	fileName: "",
 	fileSize: "",
 	activeCss: false,
-	fileType: ""
+	fileType: "I"
 }
 const baseURL = process.env.VUE_APP_BASE_API
 export default {
@@ -96,9 +98,9 @@ export default {
 		this.tempInterval = this.interval
 	},
 	watch: {
-		// imageSrcList() {
-		// 	this.initData()
-		// },
+		imageSrcList(val) {
+			this.tempValue = val
+		},
 		interval(val) {
 			this.tempInterval = val;
 		},
@@ -120,13 +122,13 @@ export default {
 		},
 		handleSuccess(obj, res) {
 			// console.log("");
-			let imgTypes = ['BMP','JPG','JPEG','PNG','GIF','WEBP','png','jpeg','jpg','gif','bmp','webp']
+			let imgTypes = ['BMP', 'JPG', 'JPEG', 'PNG', 'GIF', 'WEBP', 'png', 'jpeg', 'jpg', 'gif', 'bmp', 'webp']
 			let response = res.data
 			let suffix = res.data.fileName.split('.')
 			let param = {
 				resourceId: response.fileId,
 				resourceName: response.fileName,
-				resourceTypeId:imgTypes.includes(suffix[suffix.length-1]) ?  "1" : '2',
+				resourceTypeId: imgTypes.includes(suffix[suffix.length - 1]) ? "1" : '2',
 				resourceMd5: response.fileHash,
 				fileSize: response.fileSize,
 				fileType: response.fileId.substr(0, 1),
@@ -143,8 +145,8 @@ export default {
 					androidId: response.fileId,
 					fileName: response.fileName,
 					fileSize: this.$mUtils.transFileSize(response.fileSize),
-					fileType:param.fileType,
-					localPath: '../../resource/' + response.fileHash+'.'+suffix[suffix.length-1]
+					fileType: param.fileType,
+					localPath: '../../resource/' + response.fileHash + '.' + suffix[suffix.length - 1]
 				}
 				this.tempValue = deepTemp
 				console.log("this.tempValue ", this.tempValue);
@@ -180,7 +182,7 @@ export default {
 			let deepDef = JSON.parse(JSON.stringify(defaultEle))
 			// this.tempValue.push(deepDef)
 			this.tempValue.splice(index + 1, 0, deepDef)
-			this.$emit('update:imageSrcList', this.tempValue);
+			// this.$emit('update:imageSrcList', this.tempValue);
 		},
 		/**
 		* 删除轮播项
@@ -243,8 +245,9 @@ export default {
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
-.cropper-res-imgs{
-	img{
+
+.cropper-res-imgs {
+	img {
 		object-fit: cover;
 	}
 }

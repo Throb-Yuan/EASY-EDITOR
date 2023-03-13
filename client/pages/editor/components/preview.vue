@@ -17,13 +17,13 @@
           <div class="info-form-wrapper">
             <div class="info-form-l">节目名称：</div>
             <div class="info-form-r">
-              <el-input v-model="pageData.title"/>
+              <el-input :maxlength="24" v-model="pageData.title"/>
             </div>
           </div>
           <div class="info-form-wrapper">
             <div class="info-form-l">节目描述：</div>
             <div class="info-form-r">
-              <el-input type="textarea" :rows="2" v-model="pageData.description"/>
+              <el-input type="textarea" :rows="3" :maxlength="200" v-model="pageData.description"/>
             </div>
           </div>
         </div>

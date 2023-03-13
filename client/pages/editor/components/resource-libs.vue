@@ -2,45 +2,53 @@
   <div class="custom-tree-container" style="min-width:160px;">
     <p class="page-title text-center">媒体资源列表</p>
     <el-scrollbar class="scroll-wrapper page-list-wrapper" style="height: 1000px;padding-bottom: 120px;">
-      <div class="block">
-        <el-tree ref="tree" :data="resourcetypeList" node-key="dictCode" :label="'dictLabel'" children="children"
-          accordion :expand-on-click-node="true" @node-expand="openNodes">
-          <div class="custom-tree-node" slot-scope="{ node, data }">
+      <el-collapse  v-model="activeName" accordion @change="getResoureList">
+        <el-collapse-item v-for="(item, index) in resourcetypeList" :key="index" :name="item.dictValue">
+          <template slot="title">
+            <div style="padding-left: 12px;">{{ item.dictLabel }} <span style="font-size: 12px;color:#999;"></span></div>
+          </template>
+          <div v-if="item.children">
+            <div class="custom-tree-node" v-for="(node,idx) in item.children" >
             <!-- 自定义节点信息start -->
-            <span v-if="node.childNodes.length || node.data.dictLabel == '加载中...'" draggable="true"
-              @dragstart="drag($event, node)">{{ node.data.dictLabel }}</span>
-            <el-tooltip v-else-if="node.data.dictLabel != '加载中...' && node.data.fileType == 'I'" draggable="true" id=""
-              class="item" effect="dark" :content="node.data.resourceName" placement="top-start">
+            <el-tooltip v-if="node.fileType == 'I'" draggable="true" id=""
+              class="item" effect="dark" :content="node.resourceName" placement="top-start">
 
               <div class="fl_line" style="justify-content: start;" draggable="true" @dragstart="drag($event, node)">
-                <img style="width: 120px;height: 80px;object-fit:cover;padding-top: 5px;" v-lazy="node.data.fileUrl"
-                  :key="node.data.fileUrl" alt="">
-                <div class="fl_rei fl_line_img" style="margin-left: 10px;"><i class="el-icon-edit hoverb"></i> <i
+                <img style="width: 120px;height: 80px;object-fit:cover;padding-top: 5px;" v-lazy="node.fileUrl"
+                  :key="node.fileUrl" alt="">
+                <div class="fl_rei fl_line_img" style="margin-left: 10px;"><i class="el-icon-edit hoverb" @click="handleUpdate(node)"></i> <i
                     class="el-icon-delete hoverb" @click="handleDelete(node, data)"></i>
                 </div>
               </div>
             </el-tooltip>
             <div v-else>
-              <el-tooltip v-if="node.data.resourceName && node.data.resourceName.length > 8" class="item" effect="dark"
-                :content="node.data.resourceName" placement="top-start">
+              <el-tooltip v-if="node.resourceName && node.resourceName.length > 8" class="item" effect="dark"
+                :content="node.resourceName" placement="top-start">
                 <div class="fl_line" draggable="true" @dragstart="drag($event, node)">
-                  <span class="fl_lef">{{ node.data.resourceName.substring(0, 7) }}...</span>
-                  <div class="fl_rei"><i class="el-icon-edit hoverb"></i> <i class="el-icon-delete hoverb"
+                  <span class="fl_lef">{{ node.resourceName.substring(0, 7) }}...</span>
+                  <div class="fl_rei"><i class="el-icon-edit hoverb" @click="handleUpdate(node)"></i> <i class="el-icon-delete hoverb"
                       style="margin-left: 6px;" @click="handleDelete(node, data)"></i> </div>
                 </div>
               </el-tooltip>
 
-              <div class="fl_line" v-else-if="node.data.resourceName" draggable="true" @dragstart="drag($event, node)">
-                <span class="fl_lef">{{ node.data.resourceName }}</span>
-                <div class="fl_rei"><i class="el-icon-edit hoverb" @click="handleUpdate(node, data)"></i> <i class="el-icon-delete hoverb"
+              <div class="fl_line" v-else-if="node.resourceName" draggable="true" @dragstart="drag($event, node)">
+                <span class="fl_lef">{{ node.resourceName }}</span>
+                <div class="fl_rei"><i class="el-icon-edit hoverb" @click="handleUpdate(node)"></i> <i class="el-icon-delete hoverb"
                     style="margin-left: 6px;" @click="handleDelete(node, data)"></i> </div>
               </div>
 
-              <span v-else style="font-size: 14px;color: #888;">{{ node.data.dictLabel }}</span>
+              <span v-else style="font-size: 14px;color: #888;">{{ node.dictLabel }}</span>
             </div>
           </div>
-        </el-tree>
-      </div>
+          <div class="show-more" v-if="item.children.length<item.totalNum" @click="getListResource(index)">
+            <span>查看更多</span> <i class="el-icon-arrow-down"></i>
+          </div>
+          </div>
+          <div v-else>
+            暂无数据
+          </div>
+        </el-collapse-item>
+      </el-collapse>
     </el-scrollbar>
     <div class="fixbom-add">
       <el-button type="primary" plain icon="el-icon-plus" @click="handleAdd">添加资源</el-button>
@@ -56,16 +64,17 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-     <!-- 添加或修改资源列表对话框 -->
-     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body :close-on-click-modal="false">
-      <el-form ref="form" :model="form"  label-width="100px">
+    <!-- 添加或修改资源列表对话框 -->
+    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body :close-on-click-modal="false">
+      <el-form ref="form" :model="form" label-width="100px">
         <el-form-item label="资源名称" prop="resourceName">
           <el-input v-model="form.resourceName" placeholder="请输入资源名称" />
         </el-form-item>
 
         <el-form-item label="资源类型">
-          <el-select v-model="form.resourceTypeId" placeholder="请选择资源类型" clearable>
-            <el-option v-for="(dict, index) in resourcetypeList" :key="index" :label="dict.dictLabel" :value="dict.dictValue" />
+          <el-select v-model="form.resourceTypeId" placeholder="请选择资源类型">
+            <el-option v-for="(dict, index) in resourcetypeList" :key="index" :label="dict.dictLabel"
+              :value="dict.dictValue" />
           </el-select>
         </el-form-item>
         <el-form-item label="文件大小" prop="fileSizeStr">
@@ -90,7 +99,14 @@ export default {
   },
   data() {
     return {
-      resourcetypeList: [],
+      resourcetypeList: [
+        {
+          page:0,
+          isGet:false,
+          children:[],
+          totalNum: 1
+        }
+      ],
       dictCode: '',
       uploadAction: baseURL + '/file/upload',
       fileList: [],
@@ -101,6 +117,7 @@ export default {
       title: "上传资源文件",
       // 是否显示弹出层
       open: false,
+      activeName:'0'
     }
   },
   created() {
@@ -114,7 +131,7 @@ export default {
       // this.queryParams = this.$options.data().queryParams
       this.getList()
     },
-        /** 提交按钮 */
+    /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
@@ -122,8 +139,8 @@ export default {
             this.$API.updateResource(this.form).then(() => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
-              this.form =this.$options.data.call(this).form
-              
+              this.form = this.$options.data.call(this).form
+
               this.getList();
             });
           }
@@ -177,9 +194,9 @@ export default {
       }
       return size;
     },
-    handleUpdate(node, data) {
+    handleUpdate(node) {
       // this.reset();
-      const resourceId = node.data.resourceId
+      const resourceId = node.resourceId
       this.$API.getResource(resourceId).then(response => {
         this.form = response.data;
         this.form.fileSizeStr = this.changeFileSize(this.form.fileSize);
@@ -189,7 +206,7 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(node, data) {
-      let row = node.data
+      let row = node
       const resourceIds = row.resourceId;
       let message = row.resourceName ? '是否确认删除资源为"' + row.resourceName + '"的数据项？' : '是否确认删除资源列表编号为"' + resourceIds + '"的数据项？';
       this.$alert(message, '操作提示', {
@@ -201,10 +218,10 @@ export default {
         this.$API.delResource(resourceIds).then(() => {
           this.$message.success('删除成功！');
           // this.getList();
-          const parent = node.parent;
-          const children = parent.data.children || parent.data;
-          const index = children.findIndex(d => d.id === data.id);
-          children.splice(index, 1);
+          // const parent = node.parent;
+          // const children = parent.data.children || parent.data;
+          // const index = children.findIndex(d => d.id === data.id);
+          // children.splice(index, 1);
         })
       })
     },
@@ -214,23 +231,40 @@ export default {
     * @param child 节点对应的 Node
     * @param self 节点组件本身
     */
-    openNodes(me, child, self) {
-      if (me.children && me.children.length == 1 && me.children[0].dictLabel.includes('加载中')) {
+    getResoureList(code){
+      if(!code || this.resourcetypeList[code-1].isGet) return false;
+      this.getListResource(code-1)
+    },
+    getListResource(idx){
         // 获取对应资源文件列表
-        this.$API.listResource({ resourceTypeId: me.children[0].dictValue, pageNum: 1, pageSize: 200 }).then(response => {
+      this.$API.listResource({ resourceTypeId: this.resourcetypeList[idx].dictValue, pageNum: this.resourcetypeList[idx].page, pageSize: 20 }).then(response => {
           if (response.rows.length) {
-            response.rows.forEach(cur => {
-              cur.dictCode = cur.resourceId
-            })
-            // this.$refs["tree"].updateKeyChildren(me.dictCode, response.rows);
+            // if (response.rows.length < response.rows.total) {
+            //   response.rows.push({
+            //     dictLabel: '查看更多',
+            //     resourceId: 'I9550B4E98972426BA8D2F54E52D',
+            //     dictCode: 'I9550B4E98972426BA8D2F54E52D'
+            //   })
+            // }
+            this.resourcetypeList[idx].totalNum = response.total
+            this.resourcetypeList[idx].children = this.resourcetypeList[idx].children.concat(response.rows) 
+            this.resourcetypeList[idx].isGet = true
+            this.resourcetypeList[idx].page++
             this.$nextTick(() => {
-              this.$refs["tree"].updateKeyChildren(me.dictCode, response.rows);
+              // this.$refs["tree"].updateKeyChildren(me.dictCode, response.rows);
             })
           } else {
-            me.children[0].dictLabel = "暂无资源"
+            this.resourcetypeList[idx].children = [{
+              dictLabel: '暂无资源',
+            }]
           }
 
         });
+    },
+    openNodes(me, child, self) {
+      if (me.children && me.children.length == 1 && me.children[0].dictLabel.includes('加载中')) {
+      
+
       }
     },
     /**
@@ -241,19 +275,16 @@ export default {
     getList() {
       this.$API.dictList({
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 20,
         dictType: 'content_resource_type'
       }).then(response => {
 
-        let resourcetypeList = this.handleTree(response.rows, "dictCode", "dictValue");
+        let resourcetypeList = response.rows
         resourcetypeList.forEach(cur => {
-          idx++
-          // if (cur.children) {
-          //   cur.children.forEach(ele => {
-          //     if (!ele.children) ele.children = [{ dictCode: ele.dictCode + idx, dictLabel: "加载中...", dictValue: ele.dictValue }]
-          //   })
-          // }
-          if (!cur.children) cur.children = [{ dictCode: cur.dictCode * idx, dictLabel: "加载中...", dictValue: cur.dictValue }]
+          // idx++
+          cur.children = []
+          cur.page = 1
+          cur.isGet = false
         })
         this.resourcetypeList = resourcetypeList
       });
@@ -265,7 +296,7 @@ export default {
     */
     drag(ev, node, data) {
       console.log("drag====", data, node);
-      let nodeStr = JSON.stringify(node.data)
+      let nodeStr = JSON.stringify(node)
       ev.dataTransfer.setData("node", nodeStr);
     },
     /** 新增按钮操作 */
@@ -329,6 +360,7 @@ export default {
   justify-content: space-between;
   font-size: 14px;
   padding-right: 8px; */
+  padding-left: 12px;
 }
 
 .fixbom-add {
@@ -346,8 +378,9 @@ export default {
 .custom-tree-node {
   width: 100%;
 }
+
 .el-upload {
-    display: block;
+  display: block;
 }
 </style>
 <style scoped lang="scss">
@@ -356,7 +389,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-
+  cursor:pointer;
   &:hover .fl_rei {
     display: inline-block;
   }
@@ -405,5 +438,17 @@ export default {
     //  color: #409EFF;
     opacity: 1;
   }
+}
+.show-more{
+  width: 100%;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>
+<style>
+.el-collapse-item__content {
+  padding-bottom: 8px;
 }
 </style>

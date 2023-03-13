@@ -270,6 +270,11 @@ export default {
         ],
         week: [
           {required: true, message: '请选择星期', trigger: 'blur'}
+        ],beginDate: [
+          {required: true, message: '请选择起始日期', trigger: 'blur'}
+        ],
+        beginTime: [
+          {required: true, message: '请选择起始时间', trigger: 'blur'}
         ],
       }
     };
@@ -388,6 +393,7 @@ export default {
       this.reset();
       this.open = true;
       this.title = "添加紧急字幕";
+      this.form.week = ['1','2','3','4','5','6','7']
     },
     /** 修改按钮操作 */
     handleUpdate(row) {

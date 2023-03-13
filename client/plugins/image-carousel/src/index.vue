@@ -4,7 +4,7 @@
 			:showIndicator='indicator' :interval="interval" duration="500" @transtionend="getNum">
 			<Slide class="image-carsousel-slide" v-for="(item, index) in imageSrcList" :key="index">
 				<div v-if="imageSrcList[index].urls" style="width: 100%;height: 100%;">
-					<video ref="videoswiper" v-if="item.fileType == 'V'" class="image-carsousel-image"
+					<video ref="videoswiper" v-if="item.fileType == 'V'" class="image-carsousel-image image-carsousel-v"
 						:id="'videoswiper' + index" width="100%" height="100%" style="object-fit:cover"
 						:src="notDevs ? item.localPath : item.urls" controls="false" :autoplay="false" :loop="false"
 						@ended="videoEnd"></video>
@@ -103,10 +103,24 @@ export default {
 		 * @Id 自定义id名+data,防止多个视频导致id重复
 		 */
 		getNum(data) {
+			// console.log(this.imageSrcList[data]);
 			let videos = document.getElementById('videoswiper' + data)
+			let videoList = document.getElementsByClassName('image-carsousel-v')
+			if (videoList.length ) {
+					for (let i = 0; i < videoList.length; i++) {
+						videoList[i].pause()
+					}
+				}
 			if (this.imageSrcList[data].fileType == "V") {
-				videos.play()
 				this.$refs.swiper.clearTimeOut()
+				videos.play()
+				// if(data==2){
+				// 	setTimeout(() => {
+				// 		let videoss = document.getElementById('videoswiper' + data)
+				// 		console.log("videoss",videoss);
+				// 		videoss.play()
+				// 	}, 1000);
+				// }
 			}
 		},
 		/**

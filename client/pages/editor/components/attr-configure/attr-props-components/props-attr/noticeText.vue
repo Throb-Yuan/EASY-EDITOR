@@ -6,7 +6,7 @@
 
 		</el-form-item>
 		<el-form-item label="速度(用时)：">
-			<el-input-number size="mini" v-model="tempSpeed" controls-position="right" />
+			<el-input-number size="mini" v-model="tempSpeed" controls-position="right" :min="1" />
 		</el-form-item>
 		<el-form-item label="滚动方向：">
 			<el-select v-model="tempSport" placeholder="请选择">

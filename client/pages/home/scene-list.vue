@@ -126,6 +126,10 @@ export default {
       form: {},
       // 表单校验
       rules: {
+        sceneName: [
+          {required: true, message: '请输入场景名称', trigger: 'blur'},
+          {max: 120, message: '场景名称在120字以内', trigger: 'blur'}
+        ]
       }
     };
   },
@@ -225,9 +229,9 @@ export default {
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if(this.form.sceneId == this.form.parentId)
+          if(this.form.parentId!=null && this.form.sceneId == this.form.parentId)
           {
-            this.$modal.msgError("不能将父级场景设置成自己");
+            this.$modal.msgError("不能将自己设置成自己的父节点");
             return;
           }
           if (this.form.sceneId != null) {

@@ -45,17 +45,21 @@
         <el-table-column label="文件大小" align="center" width="100" prop="fileSize" :formatter="fileSizeFormat" />
         <el-table-column label="文件预览" align="center" prop="fileUrl">
           <template slot-scope="scope">
-            <div class="demo-image__preview" v-if="scope.row.fileType == 'I'">
+            <div class="demo-image__preview" v-if="scope.row.resourceTypeId == '1'">
               <el-image style="width: 100px; height: 100px" :src="scope.row.fileUrl" :fit="'cover'"
                 :preview-src-list="[scope.row.fileUrl]">
               </el-image>
             </div>
-            <div class="demo-image__preview" v-else-if="scope.row.fileType == 'V'">
-              <el-button @click="openUrl(scope.row.fileUrl, scope.row.fileType)" type="primary"
+            <div class="demo-image__preview" v-else-if="scope.row.resourceTypeId == '2'|| scope.row.resourceTypeId == '3'">
+              <el-button @click="openUrl(scope.row)" type="primary"
                 icon="el-icon-caret-right">播放</el-button>
             </div>
+            <div class="demo-image__preview" v-else-if="scope.row.resourceTypeId == '4'">
+              <el-button @click="openUrl(scope.row)" type="primary"
+                icon="el-icon-view">查看</el-button>
+            </div>
             <div class="demo-image__preview" v-else>
-              <el-button @click="openUrl(scope.row.fileUrl, scope.row.fileType)" type="primary"
+              <el-button @click="openUrl(scope.row)" type="primary"
                 icon="el-icon-download">下载</el-button>
             </div>
           </template>
@@ -77,10 +81,10 @@
     <el-dialog :title="title" :visible.sync="addOpen" width="410px" append-to-body @close="resetPage">
       <el-form ref="form">
         <el-form-item>
-          <uploadBreakpoint  @completion="uploadFinsh" v-if="addOpen" />
+          <uploadBreakpoint @completion="uploadFinsh" v-if="addOpen" />
         </el-form-item>
         <el-form-item style="text-align: right;width:360px;">
-          <el-button :type="isUpload ? 'primary':''" @click="addOpen = false">{{isUpload ? '完成' : '取消'}}</el-button>
+          <el-button :type="isUpload ? 'primary' : ''" @click="addOpen = false">{{ isUpload ? '完成' : '取消' }}</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -121,11 +125,15 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+    <el-dialog title="文件预览" :visible.sync="openDoc" :lock-scroll="true" :modal="true" width="90%" top="2vh" append-to-body>
+      <iframe style="width: 100%;height:80vh;" :src="openUrls" frameborder="0"></iframe>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import * as imageConversion from 'image-conversion'
+import base from "@/common/js/base64Encode";
 import uploadBreakpoint from '@/components/upload-breakpoint'
 const baseURL = process.env.VUE_APP_BASE_API
 
@@ -137,6 +145,8 @@ export default {
   },
   data() {
     return {
+      openDoc:false,
+      openUrls:'',
       videoSrc: "",
       openMeaia: false,
       resourceTypeId: '',
@@ -182,7 +192,7 @@ export default {
       rules: {
       },
       // 断点续传状态
-      isUpload:false
+      isUpload: false
     };
   },
   created() {
@@ -191,24 +201,32 @@ export default {
   },
   methods: {
     // 断点续传组件通讯--是否已上传文件
-    uploadFinsh(booleans){
-      console.log('uploadFinsh',booleans);
-      this.isUpload ? '' :  this.isUpload = booleans
+    uploadFinsh(booleans) {
+      console.log('uploadFinsh', booleans);
+      this.isUpload ? '' : this.isUpload = booleans
     },
     resetPage() {
       this.queryParams = this.$options.data().queryParams
-      if(this.isUpload){
+      if (this.isUpload) {
         this.getList()
         this.isUpload = false
       }
-      
+
     },
-    openUrl(url, type) {
-      if (type == 'V') {
-        this.videoSrc = url
+    openUrl(row) {
+      if (row.resourceTypeId == 2 || row.resourceTypeId == 3) {
+        this.videoSrc = row.fileUrl
         this.openMeaia = true
+      } else if ( row.resourceTypeId == 4) {
+        let base1 = new base();
+        let suffix = ''; // 后缀获取
+        const flieArr = row.resourceName.split('.'); // 根据.分割数组
+        suffix = flieArr[flieArr.length - 1]; // 取最后一个
+        let baseUrl = `${process.env.VUE_APP_BASE_API}/file/download?fileId=${row.resourceId}&fullfilename=${row.resourceMd5}.${suffix}`
+        this.openUrls = 'http://192.168.101.250:8012/onlinePreview?url=' + encodeURIComponent(base1.encode(baseUrl))
+        this.openDoc = true
       } else {
-        window.open(url, "_blank");
+        window.open(row.fileUrl, "_blank");
       }
     },
     resourceTypeFormat(row) {

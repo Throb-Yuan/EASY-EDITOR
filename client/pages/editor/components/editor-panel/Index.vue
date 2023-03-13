@@ -1,5 +1,5 @@
 <template>
-  <div class="editor-pane" @click="handleClickCanvas" @keyup.esc="handleKeyup" ref="editorPane">
+  <div class="editor-pane" @click="handleClickCanvas" ref="editorPane">
     <div class="editor-pane-inner">
       <div class="editor-main" :style="{transform: 'scale('+scale+')', width: projectData.width + 'px', height: projectData.height + 'px'}">
         <div class="page-preview-wrapper" ref="canvas-panel" id="canvas-panel" :style="getCommonStyle(activePage.commonStyle)">

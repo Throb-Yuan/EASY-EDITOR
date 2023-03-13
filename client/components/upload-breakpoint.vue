@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-upload class="upload-demo" drag action="/" :multiple="multiple" :http-request="handleHttpRequest"
+    <el-upload class="upload-demo" drag action="/" :multiple="multiple" :http-request="handleHttpRequest" :on-success="successFuns"
       :on-remove="handleRemoveFile">
       <i class="el-icon-upload"></i>
       <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -18,6 +18,7 @@ import { ref } from 'vue'
 const axiosReq = axios.create()
 // 文件上传分块任务的队列（用于移除文件时，停止该文件的上传队列） key：fileUid value： queue object
 const fileUploadChunkQueue = ref({}).value
+let loadingBox = null
 export default {
   name:'uploadBreakpoint',
   props: {
@@ -28,11 +29,24 @@ export default {
   },
   data() {
     return {
+      successNum:0,
+      successAll:false
     }
   },
   methods: {
+    successFuns(response, file, fileList){
+      this.successNum++
+      this.successNum == fileList.length ? this.successAll = true : ''
+    },
+    resetLoading(err){
+      if(err) loadingBox.close()
+      if(!this.successAll||err) return false
+      loadingBox.close()
+      this.successNum = 0
+      this.successAll = false
+    },
     async getTaskInfo(file) {
-      console.log("getTaskInfo===11", file);
+      console.log("getTaskInfo is two", 22222);
       let task;
       const fileMd5 = await md5(file)
       const { code, data, msg } = await taskInfo(fileMd5)
@@ -50,6 +64,7 @@ export default {
             console.log("getTaskInfo===21", data);
             task = data
           } else {
+            console.log("getTaskInfo===22", data);
             Notification.error({
               title: '文件上传错误',
               message: msg
@@ -57,6 +72,7 @@ export default {
           }
         }
       } else {
+        console.log("getTaskInfo===23", data);
         Notification.error({
           title: '文件上传错误',
           message: msg
@@ -65,7 +81,7 @@ export default {
       return task
     },
     handleUpload(file, taskRecord, options) {
-      console.log("handleUpload11", file, taskRecord, options);
+      console.log("handleUpload is three 333", file, taskRecord, options);
       let lastUploadedSize = 0; // 上次断点续传时上传的总大小
       let uploadedSize = 0 // 已上传的大小
       const totalSize = file.size || 0 // 文件总大小
@@ -103,7 +119,7 @@ export default {
        * 更新上传进度
        * @param increment 为已上传的进度增加的字节量
        */
-      const updateProcess = (increment) => {
+      const updateProcess = (increment) => {  
         increment = new Number(increment)
         const { onProgress } = options
         let factor = 1000; // 每次增加1000 byte
@@ -160,6 +176,7 @@ export default {
       })
     },
     handleRemoveFile(uploadFile, uploadFiles) {
+      console.log("handleRemoveFile44", file, taskRecord, options);
       const queueObject = fileUploadChunkQueue[uploadFile.uid]
       if (queueObject) {
         queueObject.stop()
@@ -167,8 +184,9 @@ export default {
       }
     },
     async handleHttpRequest(options) {
+      console.log("handleHttpRequest is one",options);
       const file = options.file
-      const loadingBox = Loading.service({
+      loadingBox = Loading.service({
         lock: true,
         text: '文件正在上传中',
         spinner: 'el-icon-loading',
@@ -180,12 +198,11 @@ export default {
         const { fileHash: fileHash } = taskRecord
         if (finished) {
           this.addResource(task.sysFile)
-          loadingBox.close()
           return path
         } else {
           const errorList = await this.handleUpload(file, taskRecord, options)
           if (errorList.length > 0) {
-            loadingBox.close()
+            this.resetLoading(true)
             Notification.error({
               title: '文件上传错误',
               message: '部分分片上次失败，请尝试重新上传文件'
@@ -198,7 +215,7 @@ export default {
             this.addResource(data)
             return path;
           } else {
-            loadingBox.close()
+            this.resetLoading(true)
             Notification.error({
               title: '文件上传错误',
               message: msg
@@ -206,7 +223,7 @@ export default {
           }
         }
       } else {
-        loadingBox.close()
+        this.resetLoading(true)
         Notification.error({
           title: '文件上传错误',
           message: '获取上传任务失败'
@@ -226,8 +243,16 @@ export default {
         fileUrl: process.env.VUE_APP_BASE_API + '/file/download/' + data.fileId
       }
       addResource(param).then(() => {
+        if(fileTs.resourceTypeId == '4'){
+          let previewUrl = process.env.VUE_APP_BASE_API + '/addTask?url=' + encodeURIComponent(param.fileUrl)
+          axiosReq.request({
+            url: previewUrl,
+            method: 'GET'
+          })
+        }
         this.$emit('completion', true);
         this.$modal.msgSuccess("新增成功");
+        this.resetLoading()
       });
     },
     getFileType(fileName) {
@@ -252,7 +277,7 @@ export default {
       result = radioList.find(item => item === suffix);
       if (result) return { fileType: 'M', resourceTypeId: '3' };
       // 匹配文档
-      const txtList = ['txt', 'xls', 'xlsx', 'doc', 'docx', 'pdf', 'html', 'ppt', 'pptx'];
+      const txtList = ['txt', 'xls', 'xlsx', 'doc', 'docx', 'pdf', 'html', 'ppt', 'pptx','xml'];
       result = txtList.find(item => item === suffix);
       if (result) return { fileType: 'D', resourceTypeId: '4' };
       // 匹配应用

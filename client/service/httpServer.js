@@ -71,7 +71,7 @@ axios.interceptors.response.use(response => {
 				err.message = '请求超时';
 				break;
 			case 500:
-				err.message = err.response.msg || err.response.data.message;
+				err.message = err.response.msg || err.response.data.message || '连接错误';
 				break;
 			case 501:
 				err.message = '网络未实现';

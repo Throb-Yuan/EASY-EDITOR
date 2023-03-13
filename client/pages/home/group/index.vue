@@ -108,7 +108,7 @@
 
     <!-- 添加或修改节目排程组对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body :close-on-click-modal="false">
-      <el-form ref="form" :model="form" :rules="rules" label-width="85px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="排程组名称" prop="programScheduleName">
           <el-input v-model="form.programScheduleName" placeholder="请输入排程组名称" maxlength="100" show-word-limit/>
         </el-form-item>
@@ -191,7 +191,12 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {},
+      rules: {
+        programScheduleName: [
+          {required: true, message: '请输入排程组名称', trigger: 'blur'},
+          {max: 100, message: '排程组名称在100字以内', trigger: 'blur'}
+        ]
+      },
       pullform: {},
       treeData: [],
       defaultProps: {

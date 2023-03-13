@@ -19,8 +19,9 @@
 		<!--页面编辑区域-->
 		<div class="editor-main">
 			<div class="control-bar-wrapper">
-				<controlBar :scale.sync="canvasConfig.scale" @import-psd-data="importPsdData" @showPreview="showPreviewFn"
-					@cancel="cancelFn" @publish="publishFn" @save="saveFn" @changeRatio="changeRatioFn" />
+				<controlBar :scale.sync="canvasConfig.scale" :getValue.sync="projectData.ratioValue"
+					@import-psd-data="importPsdData" @showPreview="showPreviewFn" @cancel="cancelFn" @publish="publishFn"
+					@save="saveFn" @changeRatio="changeRatioFn" />
 			</div>
 			<div id="div1" @drop="drop($event)" @dragover="allowDrop($event)">
 				<editorPan :scale.sync="canvasConfig.scale" />
@@ -75,7 +76,7 @@ import controlBar from './components/control-bar'
 import previewPage from './components/preview'
 import imageLibs from '@client/components/image-libs'
 
-import { mapState } from 'vuex'
+import { mapState,mapGetters } from 'vuex'
 import html2canvas from 'html2canvas'
 import eleConfig from './ele-config'
 export default {
@@ -131,6 +132,9 @@ export default {
 			activeElementUUID: state => state.editor.activeElementUUID,
 			// activeSideBar: state => state.editor.activeSideBar,
 		}),
+		...mapGetters([
+				'activeElement',
+			]),
 		activeSideBar: {
 			get() {
 				return this.$store.state.editor.activeSideBar
@@ -147,8 +151,10 @@ export default {
 		this.getSceneList();
 		// this.id ? this.initPageData() : this.$store.dispatch('setPrjectData', {...this.$programInit})
 	},
+	mounted(){
+		this.watchKeyDown()
+	},
 	beforeDestroy() {
-		console.log("输入===");
 		let body = deepClone(this.$programInit.body)
 		body.pages[0].uuid = createUUID()
 		this.$store.dispatch('setPrjectData', {
@@ -159,6 +165,39 @@ export default {
 	},
 	methods: {
 		/**
+			* 监听键盘按下事件，方便用户通过键盘操作元素
+			* @param objs.e   所选比例值
+		* @param objs.arr 数组
+			*/
+		watchKeyDown() {
+			document.onkeydown = (e) => {
+
+				//事件对象兼容
+
+				let e1 = e || event || window.event || arguments.callee.caller.arguments[0]
+				//键盘按键判断:左箭头-37;上箭头-38；右箭头-39;下箭头-40;Del键46
+				//左
+				console.log("键盘--》",e1.keyCode);
+				if (e1 && e1.keyCode == 46) {
+					// Del键===删除元素
+				this.$store.dispatch('deleteElement', this.activeElementUUID)
+				} else if (e1 && e1.keyCode == 37) {
+					// 按下左箭头===向左移动1
+					this.activeElement.commonStyle.left--
+				} else if (e1 && e1.keyCode == 38) {
+					// 按下上箭头===向上移动1
+					this.activeElement.commonStyle.top--
+				} else if (e1 && e1.keyCode == 39) {
+					// 按下右箭头===向右移动1像素
+					this.activeElement.commonStyle.left++
+				} else if (e1 && e1.keyCode == 40) {
+					// 按下下箭头===向下移动1像素
+					this.activeElement.commonStyle.top++
+				} 
+
+			}
+		},
+		/**
 			* 更改画布大小，更新editorPan组件大小与projectData数据
 			* @param objs.e   所选比例值
 		* @param objs.arr 数组
@@ -166,9 +205,6 @@ export default {
 		changeRatioFn(objs) {
 
 			let checkData = deepClone(objs.arr.find(v => v.value == objs.e))
-			// let case = objs.arr.find(v=> {return v.value==objs.e})
-
-			console.log("checkData1", checkData);
 
 			let rate = 1
 			if (objs.e == '自定义') {
@@ -197,12 +233,10 @@ export default {
 						checkData.toWidth = checkData.toWidth * rate < 1 ? 1 : checkData.toWidth * rate
 					}
 				}
-				// return false
 			}
-
-			console.log("checkData4", checkData);
 			this.projectData.width = checkData.toWidth
 			this.projectData.height = checkData.toHeight
+			this.projectData.ratioValue = objs.e
 			this.$config.canvasH5Width = checkData.toWidth
 			this.$config.canvasH5Height = checkData.toHeight
 			eleConfig[0].components[1].defaultStyle.width = checkData.toWidth / 2
@@ -238,7 +272,7 @@ export default {
 
 			}
 			let b = {} //节点信息带入
-			const txtList = ['txt','xls', 'xlsx','doc', 'docx','pdf','html','ppt', 'pptx'];
+			const txtList = ['txt', 'xls', 'xlsx', 'doc', 'docx', 'pdf', 'html', 'ppt', 'pptx'];
 			// 判断节点类型，添加至画布
 			if (nodeData.resourceTypeId === "1") {
 				b.localPath = nodeData.filePath
@@ -320,6 +354,9 @@ export default {
 				this.$store.dispatch('setPrjectData', {
 					...body
 				})
+
+				this.$config.canvasH5Width = 800
+				this.$config.canvasH5Height = 450
 				return false;
 			}
 			this.loading = true;
@@ -332,6 +369,9 @@ export default {
 				this.$store.dispatch('setPrjectData', {
 					...jsonProjects
 				})
+
+				this.$config.canvasH5Width = jsonProjects.width
+				this.$config.canvasH5Height = jsonProjects.height
 
 			}).catch(() => {
 				this.loading = false;
@@ -474,7 +514,7 @@ export default {
 			this.$confirm('确认退出编辑?', '提示', {
 				confirmButtonText: '确定',
 				cancelButtonText: '取消',
-       			showCancelButton: true,
+				showCancelButton: true,
 				type: 'warning'
 			}).then(() => {
 				this.$router.push({ name: 'Home' })
@@ -492,10 +532,8 @@ export default {
 					const file = new window.File([blob], +new Date() + '.png', { type: 'image/png' })
 					let params = new FormData()
 					params.append('file', file);
-					console.log("file", params);
 					// return
 					this.$axios.post('/file/upload', params).then(res => {
-						console.log("file2", res);
 						// 替换主图链接
 						this.projectData.coverImage = res.body;
 						resolve(res.body)
