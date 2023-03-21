@@ -18,10 +18,9 @@ import 'video.js/dist/video-js.css'
 import videojs from 'video.js'
 import 'videojs-contrib-hls';
 import { createUUID } from '../../../../common/uitls'
-//不要忘记包括视频.js CSS，位于 .<code>video.js/dist/video-js.css</code>
 
 export default {
-  name: 'QkStreaming',
+  name: 'QkStreaming',//流媒体
   props: {
     streamingSrc: {
       type: String,
@@ -49,7 +48,7 @@ export default {
       defaultImg: require('@client/common/images/defvio.png'),
       options: {
         autoplay: true, // 设置自动播放
-        muted: false, // 设置了它为true，才可实现自动播放,同时视频也被静音 （Chrome66及以上版本，禁止音视频的自动播放）
+        muted: false, // 设置了它为true，才可实现自动播放,同时视频也被静音 （Chrome66及以上版本，禁止音视频的自动播放，因设备而异）
         preload: "auto", // 预加载
         loop: true,
         controls: false, // 显示播放的控件
@@ -80,8 +79,10 @@ export default {
     }
   },
   methods: {
+    /**
+     * 创建一个hls流播放器
+     */
     getVideo(nowPlayVideoUrl, nowPlayVideoId) {
-      console.log("视频已准备666");
       this.player = videojs(nowPlayVideoId, {
         autoplay: this.streamingAutoPlay,
         muted: this.streamingMuted,
@@ -99,7 +100,7 @@ export default {
       ]);
     }
   },
-
+// 页面销毁时销毁创建的播放器
   beforeDestroy() {
     if (this.player) {
       this.player.dispose()

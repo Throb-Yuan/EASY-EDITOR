@@ -6,21 +6,24 @@
         <el-input
             v-model="queryParams.content"
             placeholder="请输入字幕内容"
-            clearable
-            @keyup.enter.native="handleQuery"
+            @keyup.enter.native="$event.target.blur()"
+            @blur="handleQuery" 
         />
       </el-form-item>
       <el-form-item label="字幕播放日期：">
         <el-date-picker
             v-model="date"
+            unlink-panels
+            :picker-options="pickerOptions"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
+            @change="handleQuery"
             end-placeholder="结束日期"  value-format="yyyy-MM-dd">
         </el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <!-- <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button> -->
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
@@ -254,6 +257,41 @@ export default {
         children: 'children',
         label: 'label'
       },
+      pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一年',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 365);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+        },
       // 表单校验
       rules: {
         content: [
@@ -378,7 +416,9 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.date = []
+      this.date.length ? this.data = [] : ''
+      this.queryParams.beginDat ?  this.queryParams.beginDat = '' : ''
+      this.queryParams.endDate ?  this.queryParams.endDate = '' : ''
       this.resetForm("queryForm");
       this.handleQuery();
     },

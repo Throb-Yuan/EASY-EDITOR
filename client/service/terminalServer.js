@@ -1,14 +1,9 @@
 /**
- * 后台管理web请求封装
+ * 终端webview请求封装
  */
 import axios from 'axios-extra'
-import store from '@/store/index'
 import $config from "@/config/index";
-import userModel from '@/libs/userModel'
-// import { Cookie } from '@/common/js/mUtils'
-import QS from 'qs';
-import { getToken } from '@/common/js/auth'
-
+import { Message } from 'element-ui'
 // 线上环境配置axios.defaults.baseURL，生产环境则用proxy代理
 if (process.env.NODE_ENV !== 'development') {
 	axios.defaults.baseURL = $config.baseURL;
@@ -16,16 +11,16 @@ if (process.env.NODE_ENV !== 'development') {
 axios.defaults.headers['Content-Type'] = 'application/json;charse=UTF-8'
 axios.defaults.timeout = 30000; // 超时时间
 
-const webHttp = axios.create({
+const httpExtra = axios.create({
     maxConcurrent: 5, //并发为1
+    queueOptions: {
+        retry: 3, //请求失败时,最多会重试3次
+        retryIsJump: false //是否立即重试, 否则将在请求队列尾部插入重试请求
+    }
 })
 //请求拦截器
-webHttp.interceptors.request.use(config => {
+httpExtra.interceptors.request.use(config => {
 	if(config.url.includes('content/program/download')) config.timeout = 300000;
-	if (getToken()) {
-		// 有token则携带token
-		config.headers['Authorization'] = 'Bearer ' + getToken()
-	}
 	// config.headers['x-csrf-token'] = Cookie.get('x-csrf-token');
 	return config
 }, error => {
@@ -33,16 +28,17 @@ webHttp.interceptors.request.use(config => {
 });
 
 //响应拦截器即异常处理  status==200为blob数据类型
-webHttp.interceptors.response.use(response => {
-	if (response.request && (response.request.responseType === 'blob' || response.request.responseType === 'arraybuffer')) {
+httpExtra.interceptors.response.use(response => {
+	if (response.request.responseType === 'blob' || response.request.responseType === 'arraybuffer') {
 		return Promise.resolve(response.data)
 	}
 	if (response.data.code==200 || response.code == 200) {
 		return Promise.resolve(response.data)
 	} else {
-		store.dispatch('showMassage', {
+		Message.closeAll()
+		Message({
 			type: 'error',
-			data: response.data.message || response.data.msg || response.data.errMsg
+			message: response.data.message || response.data.msg || response.data.errMsg
 		});
 		return Promise.reject(response.data)
 	}
@@ -55,7 +51,6 @@ webHttp.interceptors.response.use(response => {
 				break;
 			case 401:
 				err.message = '未授权，请重新登录';
-				userModel.goLogin();
 				break;
 			case 403:
 				err.message = '没有访问权限，拒绝访问';
@@ -67,57 +62,40 @@ webHttp.interceptors.response.use(response => {
 				err.message = '请求方法未允许';
 				break;
 			case 408:
-				err.message = '请求超时';
+				err.message = '该节目需网络支持，请检查网络链接';
 				break;
 			case 500:
-				err.message = err.response.msg || err.response.data.message || '连接错误';
+				err.message = '该节目需网络支持，请检查网络链接';
 				break;
 			case 501:
-				err.message = '网络未实现';
+				err.message = '该节目需网络支持，请检查网络链接';
 				break;
 			case 502:
-				err.message = '网络错误';
+				err.message = '该节目需网络支持，请检查网络链接';
 				break;
 			case 503:
-				err.message = '服务不可用';
+				err.message = '该节目需网络支持，请检查网络链接';
 				break;
 			case 504:
-				err.message = '网络超时';
+				err.message = '该节目需网络支持，请检查网络链接';
 				break;
 			default:
 				err.message = `连接错误${err.response.msg}`
 		}
 	} else {
-		err.message = "连接到服务器失败"
+		err.message = "该节目需网络支持，请检查网络链接"
 	}
-	store.dispatch('showMassage', {
+	Message.closeAll()
+	Message({
 		type: 'error',
-		data: err.message || err.response.msg
+		message: err.message || err.response.msg
 	});
 	return Promise.reject(err.response)
 });
-/**
- * 下载文件
- */
-let downloadFile = (url) => {
-	window.open(url)
-};
 export default {
-	download(url, params, responseType,header) {
-		return webHttp({
-			method: 'post',
-			url,
-			responseType:responseType,
-			headers: {
-				...(header || {}),
-				'Content-Type': 'application/x-www-form-urlencoded'
-			},
-			data: QS.stringify(params) || {},
-		})
-	},
 	//get请求
 	get(url, param, responseType, header) {
-		return webHttp({
+		return httpExtra({
 			method: 'get',
 			url,
 			headers: {
@@ -129,7 +107,7 @@ export default {
 	},
 	//post请求
 	post(url, param, header) {
-		return webHttp({
+		return httpExtra({
 			method: 'post',
 			url,
 			headers: {
@@ -139,20 +117,9 @@ export default {
 			data: param || {},
 		})
 	},
-	postFormData(url, params, header) {
-		return webHttp({
-			method: 'post',
-			url,
-			headers: {
-				...(header || {}),
-				'Content-Type': 'application/x-www-form-urlencoded'
-			},
-			data: QS.stringify(params) || {},
-		})
-	},
 	//post请求
 	put(url, param, header) {
-		return webHttp({
+		return httpExtra({
 			method: 'put',
 			url,
 			headers: {
@@ -164,7 +131,7 @@ export default {
 	},
 	// delete
 	delete(url, param, header) {
-		return webHttp({
+		return httpExtra({
 			method: 'delete',
 			url,
 			headers: {
@@ -173,18 +140,4 @@ export default {
 			params: param || {},
 		})
 	},
-	// 此方法非promise 导出文件
-	getFile(url, params) {
-		let tempParams = {
-			...(params || {})
-		}
-		// 拼接下载地址
-		let list = [];
-		for (let key in tempParams) {
-			list.push(key.toString() + '=' + tempParams[key]);
-		}
-		url = $config.baseURL + url + '?' + list.join('&');
-		url = encodeURI(url);
-		downloadFile(url);
-	}
 }

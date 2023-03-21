@@ -7,7 +7,7 @@
 
 <script>
 	export default {
-		name: 'QkRectangleLine', // 这个名字很重要，它就是未来的标签名
+		name: 'QkRectangleLine', //  分割线
 	}
 </script>
 

@@ -12,6 +12,7 @@ import AES from '@/common/js/secret'
 import * as API from '@/api/index'
 import pluginsHui from '@client/pluginHui' // pluginsHui
 import Element from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css';
 import '@/common/styles/ruoyi.scss'
 import '@/common/styles/element-variables.scss'
 import '@/common/styles/index.scss' // 自定义 css
@@ -68,51 +69,6 @@ Vue.prototype.$API = API;
  * 公共配置信息
  */
 Vue.prototype.$config = config
-Vue.prototype.$programInit = {
-	status: true,
-	body: {
-		sceneId: '',
-		programId: '',
-		shareConfig: {
-			coverImage: '',
-			title: '曜的菜园',
-			description: '这是曜的菜园的节目'
-		},
-		title: '未命名场景',
-		coverImage: '',
-		description: '慧集互联的可视化编辑，快来看看吧。',
-		script: '',
-		width: 800,
-		height: 450,
-		pageMode: 'h5',
-		flipType: 0,
-		slideNumber: false,
-		status: 1,
-		isPublish: false,
-		isTemplate: false,
-		members: [],
-		version: 1,
-		_id: '',
-		pages: [
-			{
-				uuid: '',
-				name: '',
-				elements: [],
-				commonStyle: {
-					backgroundColor: '',
-					backgroundImage: '',
-					backgroundSize: 'cover'
-				}
-			}
-		],
-		author: '',
-		created: '',
-		updated: '',
-		__v: 0
-	},
-	msg: 'success',
-	code: 200
-}
 // 注册全局过滤器
 Object.keys(filters).forEach(key => {
 	Vue.filter(key, filters[key])

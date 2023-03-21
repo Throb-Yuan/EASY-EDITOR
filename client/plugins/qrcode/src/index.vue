@@ -11,7 +11,7 @@
 		components: {
 			QrcodeVue
 		},
-		name: 'QkQrcode', // 这个名字很重要，它就是未来的标签名
+		name: 'QkQrcode', // 二维码
 		props: {
 			qrCodeValue: {
 				type: String,

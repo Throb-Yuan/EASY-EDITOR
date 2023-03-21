@@ -222,5 +222,5 @@ export const delSubtitle = p => $axios.delete('/content/subtitle/'+p, {})
 export const batchAddSubtitlTerminal = p => $axios.post('/content/subtitlTerminal/batch/add', p)
 // 字典查询
 export const dictList = p => $axios.get('/system/dict/data/list', p)
-
+// 指定终端字幕下发记录
 export const listSubtitlTerminal = p => $axios.get('/content/subtitlTerminal/list', p)

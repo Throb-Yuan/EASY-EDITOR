@@ -11,12 +11,8 @@
 
 <script>
 export default {
-  name: 'QkImage', //未来的标签模板名<qk-text></qk-text>
+  name: 'QkImage', //图片
   props: {
-    // imageSrc: {
-    //   type: String,
-    //   default: 'http://192.168.101.250:2501/file/download/I30B65E69B78D44CEB2D45AB9A78A49AF'
-    // },
     imageSrc: {
       type: String,
       default: ''
@@ -46,9 +42,6 @@ export default {
   },
   created() {
     if(!window.location.href.includes('http')) this.notDevs = true
-    setTimeout(() => {
-      console.log("imageSrc",this.imageSrc,!this.imageSrc);
-    }, 1000);
   }
 }
 </script>

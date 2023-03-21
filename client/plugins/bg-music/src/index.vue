@@ -7,16 +7,12 @@
 			</div>
 			<img class="yinyue-img" :src="muimageSrc" alt="bg">
 		</div>
-		<!-- <div class="def-medails" v-else-if="!notDevs">
-			<img :src="defaultImg" style="object-fit:cover" alt="" />
-			<span>请在右侧组件属性区域上传视频</span>
-		</div> -->
 </div>
 </template>
 
 <script>
 export default {
-	name: 'qkBgMusic',
+	name: 'qkBgMusic',//音乐
 	props: {
 		musicSrc: {
 			type: String,
@@ -58,7 +54,7 @@ export default {
 	data() {
 		return {
 			audioEl: undefined,
-			playing: false,
+			playing: false,//播放状态
 			notDevs: false,
 			defaultImg: require('@client/common/images/defmus.png'),
 		}
@@ -80,6 +76,9 @@ export default {
 		if (this.musicSrc) this.firstPlay()
 	},
 	methods: {
+		/**
+		 * 加载后播放音乐
+		 */
 		firstPlay() {
 			this.audioEl = document.getElementById('video-play-audio')
 			this.audioEl.load();
@@ -104,6 +103,9 @@ export default {
 				});
 			})
 		},
+		/**
+		 * 点击暂停/播放音乐
+		 */
 		handleMusicPlay() {
 			if (!this.musicSrc) return;
 			if (this.playing) {

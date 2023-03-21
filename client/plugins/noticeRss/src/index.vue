@@ -10,6 +10,9 @@
 				</ul>
 			</div>
 		</div>
+		<div class="notdev" v-else-if="!noticeText&&!notDevs">
+			请在右侧组件属性区域输入Rss链接
+		</div>
 	</div>
 </template>
 <script>
@@ -35,7 +38,8 @@ export default {
 		return {
 			interFuns: null,
 			uuid: '',
-			noticeText: ''
+			noticeText: '',
+			notDevs:false,
 		};
 	},
 	watch: {
@@ -61,6 +65,7 @@ export default {
 		},
 	},
 	mounted(){
+		if(!window.location.href.includes('http')) this.notDevs = true
 		this.creatId()
 		// 延时滚动
 		if (this.noticeUrl) {
@@ -68,6 +73,9 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * 获取Url返回的文本内容，过滤标签
+		 */
 		getText() {
 			getRssUrl({
 				url: this.noticeUrl
@@ -89,11 +97,14 @@ export default {
 			});
 		},
 		/**
-		 * 创建ID标识，这样就支持可同时播放多个公告栏
+		 * 创建ID标识，这样就支持可同时播放多个Rss
 		 */
 		creatId() {
 			this.uuid = createUUID()
 		},
+		/**
+		 * 计算移动距离速度
+		 */
 		runMarquee() {
 			if (this.sportType == "top" || this.sportType == "bottom") {
 				// 获取文字 计算后宽度
@@ -210,9 +221,6 @@ li {
 }
 
 .marquee-list span {
-	// padding: 0 0.04rem;
-	// color: #ffe17b;
-	// font-weight: 700;
 }
 
 #top {
@@ -229,5 +237,13 @@ li {
 		white-space: normal;
 		text-align: left;
 	}
+}
+.notdev{
+	color: #999;
+	font-weight: 600;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 </style>

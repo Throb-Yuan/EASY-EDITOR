@@ -6,30 +6,29 @@
 
     <el-scrollbar class="scroll-wrapper page-list-wrapper" ref="celia" id="resultScroll">
       <div class="page-content">
-        <div class="my-page-nav-list">
-          <div class="my-page-nav-item" @click="doSearch('my')" :class="{ active: searchParams.type === 'my' }">
+        <div class="my-page-nav-list" style="display: flex;width: 86.8%;">
+          <div class="my-page-nav-item" :class="{ active: searchParams.type === 'my' }">
             我的节目({{ myCount }})
           </div>
-          <!-- <div class="my-page-nav-item" @click="doSearch('cooperation')" :class="{active: searchParams.type === 'cooperation'}">
-            参与作品({{shareCount}})
-          </div> -->
           <el-form :model="queryParams" ref="queryParams" size="small" :inline="true" v-show="showSearch"
             label-width="68px">
             <el-form-item label="节目名称" prop="programName">
-              <el-input v-model="queryParams.programName" placeholder="请输入节目名称" clearable
-                @keyup.enter.native="handleQuery" />
+              <el-input v-model="queryParams.programName" placeholder="请输入节目名称"
+                @keyup.enter.native="$event.target.blur()" @blur="handleQuery" />
             </el-form-item>
-            <el-form-item label="场景">
-              <el-select v-model="queryParams.sceneId" placeholder="请选择场景" clearable>
+            <el-form-item label="场景" prop="sceneId" label-width="52px">
+              <el-select v-model="queryParams.sceneId" placeholder="请选择场景" clearable @change="handleQuery">
                 <el-option v-for="(dict, index) in sceneList" :key="index" :label="dict.sceneName"
                   :value="dict.sceneId" />
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
               <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
             </el-form-item>
           </el-form>
+              <div style="flex:1;text-align:right;">
+                <el-button icon="el-icon-setting" type="primary" plain size="mini"  @click="goScene">场景管理</el-button>
+              </div>
         </div>
         <!--页面列表-->
         <div class="yrj_ccc" ref="yrjccc" style="overflow: hidden;">
@@ -38,13 +37,13 @@
               <thumbnailPanel :pageType="searchParams.pageMode" />
             </div>
             <div class="page-item" v-for="(item, index) in pageList" :key="index">
-              <thumbnailPanel @refresh="getList(1)" @showPreview="showPreviewFn" @terminalFun="terminalFun"
+              <thumbnailPanel @refresh="getList(1)" @terminalFun="terminalFun"
                 :pageData="item" :btnList="operationBtn(item.isPublish)" />
             </div>
           </div>
         </div>
 
-        <div class="loading_bar" v-if="pageList.length > 5">
+        <div class="loading_bar" @click="getList(2)">
           <div class="linel"></div>
           <div class="icon_text">
             <i :class="loadingBar[loadStatus].icon"></i>
@@ -54,31 +53,9 @@
         </div>
       </div>
     </el-scrollbar>
-    <!-- 添加或修改节目管理对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="节目名称" prop="programName">
-          <el-input v-model="form.programName" placeholder="请输入节目名称" maxlength="120" show-word-limit />
-        </el-form-item>
-        <el-form-item label="场景">
-          <el-select v-model="form.sceneId" placeholder="请选择场景" clearable>
-            <el-option v-for="(dict, index) in sceneList" :key="index" :label="dict.sceneName" :value="dict.sceneId" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="原始HTML">
-          <!-- <editor v-model="form.html" :min-height="192"/>-->
-          <textarea v-model="form.html" cols="50" rows="20"></textarea>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
-
     <!-- 下发节目到终端 -->
     <el-dialog title="下发节目" :visible.sync="openPull" width="500px" append-to-body>
-      <el-form ref="form" :model="pullform" label-width="80px">
+      <el-form ref="treeData" :model="pullform" label-width="80px">
         <el-tree :data="treeData" show-checkbox default-expand-all node-key="id" ref="tree" highlight-current
           :props="defaultProps">
         </el-tree>
@@ -102,21 +79,24 @@ export default {
   },
   data() {
     return {
+      isQuery: false,
       loadingBar: [{
         icon: 'el-icon-arrow-down',
-        text: '下拉加载更多节目'
+        text: '下拉或点击加载更多节目'
       }, {
         icon: 'el-icon-loading',
         text: '节目正在拼命加载中'
       }, {
         icon: 'el-icon-finished',
         text: '节目已全部加载完成'
+      }, {
+        icon: 'el-icon-finished',
+        text: '暂无节目'
       }],
       loadStatus: 0,
       pageList: [],
       myCount: 0,
       shareCount: 0,
-      pageModeList: [],
       searchParams: {
         type: 'my',
         pageMode: 'h5'
@@ -149,7 +129,6 @@ export default {
       // 弹出层标题
       title: "",
       // 是否显示弹出层
-      open: false,
       openPull: false,
       // 查询参数
       queryParams: {
@@ -168,9 +147,6 @@ export default {
     };
   },
   created() {
-    // const sceneId = this.$route.params && this.$route.params.sceneId;
-    this.pageModeList = this.$config.pageModeList;
-    // this.getList();
     this.queryParams.sceneId = this.$route.query.id || null;
     this.getList();
     this.getSceneList();
@@ -184,41 +160,48 @@ export default {
 
   },
   methods: {
+    /** 页面滚动加载更多时间
+   * @clientHeight - 滚动条外容器的高度
+   * @scrollHeight - 滚动条高度
+   * - 200 阈值，即距离底部还有200px时触发
+   */
     handleScroll() {
       let high = this.$refs.celia.$refs.wrap.scrollTop;//距离顶部的距离
       let contentHeight = this.$refs.yrjccc.offsetHeight
+      console.log("handleScroll==",high + window.innerHeight,contentHeight);
       //.clientHeight - 滚动条外容器的高度
       //.scrollHeight - 滚动条高度
       // console.log("滚动监听==", high + window.innerHeight - 200, contentHeight);
-      if (high + window.innerHeight - 200 > contentHeight && this.loadStatus==0 && this.myCount > this.pageList.length) {
-        //自行定义
+      if (high + window.innerHeight - 180 > contentHeight && this.loadStatus == 0 && this.myCount > this.pageList.length) {
         this.queryParams.pageNum++
         this.getList()
       }
     },
-    copyOther(value, name) {
-      this.$copyText(value).then(() => {
-        this.$message.success(`${name}已复制!`);
-      })
-    },
+    /** 获取终端列表
+    */
     getTreeData() {
       this.$API.terminalTreeListGet({}).then(response => {
+        // 解决无id导致el-tree报错
+        response.data[0].id = '123456'
+        response.data[1].id = '1234567'
+        response.data[2].id = '12345678'
         this.treeData = response.data;
       });
     },
-    /** 查询节目管理列表 */
+    /** 查询节目管理列表
+     * @ev 用户传入条件搜索时传入，重置页码
+     */
     getList(ev) {
       this.loadStatus = 1//加载中
-      if (ev) {
-        this.queryParams.pageNum = 1
-      }
+      if (ev==1) this.queryParams.pageNum = 1
+      if (ev==2) this.queryParams.pageNum++
       this.$API.listProgram(this.queryParams).then(response => {
         this.myCount ? '' : this.myCount = response.total;
-        console.log('this.myCount',this.pageList.length);
-        if (response.rows.length<20) {
+        console.log('this.myCount', this.pageList.length);
+        if (response.rows.length < 20) {
           setTimeout(() => {
             this.queryParams.pageNum == 1 ? this.pageList = response.rows || [] : this.pageList = this.pageList.concat(response.rows)
-            this.loadStatus = 2
+            this.pageList.length ? this.loadStatus = 2 : this.loadStatus = 3
           }, 500);
         } else {
           setTimeout(() => {
@@ -228,43 +211,19 @@ export default {
         }
       });
     },
+     /** 获取场景列表
+    */
     getSceneList() {
       this.$API.listScene().then(response => {
         this.sceneList = response.data;
       });
     },
-    // 取消按钮
-    cancel() {
-      this.open = false;
-      this.reset();
-    },
-    // 取消按钮
+    // 取消下发终端操作
     cancelPull() {
-      this.$refs.tree.setCheckedKeys([]);
+      this.$refs.tree.setCheckedKeys([]);//重置已勾选项
       this.openPull = false;
-      this.reset();
     },
-    // 表单重置
-    reset() {
-      this.programId = ''
-      this.programName = ''
-      this.form = {
-        programId: null,
-        programName: null,
-        sceneId: null,
-        afterHtml: null,
-        html: null,
-        creatorId: null,
-        creator: null,
-        createTime: null,
-        modifyId: null,
-        modifier: null,
-        modifyTime: null,
-        version: null,
-        delStatus: 0
-      };
-      this.resetForm("form");
-    },
+
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
@@ -273,9 +232,9 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm("queryParams");
-      this.queryParams.sceneId = null
-      console.log(this.queryParams);
-      this.handleQuery();
+      // 解决creatd赋值时scenId默认值为url id
+      this.queryParams.sceneId ? this.queryParams.sceneId = null : ''
+      this.handleQuery()
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
@@ -283,78 +242,16 @@ export default {
       this.single = selection.length !== 1
       this.multiple = !selection.length
     },
-    /** 新增按钮操作 */
-    handleAdd() {
-      this.reset();
-      this.open = true;
-      this.title = "添加节目管理";
-    },
-    /**下发到终端操作 */
-    handlePull(row) {
-      // console.log("下发数据==", row);
+    /**下发到终端操作 弹窗*/
+    terminalFun(data) {
       this.openPull = true
-      this.programId = row.programId
-      this.programName = row.programName
+      this.programId = data.programId
+      this.programName = data.programName
       this.$nextTick(() => {
         this.$refs.tree.setCheckedKeys([])
       });
-      // this.$refs.tree.setCheckedKeys([]);
     },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
-      this.reset();
-      const programId = row.programId || this.ids
-      this.$API.getProgram(programId).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "修改节目管理";
-      });
-    },
-    handleExportProgram(row) {
-      this.$modal.msgSuccess("正在生成节目，请勿关闭页面");
-      this.$API.programDownload(row.programId).then(
-        response => {
-          // if (!response.data.size) {
-          //   this.$message({
-          //     message: "没有可下载文件",
-          //     type: "warning"
-          //   })
-          //   return
-          // }
-          const url = window.URL.createObjectURL(new Blob([response.data]))
-          const link = window.document.createElement("a")
-          link.style.display = "none"
-          link.href = url
-          link.setAttribute("download", row.programName + "-unzip.zip")
-          document.body.appendChild(link)
-          this.$modal.msgSuccess("正在下载节目，请勿关闭页面");
-          link.click()
-        },
-        err => {
-          this.$message.error(err);
-        }
-      )
-    },
-    /** 提交按钮 */
-    submitForm() {
-      this.$refs["form"].validate(valid => {
-        if (valid) {
-          if (this.form.programId != null) {
-            this.$API.updateProgram(this.form).then(() => {
-              this.$modal.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
-          } else {
-            this.$API.addProgram(this.form).then(() => {
-              this.$modal.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
-            });
-          }
-        }
-      });
-    },
+    /**下发到终端操作 确定下发 */
     submitPull() {
       let terminalIds = this.$refs.tree.getCheckedKeys();
       if (terminalIds.length == 0) {
@@ -389,13 +286,6 @@ export default {
     handleExport() {
       this.$API.programExport(this.queryParams).then(
         response => {
-          // if (!response.data.size) {
-          //   this.$message({
-          //     message: "没有可下载文件",
-          //     type: "warning"
-          //   })
-          //   return
-          // }
           const url = window.URL.createObjectURL(new Blob([response.data]))
           const link = window.document.createElement("a")
           link.style.display = "none"
@@ -409,11 +299,8 @@ export default {
           this.$message.error(err);
         }
       )
-      // this.download('content/program/export', {
-      //   ...this.queryParams
-      // }, `program_${new Date().getTime()}.xlsx`)
     },
-    // 操作按钮类型，分为我的，我的协作，和已发布的三种状态
+    // 操作按钮类型，分为我的，我的协作，和已发布的三种状态，暂时只有我的
     operationBtn(isPublished) {
       let baseBtn = ['edit', 'copyTemplate', 'setTemplate', 'exports', 'copys', 'copysHTML'];
       if (this.searchParams.type === 'my') {
@@ -429,29 +316,9 @@ export default {
       }
       return baseBtn;
     },
-    /**
-     * 搜索我的页面，type: my时搜索我的作品， type: share搜索我参与的作品
-     */
-    doSearch() {
-      // this.searchParams.type = type;
-      // this.getList()
-    },
-    /**
-     * 获取所有页面
-     */
-    // getList() {
-    // 	this.$API.getMyPages(this.searchParams).then(res => {
-    // 		// this.pageList = res.body.pages || []
-    //     this.myCount = res.body.myPageCount;
-    //     this.shareCount = res.body.myCooperationPageCount;
-    // 	})
-    // },
-    showPreviewFn(id) {
-      this.previewId = id;
-      this.showPreview = true;
-    },
-    terminalFun(data) {
-      this.handlePull(data)
+    // 跳转至场景管理页
+    goScene(){
+      this.$router.push({name:'sceneList'})
     }
   },
 
@@ -464,7 +331,7 @@ export default {
 }
 
 .page-list-wrapper {
-  height: calc(100% - 48px);
+  // height: calc(100% - 48px);
 }
 
 .my-page-nav-list {

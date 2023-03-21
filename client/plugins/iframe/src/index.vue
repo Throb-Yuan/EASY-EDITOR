@@ -8,7 +8,7 @@
 
 <script>
 export default {
-	name: 'QkIframe', // 这个名字很重要，它就是未来的标签名
+	name: 'QkIframe', //内嵌iframe
 	props: {
 		url: {
 			type: String,
@@ -21,15 +21,17 @@ export default {
 		}
 	},
 
-	created(){
-		
+	created() {
+
 	},
-	mounted(){
+	mounted() {
 		this.changeIframeDivStyle('none');
 	},
 	methods: {
+		/**
+		 * 解决拖拽时，鼠标拖拽过程中移入iframe内，导致事件冲突而引起拖拽卡顿，释放延迟问题，
+		 */
 		changeIframeDivStyle(display) {
-			// 解决拖拽时，鼠标拖拽过程中移入iframe内，导致事件冲突而引起拖拽卡顿，释放延迟问题，
 			let iframeDiv = document.getElementById('iframeDiv');
 			iframeDiv.style.display = display;
 		}

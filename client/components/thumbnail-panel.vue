@@ -1,49 +1,72 @@
 <template>
-	<div class="page-thumbnail-panel" v-loading="loading" v-if="pageData">
-		<!-- <span class="unpublish" v-if="!pageData.isPublish && showPublishState">未发布</span> -->
-		<div class="thumbnail-panel-cover">
-			<div class="header-mask">
-				<div class="details-btn" @click="preview(pageData.afterHtml)">预览</div>
-			</div>
-			<div class="image-wrapper">
-				<img style="object-fit: cover;" v-if="pageData.coverImgId" :src='baseURL+"/file/download/"+pageData.coverImgId' alt="" />
-				<img style="object-fit: cover;" :src="defaultCoverImage" v-else alt="">
-			</div>
-		</div>
-		<div class="page-item-title border-T ellipsis">
-			<span class="item-title-i" style="padding-right:10px;" :title="pageData.programName">{{ pageData.programName
-		|| '未命名作品'
-}}</span>
-			<el-tag type="success" size="mini" v-if="pageData.sceneName">{{ pageData.sceneName }}</el-tag>
-		</div>
-		<div class="border-T thumbnail-panel-btn" v-if="btnList.length">
-			<div class="btn-wrapper" v-if="btnList.includes('edit')">
-				<el-button type="text" size="mini" @click="edit">编辑</el-button>
-			</div>
-			<!-- <div class="btn-wrapper" v-if="btnList.includes('useTemplate')">
+	<div v-if="pageData">
+		<el-skeleton style="width: 224px;background-color: #fff;border-radius: 8px;" :loading="loading" animated>
+			<template slot="template">
+				<div class="page-thumbnail-panel">
+					<el-skeleton-item variant="image" style="width: 180px; height: 180px;margin: 22px;"
+						class="image-wrapper" />
+					<div style="padding: 0 14px;">
+						<div
+							style="display: flex; align-items: center; justify-items: space-between; margin-top: 16px; height: 16px;">
+							<el-skeleton-item variant="text" style="margin-right: 16px;" />
+							<el-skeleton-item variant="text" style="width: 30%;" />
+						</div>
+						<el-skeleton-item variant="h3" style="width: 50%;padding:0px 14px;margin-top: 5px;" />
+					</div>
+				</div>
+			</template>
+			<template>
+				<div class="page-thumbnail-panel">
+					<div class="thumbnail-panel-cover">
+						<div class="header-mask">
+							<div class="details-btn" @click="preview(pageData.afterHtml)">预览</div>
+						</div>
+						<div class="image-wrapper">
+							<img style="object-fit: cover;" v-if="pageData.coverImgId"
+								:src='baseURL + "/file/download/" + pageData.coverImgId' alt="" />
+							<img style="object-fit: cover;" :src="defaultCoverImage" v-else alt="">
+						</div>
+					</div>
+					<div class="page-item-title ellipsis" style="border-top: 1px solid #F2F6FC;">
+						<span class="item-title-i" style="padding-right:10px;" :title="pageData.programName">{{
+							pageData.programName
+							|| '未命名作品'
+						}}</span>
+						<el-tag type="success" size="mini" v-if="pageData.sceneName">{{ pageData.sceneName }}</el-tag>
+					</div>
+					<div class="thumbnail-panel-btn" style="border-top: 1px solid #F2F6FC;" v-if="btnList.length">
+						<div class="btn-wrapper" v-if="btnList.includes('edit')">
+							<el-button type="text" size="mini" @click="edit">编辑</el-button>
+						</div>
+						<!-- <div class="btn-wrapper" v-if="btnList.includes('useTemplate')">
 				<el-button type="text" size="mini" @click="copyPage">使用模板</el-button>
 			</div> -->
-			<div class="btn-wrapper" v-if="btnList.includes('copyTemplate')">
-				<el-button type="text" size="mini" @click="terminal">下发节目</el-button>
-			</div>
-			<div class="btn-wrapper" v-if="showMoreBtn">
-				<el-dropdown @command="command" placement="top-start">
-					<el-button type="text" size="mini">更多 <i class="el-icon-more-outline"></i></el-button>
-					<el-dropdown-menu>
-						<template v-for="(item, index) in operationDataList">
-							<el-dropdown-item :key="index" :command="item.eventType"
-								v-if="btnList.includes(item.eventType)">
-								<div :class="item.extraClassName">
-									{{ item.title }}
-								</div>
-							</el-dropdown-item>
-						</template>
-					</el-dropdown-menu>
-				</el-dropdown>
-			</div>
-		</div>
+						<div class="btn-wrapper" v-if="btnList.includes('copyTemplate')">
+							<el-button type="text" size="mini" @click="terminal">下发节目</el-button>
+						</div>
+						<div class="btn-wrapper" v-if="showMoreBtn">
+							<el-dropdown @command="command" placement="top-start">
+								<el-button type="text" size="mini">更多 <i class="el-icon-more-outline"></i></el-button>
+								<el-dropdown-menu>
+									<template v-for="(item, index) in operationDataList">
+										<el-dropdown-item :key="index" :command="item.eventType"
+											v-if="btnList.includes(item.eventType)">
+											<div :class="item.extraClassName">
+												{{ item.title }}
+											</div>
+										</el-dropdown-item>
+									</template>
+								</el-dropdown-menu>
+							</el-dropdown>
+						</div>
+					</div>
+				</div>
+			</template>
+		</el-skeleton>
+		<!-- <span class="unpublish" v-if="!pageData.isPublish && showPublishState">未发布</span> -->
+
 	</div>
-	<div class="page-thumbnail-panel create" v-loading="loading" v-else>
+	<div class="page-thumbnail-panel create" v-else>
 		<div class="temp-create" @click="newPage">
 			<i class="el-icon-plus"></i>
 			<p class="paddingT10">创建节目</p>
@@ -92,7 +115,7 @@ export default {
 	data() {
 		return {
 			baseURL,
-			loading: false,
+			loading: true,
 			defaultCoverImage: require('@/common/images/quark--pagecover-image.png'),
 			operationDataList: [{
 				title: '导出节目',
@@ -117,8 +140,14 @@ export default {
 			}]
 		}
 	},
+	created() {
+		// loading 状态转换
+		setTimeout(() => {
+			this.loading = false
+		}, 800);
+	},
 	methods: {
-		// 发送到终端
+		// 调用父组件打开发送到终端弹窗
 		terminal() {
 			this.$emit('terminalFun', this.pageData)
 		},
@@ -136,12 +165,6 @@ export default {
 					break;
 				case 'copysHTML':
 					this.copys('HTML');
-					break;
-				case 'publish':
-					this.publish();
-					break;
-				case 'copyUrl':
-					this.copyUrl();
 					break;
 				case 'setTemplate':
 					this.setTemplate();
@@ -165,68 +188,37 @@ export default {
 		},
 		// 新建页面
 		newPage() {
-			// let newPageData = editorProjectConfig.getProjectConfig()
 			this.$router.push({ name: 'Editor' })
-			// this.loading = true;
-			// this.$API.createPage({...newPageData}).then(res => {
-			// 	this.loading = false;
-			// 	if (res.body) {
-			// 		this.$router.push({name: 'Editor', query: {id: res.body.programId}})
-			// 	}
-			// }).catch(() => {
-			// 	this.loading = false;
-			// })
 		},
-		// 编辑
+		// 编辑页面
 		edit() {
 			this.$router.push({ name: 'Editor', query: { id: this.pageData.programId } })
 		},
 		// 复制页面
 		copyPage() {
-			this.loading = true;
 			this.$API.copyPage({ id: this.pageData.programId }).then(res => {
-				this.loading = false;
 				this.$router.push({ name: 'Editor', query: { id: res.body.programId } })
 			}).catch(() => {
-				this.loading = false;
-			})
-		},
-		// 发布
-		publish() {
-			this.loading = true;
-			this.$API.publishPage({ id: this.pageData.programId }).then(() => {
-				this.loading = false;
-				this.$message.success('发布成功');
-				this.preview(this.pageData.programId);
-				this.$emit('refresh');
-			}).catch(() => {
-				this.loading = false;
 			})
 		},
 		// 预览
 		preview(afterHtml) {
 			// this.$emit('showPreview', id)
-			
+
 			if (process.env.NODE_ENV == 'production') {
 				// 暂只支持测试环境
-				localStorage.setItem("previewPageData",afterHtml)
+				localStorage.setItem("previewPageData", afterHtml)
 				window.open('http://192.168.101.250:8887/previews/html/index/preview.html')
-			}else{
+			} else {
 				this.$message.warning('暂只支持在测试环境预览')
 			}
-			
-		},
-		// 复制链接
-		copyUrl() {
+
 		},
 		// 设为我的模板
 		setTemplate() {
-			this.loading = true;
 			this.$API.setTemplatePage({ id: this.pageData.programId }).then(() => {
-				this.loading = false;
 				this.$message.success('已添加到我的模板')
 			}).catch(() => {
-				this.loading = false;
 			})
 		},
 		// 页面数据
@@ -242,7 +234,7 @@ export default {
 			this.$alert('确认删除节目？删除后，将无法恢复此节目?', '操作提示', {
 				confirmButtonText: '确定',
 				cancelButtonText: '取消',
-				showCancelButton:true,
+				showCancelButton: true,
 				type: 'warning',
 			}).then(() => {
 				this.$API.delProgram(this.pageData.programId).then(() => {
@@ -266,12 +258,9 @@ export default {
 		},
 		// 发布模板到模板市场
 		publishTemplate() {
-			this.loading = true;
 			this.$API.publishPage({ id: this.pageData.programId }).then(() => {
-				this.loading = false;
 				this.$message.success('发布成功');
 			}).catch(() => {
-				this.loading = false;
 			})
 		},
 		// 导出节目zip
@@ -279,14 +268,6 @@ export default {
 			this.$modal.msgSuccess("正在生成节目，请勿关闭页面");
 			this.$API.programDownload(this.pageData.programId).then(
 				response => {
-					console.log(response)
-					// if (!response.data.size) {
-					//   this.$message({
-					//     message: "没有可下载文件",
-					//     type: "warning"
-					//   })
-					//   return
-					// }
 					const url = window.URL.createObjectURL(new Blob([response]))
 					const link = window.document.createElement("a")
 					link.style.display = "none"
@@ -310,8 +291,7 @@ export default {
 	}
 }
 </script>
-
-<style lang="scss" scoped>
+<style lang="scss">
 .page-thumbnail-panel {
 	width: 224px;
 	height: 296px;
@@ -358,6 +338,9 @@ export default {
 		}
 	}
 }
+</style>
+<style lang="scss" scoped>
+
 
 .thumbnail-panel-cover {
 	flex: 1;
@@ -370,9 +353,10 @@ export default {
 		padding: 5px;
 		z-index: 10;
 		width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
 		img {
 			display: block;
 			width: 180px;
@@ -386,8 +370,11 @@ export default {
 .page-item-title {
 	height: 36px;
 	line-height: 36px;
-	padding: 0 8px;
 	font-size: 14px;
+	display: flex;
+    align-items: center;
+	padding-left: 22px;
+	padding-right: 8px;
 }
 
 .thumbnail-panel-btn {
@@ -395,7 +382,7 @@ export default {
 	width: 100%;
 	display: flex;
 	flex-direction: row;
-
+	padding-top: 3px;
 	.btn-wrapper {
 		flex: 1;
 		text-align: center;

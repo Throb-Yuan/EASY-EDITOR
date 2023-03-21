@@ -9,7 +9,7 @@
 				</el-switch>
 			</el-form-item>
 		</el-form>
-		<div class="tip-drop" style="padding: 0 0 10px 0;">可将媒体资源拖拽至下方替换2<span @click="changeSide"> 查看资源库</span></div>
+		<div class="tip-drop" style="padding: 0 0 10px 0;">可将媒体资源拖拽至下方替换<span @click="changeSide"> 查看资源库</span></div>
 
 		<div v-for="(item, index) in tempValue" :key="index" @drop="drop($event, item, index)"
 			@dragover="allowDrop($event, item)" @dragenter="dragenter(item)">
@@ -26,7 +26,7 @@
 							<div v-else>
 								<i class="el-icon-plus" style="font-size: 20px;"></i>
 							</div>
-							<p v-show="!item.urls" class="cropper-res-img-title">上传图片</p>
+							<p v-show="!item.urls" class="cropper-res-img-title">图片/视频</p>
 						</div>
 					</div>
 					<div class="media-indo">

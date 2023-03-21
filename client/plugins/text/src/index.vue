@@ -7,7 +7,7 @@
 
 <script>
 	export default {
-		name: 'QkText', // 这个名字很重要，它就是未来的标签名<qk-text></qk-text>
+		name: 'QkText', // 文本
 		props: {
 			text: {
 				type: String,

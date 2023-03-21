@@ -300,7 +300,7 @@ const mutations = {
 	 * @param commit
 	 * @param url
 	 */
-	 resetHistoryIndex(state, index){
+	resetHistoryIndex(state, index){
 		state.currentHistoryIndex = index
 	},
 	resetHistoryCache(state, data){

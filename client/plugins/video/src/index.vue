@@ -15,7 +15,7 @@
 
 <script>
 export default {
-  name: 'QkVideo', //它就是未来的标签模板名
+  name: 'QkVideo', //视频
   props: {
     videoSrc: {
       type: String,
@@ -62,12 +62,8 @@ export default {
   },
   created() {
     if(!window.location.href.includes('http')) this.notDevs = true
-    // process.env.NODE_ENV == 'development' ? "" : this.notDevs = true
   },
   methods: {
-    isReady(){
-      // console.log("视频已准备");
-    }
   },
 }
 </script>

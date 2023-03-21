@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- 排程详情对话框 -->
-      <el-form :model="scheduleQueryParams" ref="scheduleQueryForm" size="small" :inline="true" label-width="68px">
+      <el-form :model="scheduleQueryParams" ref="scheduleQueryForm" size="small" :inline="true" label-width="68px" @submit.native.prevent>
         <el-row :gutter="1"  style="margin-bottom: 20px">
           <p style="font-size: 18px">节目排程组：{{programScheduleName}}</p>
         </el-row>
@@ -9,12 +9,12 @@
           <el-input
             v-model="scheduleQueryParams.programName"
             placeholder="请输入节目名称"
-            clearable
-            @keyup.enter.native="handleScheduleQuery"
+            @keyup.enter.native="$event.target.blur()"
+            @blur="handleScheduleQuery"
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleScheduleQuery">搜索</el-button>
+          <!-- <el-button type="primary" icon="el-icon-search" size="mini" @click="handleScheduleQuery">搜索</el-button> -->
           <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
         </el-form-item>
       </el-form>

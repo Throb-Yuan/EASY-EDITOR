@@ -4,16 +4,16 @@
       <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch">
         <el-form-item label="资源名称" prop="resourceName">
           <el-input v-model="queryParams.resourceName" placeholder="请输入资源名称" clearable
-            @keyup.enter.native="handleQuery" />
+            @keyup.enter.native="$event.target.blur()" @blur="handleQuery" />
         </el-form-item>
         <el-form-item label="资源类型" prop="resourceTypeId">
-          <el-select v-model="queryParams.resourceTypeId" placeholder="请选择资源类型" clearable>
+          <el-select v-model="queryParams.resourceTypeId" placeholder="请选择资源类型" @change="handleQuery" clearable>
             <el-option v-for="dict in dict.type.content_resource_type" :key="dict.value" :label="dict.label"
               :value="dict.value" />
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <!-- <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button> -->
           <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
@@ -64,10 +64,10 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="终端文件路径" align="center" prop="filePath" />
         <el-table-column label="上传时间" align="center" prop="createTime" :formatter="createTimeFormat" />
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template slot-scope="scope">
+            <el-button size="mini" type="text" icon="el-icon-download" @click="openUrl(scope.row)">下载</el-button>
             <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
             <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
           </template>
@@ -132,7 +132,6 @@
 </template>
 
 <script>
-import * as imageConversion from 'image-conversion'
 import base from "@/common/js/base64Encode";
 import uploadBreakpoint from '@/components/upload-breakpoint'
 const baseURL = process.env.VUE_APP_BASE_API
@@ -205,6 +204,7 @@ export default {
       console.log('uploadFinsh', booleans);
       this.isUpload ? '' : this.isUpload = booleans
     },
+    // 重置搜索条件
     resetPage() {
       this.queryParams = this.$options.data().queryParams
       if (this.isUpload) {
@@ -213,6 +213,9 @@ export default {
       }
 
     },
+    /** 文件下载、预览方法
+     * @row 单行数据
+     */
     openUrl(row) {
       if (row.resourceTypeId == 2 || row.resourceTypeId == 3) {
         this.videoSrc = row.fileUrl
@@ -229,12 +232,17 @@ export default {
         window.open(row.fileUrl, "_blank");
       }
     },
+    // 匹配资源类型
     resourceTypeFormat(row) {
       return this.selectDictLabel(this.dict.type.content_resource_type, row.resourceTypeId);
     },
+    // 换算文件大小
     fileSizeFormat(row) {
       return this.changeFileSize(row.fileSize)
     },
+    /** 格式化上传时间
+     * @row 单行数据
+     */
     createTimeFormat(row) {
       let datetime = new Date(row.createTime)
       let year = datetime.getFullYear();
@@ -242,9 +250,12 @@ export default {
       let date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();
       let hour = datetime.getHours() < 10 ? "0" + datetime.getHours() : datetime.getHours();
       let minute = datetime.getMinutes() < 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();
-      let second = datetime.getSeconds() < 10 ? "0" + datetime.getSeconds() : datetime.getSeconds();
-      return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second
+      // let second = datetime.getSeconds() < 10 ? "0" + datetime.getSeconds() : datetime.getSeconds();
+      return year + "-" + month + "-" + date + " " + hour + ":" + minute
     },
+    /** 获取文件换算后单位
+     * @limit 文件大小B
+     */
     changeFileSize(limit) {
       let size = "";
       if (limit < 1024) {                            //小于1KB，则转化成B
@@ -264,46 +275,6 @@ export default {
         return sizeStr.substring(0, index) + sizeStr.substr(index + 3, 2)
       }
       return size;
-    },
-    submitUpload() {
-      this.$refs.upload.submit();
-    },
-    beforeAvatarUpload(file) {
-      console.log("file==", file);
-      return new Promise(resolve => {
-        this.loading = true;
-        let isLt2M = file.size / 1024 / 1024 < 1 // 判定图片大小是否小于1MB
-        const isJPG = file.type.includes('image')
-        const isGif = file.type.includes('gif')
-        if (isLt2M || !isJPG || isGif) {
-          resolve(file)
-        } else {
-          // 可自定义kb
-          let toSize = Math.round(file.size / 1024 / 6);
-          imageConversion.compressAccurately(file, toSize).then(res => { // console.log(res)
-            resolve(res)
-          })
-        }
-      })
-    },
-    handleSuccess(res) {
-      let response = res.data
-      let param = {
-        resourceId: response.fileId,
-        resourceName: response.fileName,
-        resourceTypeId: this.resourceTypeId,
-        resourceMd5: response.fileHash,
-        fileSize: response.fileSize,
-        fileType: response.fileId.substr(0, 1),
-        fileUrl: baseURL + '/file/download/' + response.fileId
-      }
-
-      this.$API.addResource(param).then(() => {
-        this.$modal.msgSuccess("新增成功");
-        this.open = false;
-        this.getList();
-      });
-      this.loading = false;
     },
     /** 查询资源列表列表 */
     getList() {

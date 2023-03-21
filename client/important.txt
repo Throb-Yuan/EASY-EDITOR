@@ -26,8 +26,7 @@ getElementsByClassName报错
 解决：
 
 var SlideDom = ""
-                console.log(" this.className==", this.className);
-                if (document.querySelector('.' + this.className)&& document.querySelector('.' + this.className).getElementsByClassName('wh_slide')) {
-                    SlideDom = document.querySelector('.' + this.className).getElementsByClassName('wh_slide')
-                }
+if (document.querySelector('.' + this.className)&& document.querySelector('.' + this.className).getElementsByClassName('wh_slide')) {
+  SlideDom = document.querySelector('.' + this.className).getElementsByClassName('wh_slide')
+ }
 

@@ -104,7 +104,7 @@
 
 				}
 				draw();
-			}, 60);
+			}, 20);
     },
     beforeDestroy(){
 			if(timer){

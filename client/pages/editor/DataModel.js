@@ -83,7 +83,9 @@ let getElementConfig = function (element, extendStyle = {}) {
 		uuid: createUUID(),
 		...elementConfigData,
 		elName: elementData.elName,
-		propsValue: deepClone(elementData.needProps || {})
+		propsValue: deepClone(elementData.needProps || {}),
+		// 增加事件数据
+		events:elementData.events
 	}
 	// 样式
 	config.commonStyle = merge(config.commonStyle, elementData.defaultStyle)

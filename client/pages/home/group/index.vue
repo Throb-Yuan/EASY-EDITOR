@@ -1,16 +1,16 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" >
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" @submit.native.prevent>
       <el-form-item label="排程组名称" prop="programScheduleName">
         <el-input
           v-model="queryParams.programScheduleName"
           placeholder="请输入排程组名称"
-          clearable
-          @keyup.enter.native="handleQuery"
+          @keyup.enter.native="$event.target.blur()"
+          @blur="handleQuery"
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <!-- <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button> -->
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
@@ -337,7 +337,7 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const programScheduleGroupIds = row.programScheduleGroupId || this.ids;
-      let message = row.programScheduleName ? '是否确认删除排程组为"' + row.programScheduleName + '"的数据项？删除排程组会同步删除组下所有的排程。' :'是否确认删除所勾选的排程组数据？删除排程组会同步删除组下所有的排程。';
+      let message = row.programScheduleName ? '是否确认删除排程组为"' + row.programScheduleName + '"的数据项？' :'是否确认删除所勾选的排程组数据？';
       this.$modal.confirm(message).then(() => {
         this.$API.delGroup(programScheduleGroupIds).then(() => {
             this.getList();

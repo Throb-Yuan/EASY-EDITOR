@@ -94,7 +94,19 @@ export default {
 	created() {
 		// 判断环境赋值不同url
 		if (!window.location.href.includes('http')) this.notDevs = true
-		// if(this.notDevs) this.changeShow = true
+
+	},
+	mounted(){
+		/**
+		 * 当首个轮播项为视频时，首次进入未触发transtionend时间，导致作为普通图片轮播划过
+		 * @param data 参数表示轮播到第data个元素
+		 * 增加判断 暂停轮播播放视频
+		 */
+		if (this.imageSrcList[0].urls&&this.imageSrcList[0].fileType=='V') {
+			this.$refs.swiper.auto = false
+			let videos = document.getElementById('videoswiper0')
+			videos.play()
+		}
 	},
 	methods: {
 		/**
@@ -103,7 +115,6 @@ export default {
 		 * @Id 自定义id名+data,防止多个视频导致id重复
 		 */
 		getNum(data) {
-			// console.log(this.imageSrcList[data]);
 			let videos = document.getElementById('videoswiper' + data)
 			let videoList = document.getElementsByClassName('image-carsousel-v')
 			if (videoList.length ) {
@@ -114,20 +125,17 @@ export default {
 			if (this.imageSrcList[data].fileType == "V") {
 				this.$refs.swiper.clearTimeOut()
 				videos.play()
-				// if(data==2){
-				// 	setTimeout(() => {
-				// 		let videoss = document.getElementById('videoswiper' + data)
-				// 		console.log("videoss",videoss);
-				// 		videoss.play()
-				// 	}, 1000);
-				// }
 			}
 		},
 		/**
-		 * 视频播放结束时间
+		 * 视频播放结束事件
 		 * 重新启动轮播
 		 */
 		videoEnd() {
+			if(!this.$refs.swiper.auto && this.imageSrcList[0].fileType=='V'){
+				// 首次首个轮播项为视频时一次性触发
+				this.$refs.swiper.auto  = true
+			}
 			this.$refs.swiper.setTime()
 		}
 	}

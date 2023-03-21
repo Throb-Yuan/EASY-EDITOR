@@ -50,8 +50,8 @@ export default {
 	},
 	methods: {
 		isURL(str_url) {
-			var strRegex = "((http|ftp|https)://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\&%_\./-~-]*)?"
-			var re = new RegExp(strRegex);
+			let strRegex = `((http|ftp|https|rtsp|trmp)://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\&%_\./-~-]*)?`
+			let re = new RegExp(strRegex);
 			return re.test(str_url);
 		},
 		changeValue(event){

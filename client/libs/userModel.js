@@ -105,7 +105,7 @@ let userModel = {
 		let currentUrl = window.location.href.slice(indexOf + 1, window.location.href.length);
 		window.sessionStorage.setItem('beforeLoginUrl', currentUrl);
 		store.commit('UPDATE_ACCESS_TOKEN', '');
-		router.push({ name: 'Login' })
+		router.replace({ name: 'Login' })
 	},
 
 	async goBeforeLoginUrl() {
@@ -113,9 +113,9 @@ let userModel = {
 		if (!url || url.indexOf('/login') != -1) {
 			// router.push('/');
 			// router.push(url);
-			router.push({ name: "Home" });
+			router.replace({ name: "Home" });
 		} else {
-			router.push({ name: "pageList" });
+			router.replace({ name: "Home" });
 			// router.push(url);
 			window.sessionStorage.setItem('beforeLoginUrl', '');
 		}

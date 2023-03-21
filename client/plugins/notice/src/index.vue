@@ -10,6 +10,9 @@
 				</ul>
 			</div>
 		</div>
+		<div class="notdev" v-else-if="!noticeText&&!notDevs">
+			请在右侧组件属性区域输入公告内容
+		</div>
 	</div>
 </template>
 <script>
@@ -19,7 +22,7 @@ export default {
 	props: {
 		noticeText: {
 			type: String,
-			default: '在那些插着稻草人的田野里，我急促的甚至奔跑起来，风吹拂金黄颜色的大地，让我带走这里成熟的消息。'
+			default: ''
 		},
 		speed: {
 			type: Number,
@@ -33,6 +36,7 @@ export default {
 	data() {
 		return {
 			interFuns: null,
+			notDevs:false,
 			uuid: ''
 		};
 	},
@@ -56,6 +60,7 @@ export default {
 		},
 	},
 	mounted: function () {
+		if(!window.location.href.includes('http')) this.notDevs = true
 		this.creatId()
 		// 延时滚动
 		setTimeout(() => {
@@ -69,6 +74,9 @@ export default {
 		creatId() {
 			this.uuid = createUUID()
 		},
+		/**
+		 * 计算移动距离速度
+		 */
 		runMarquee() {
 			if (this.sportType == "top" || this.sportType == "bottom") {
 				// 获取文字 计算后宽度
@@ -95,7 +103,6 @@ export default {
 				//设置位移
 				this.interFuns = setInterval(() => {
 					disx--; // disx-=1; 滚动步长
-					// console.log("disx==",disx);
 					if (-disx >= width * 5) {
 						disx = 0; // 如果位移超过文字宽度，则回到起点  marquee-list的margin值
 					}
@@ -204,5 +211,13 @@ li {
 		white-space: normal;
 		text-align: left;
 	}
+}
+.notdev{
+	color: #999;
+	font-weight: 600;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 </style>

@@ -1,12 +1,13 @@
 <template>
   <div class="app-container">
     <el-scrollbar class="scroll-wrapper page-list-wrapper">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="90px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="90px" @submit.native.prevent>
       <el-form-item label="模板版本号" prop="tplVersion">
-        <el-input v-model="queryParams.tplVersion" placeholder="请输入模板版本号" clearable @keyup.enter.native="handleQuery" />
+        <el-input v-model="queryParams.tplVersion" placeholder="请输入模板版本号"  @clear="handleQuery" @keyup.enter.native="$event.target.blur()"
+          @blur="handleQuery" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <!-- <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button> -->
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>

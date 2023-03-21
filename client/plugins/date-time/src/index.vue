@@ -7,7 +7,7 @@
 
 <script>
 export default {
-	name: 'QkDateTime',
+	name: 'QkDateTime',//时间日期
 	props: {
 		dateType: {
 			type: String,
@@ -31,6 +31,9 @@ export default {
 		
 	},
 	methods: {
+		/**
+		 * 定时器任务，每秒重新赋值
+		 */
 		runMarquee() {
 			this.interFuns = setInterval(() => {
 				this.dateTime =  this.formatTime(new Date(), this.dateType)
@@ -73,6 +76,10 @@ export default {
 				return fmt
 			}
 		}
+	},
+	// 页面销毁时销毁定时器任务
+	beforeDestroy() {
+		if(this.interFuns) clearTimeout(this.interFuns)
 	}
 }
 </script>

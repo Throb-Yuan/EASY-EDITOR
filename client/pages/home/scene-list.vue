@@ -234,6 +234,13 @@ export default {
             this.$modal.msgError("不能将自己设置成自己的父节点");
             return;
           }
+          let disableText = '/\:*?"<>|'
+          for (let i = 0; i <  this.form.sceneName.length; i++) {
+            if(disableText.includes(this.form.sceneName[i])){
+              this.$message.warning('请勿携带特殊字符/\:*?"<>|');
+              return false
+            }             
+          }
           if (this.form.sceneId != null) {
             this.$API.updateScene(this.form).then(res => {
               if(res.code==200)

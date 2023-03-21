@@ -19,26 +19,10 @@ export default new Router({
 				component: () => import('@/pages/home/index'),
 				redirect: {name: 'pageList'},
 				children: [{
-					path: 'page-list',
+					path: 'page-list',//我的节目
 					name: 'pageList',
 					component: () => import('@/pages/home/page-list'),
 				}, {
-					path: 'my-template',
-					name: 'myTemplate',
-					component: () => import('@/pages/home/my-template'),
-				}, {
-					path: 'page-data',
-					name: 'pageData',
-					component: () => import('@/pages/home/page-data'),
-				}, {
-					path: 'page-data-detail',
-					name: 'pageDataDetail',
-					component: () => import('@/pages/home/page-data-detail'),
-				}, {
-					path: 'template-list',
-					name: 'templateList',
-					component: () => import('@/pages/home/template-list'),
-				},{
 					path: 'terminal-list',
 					name: 'terminalList',//终端管理
 					component: () => import('@/pages/home/terminal-list'),
@@ -46,10 +30,6 @@ export default new Router({
 					path: 'resource-list',
 					name: 'resourceList',//资源列表
 					component: () => import('@/pages/home/resource-list'),
-				},{
-					path: 'resourcetype-list',
-					name: 'resourcetypeList',//资源类型列表
-					component: () => import('@/pages/home/resourcetype-list'),
 				},{
 					path: 'scene-list',
 					name: 'sceneList',//场景管理
@@ -72,7 +52,7 @@ export default new Router({
 					component: () => import('@/pages/home/template-version-list'),
 				}]
 			}, {
-				path: '/editor',
+				path: '/editor',//节目新增/编辑
 				name: 'Editor',
 				component: () => import('@/pages/editor/Index')
 			}

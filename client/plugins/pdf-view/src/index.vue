@@ -69,8 +69,6 @@ export default {
   },
   watch: {
 		autoPlay() {
-      console.log("监听==");
-			// this.autoPlay ? this.playPdf() : clearInterval(this.setIntervalFun)
       if(this.autoPlay){
         this.playPdf()
       }else{
@@ -87,16 +85,20 @@ export default {
 	},
   created() {
     if(!window.location.href.includes('http')) this.notDevs = true
-    
- 
   },
   mounted(){
     this.autoPlay ? this.playPdf() : ''
   },
   methods:{
+    /**
+		 * 文件打开、转换失败时
+		 */
     pdfErrors(error) {
       this.$message.warning(`文件正在转换中，请稍后重试`);
     },
+    /**
+		 * 上一页
+		 */
     prePage() {
       let page = this.pageNum
       page = page > 1 ? page - 1 : this.pageTotalNum
@@ -109,6 +111,9 @@ export default {
       page = page < this.pageTotalNum ? page + 1 : 1
       this.pageNum = page
     },
+    /**
+		 * 播放pdf
+		 */
     playPdf(){
       this.setIntervalFun = setInterval(() => {
         this.nextPage()

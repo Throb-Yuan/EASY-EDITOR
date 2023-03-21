@@ -21,7 +21,7 @@ import base from "../../../common/js/base64Encode";
 import '../../../common/styles/element-variables.scss'
 import { Dialog } from 'element-ui';
 export default {
-  name: 'QkDocumentView',
+  name: 'QkDocumentView',//文档
   components: {
     Dialog
   },
@@ -64,58 +64,22 @@ export default {
 
     }
   },
-  watch: {
-    autoPlay() {
-      if (this.autoPlay) {
-        this.playPdf()
-      } else {
-        clearInterval(this.setIntervalFun)
-        this.setIntervalFun = null
-      }
-    },
-    pdfSrc() {
-      this.reSet = true
-      setTimeout(() => {
-        Object.assign(this.$data, this.$options.data())
-      }, 100);
-    }
-  },
   created() {
     if (!window.location.href.includes('http')) this.notDevs = true
 
   },
-  mounted() {
-    this.autoPlay ? this.playPdf() : ''
-  },
   methods: {
+    /**
+		 * 对尾部url参数base编码，拼接url，打开弹窗iframe展示内容
+		 */
     viewDocs() {
       let base1 = new base();
       let suffix = ''; // 后缀获取
       const flieArr = this.fileName.split('.'); // 根据.分割数组
       suffix = flieArr[flieArr.length - 1]; // 取最后一个
-      console.log("md5===", this.md5);
       let baseUrl = `${process.env.VUE_APP_BASE_API}/file/download?fileId=${this.androidId}&fullfilename=${this.md5}.${suffix}`
       this.openUrl = 'http://192.168.101.250:8012/onlinePreview?url=' + encodeURIComponent(base1.encode(baseUrl))
-      console.log("this.open",this.open);
       this.open = true
-      // this.notDevs ? window.location.href = 'http://192.168.101.250:8012/onlinePreview?url=' + encodeURIComponent(base1.encode(baseUrl)) : window.open('http://192.168.101.250:8012/onlinePreview?url=' + encodeURIComponent(base1.encode(baseUrl)));
-    },
-    prePage() {
-      let page = this.pageNum
-      page = page > 1 ? page - 1 : this.pageTotalNum
-      this.pageNum = page
-    },
-
-    // 下一页
-    nextPage() {
-      let page = this.pageNum
-      page = page < this.pageTotalNum ? page + 1 : 1
-      this.pageNum = page
-    },
-    playPdf() {
-      this.setIntervalFun = setInterval(() => {
-        this.nextPage()
-      }, this.speed);
     },
   }
 }

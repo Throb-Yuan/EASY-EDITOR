@@ -50,7 +50,7 @@
 		</div>
 		<!--预览-->
 		<previewPage v-if="showPreview" :pageData="projectData" :sceneList="sceneList" :pageId="id"
-			@closePreview="showPreview = false" @publishFn="publishFn" @saveFn="saveFn">
+			@closePreview="showPreview = false" @publishFn="publishFn" @saveFn="saveFn" @getSceneList="getSceneList">
 		</previewPage>
 		<!--我的图片-->
 		<imageLibs />
@@ -76,7 +76,7 @@ import controlBar from './components/control-bar'
 import previewPage from './components/preview'
 import imageLibs from '@client/components/image-libs'
 
-import { mapState,mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import html2canvas from 'html2canvas'
 import eleConfig from './ele-config'
 export default {
@@ -95,6 +95,46 @@ export default {
 	},
 	data() {
 		return {
+			initProject: {
+				sceneId: '',
+				programId: '',
+				shareConfig: {
+					coverImage: '',
+					title: '慧集互联',
+					description: '这是慧集互联智屏的节目'
+				},
+				title: '未命名节目',
+				coverImage: '',
+				description: '慧集互联的可视化节目制作，快来看看吧。',
+				script: '',
+				width: 800,
+				height: 450,
+				pageMode: 'h5',
+				flipType: 0,
+				slideNumber: false,
+				status: 1,
+				isPublish: false,
+				isTemplate: false,
+				members: [],
+				version: 1,
+				_id: '',
+				pages: [
+					{
+						uuid: '',
+						name: '',
+						elements: [],
+						commonStyle: {
+							backgroundColor: '',
+							backgroundImage: '',
+							backgroundSize: 'cover'
+						}
+					}
+				],
+				author: '',
+				created: '',
+				updated: '',
+				__v: 0
+			},
 			putProjects: {},
 			id: '', // 当前页面id
 			programId: '',
@@ -133,8 +173,8 @@ export default {
 			// activeSideBar: state => state.editor.activeSideBar,
 		}),
 		...mapGetters([
-				'activeElement',
-			]),
+			'activeElement',
+		]),
 		activeSideBar: {
 			get() {
 				return this.$store.state.editor.activeSideBar
@@ -145,17 +185,15 @@ export default {
 		}
 	},
 	created() {
-		// this.$store.dispatch('setPrjectData')
 		this.id = this.$route.query.id;
 		this.initPageData()
 		this.getSceneList();
-		// this.id ? this.initPageData() : this.$store.dispatch('setPrjectData', {...this.$programInit})
 	},
-	mounted(){
+	mounted() {
 		this.watchKeyDown()
 	},
 	beforeDestroy() {
-		let body = deepClone(this.$programInit.body)
+		let body = deepClone(this.initProject)
 		body.pages[0].uuid = createUUID()
 		this.$store.dispatch('setPrjectData', {
 			...body
@@ -176,11 +214,9 @@ export default {
 
 				let e1 = e || event || window.event || arguments.callee.caller.arguments[0]
 				//键盘按键判断:左箭头-37;上箭头-38；右箭头-39;下箭头-40;Del键46
-				//左
-				console.log("键盘--》",e1.keyCode);
 				if (e1 && e1.keyCode == 46) {
 					// Del键===删除元素
-				this.$store.dispatch('deleteElement', this.activeElementUUID)
+					this.$store.dispatch('deleteElement', this.activeElementUUID)
 				} else if (e1 && e1.keyCode == 37) {
 					// 按下左箭头===向左移动1
 					this.activeElement.commonStyle.left--
@@ -193,7 +229,7 @@ export default {
 				} else if (e1 && e1.keyCode == 40) {
 					// 按下下箭头===向下移动1像素
 					this.activeElement.commonStyle.top++
-				} 
+				}
 
 			}
 		},
@@ -272,7 +308,6 @@ export default {
 
 			}
 			let b = {} //节点信息带入
-			const txtList = ['txt', 'xls', 'xlsx', 'doc', 'docx', 'pdf', 'html', 'ppt', 'pptx'];
 			// 判断节点类型，添加至画布
 			if (nodeData.resourceTypeId === "1") {
 				b.localPath = nodeData.filePath
@@ -330,7 +365,30 @@ export default {
 				a.defaultStyle.height = this.$config.canvasH5Height / 2
 				a.elName = "qk-document-view"
 				a.title = "文档"
-			} else {
+			}  else if (nodeData.resourceTypeId == 5) {
+				// apk按钮
+				a.events = [{
+					mdkName:nodeData.resourceMd5,
+					resourceId:nodeData.resourceId,
+					type:'openApp',
+					url:''
+				}]
+				b.text = nodeData.resourceName
+				a.defaultStyle = {
+					width: 200,
+					height: 40,
+					paddingTop: 10,
+					paddingBottom: 10,
+					borderColor: "#409EFF",
+					borderStyle: 'solid',
+					borderWidth: 1,
+					borderRadius: 4,
+					backgroundColor: '#409EFF',
+					color: "#FFF"
+				}
+				a.elName = "qk-button"
+				a.title = "按钮"
+			}else {
 				console.log("暂未支持的文件==>", nodeData);
 				this.$message.warning('暂未支持的文件格式')
 				return false;
@@ -340,16 +398,24 @@ export default {
 		},
 		/**
 		 * 初始化页面数据
+		 * @e 子组件新增场景传值
+		 * 匹配新增场景id
 		 */
-		getSceneList() {
+		getSceneList(e) {
 			this.$API.listScene().then(response => {
 				this.sceneList = response.data;
-				this.projectData.sceneId = response.data[0].sceneId
+				let checkLabel = response.data.find(v => v.sceneName == e)
+				e ? this.projectData.sceneId = checkLabel.sceneId : this.projectData.sceneId = response.data[0].sceneId
 			});
 		},
+		/**
+		* 初始化页面数据
+		 * initPageData 初始化节目数据
+		 */
 		initPageData() {
 			if (!this.id) {
-				let body = deepClone(this.$programInit.body)
+				// 新增节目
+				let body = deepClone(this.initProject)
 				body.pages[0].uuid = createUUID()
 				this.$store.dispatch('setPrjectData', {
 					...body
@@ -359,6 +425,7 @@ export default {
 				this.$config.canvasH5Height = 450
 				return false;
 			}
+			// 编辑节目，获取原节目数据
 			this.loading = true;
 			this.$API.getProgram(this.id).then(res => {
 				this.loading = false;
@@ -378,29 +445,6 @@ export default {
 			})
 		},
 		/**
-		 * 保存HTMl（驼峰转换）
-		 */
-		getKebabCase(str) {
-			return str.replace(/[A-Z]/g, function (i) {
-				return '-' + i.toLowerCase();
-			})
-		},
-		/**
-		 * 过滤对象的空值
-		 */
-		isEmpty(obj) {
-			if (typeof obj === 'undefined' || obj === null || obj === '') return true;
-			return false
-		},
-		preProcessData(formData) {
-			Object.keys(formData).forEach(item => {
-				if (this.isEmpty(formData[item])) {
-					delete formData[item];
-				}
-			})
-			return formData;
-		},
-		/**
 		 * 保存
 		 */
 		async saveFn() {
@@ -417,7 +461,6 @@ export default {
 		 * @postIds 资源主键集合
 		 */
 		async publishFn() {
-			// 提交数据再预览 后台新增节目管理
 			let startHtml = '\x3C!DOCTYPE html>\x3Chtml lang="en">\x3Chead>\x3Cmeta charset="UTF-8">\x3Ctitle>\x3C/title>\x3Clink rel="shortcut icon" href=" ../../assets/public/favicon.ico" type="image/x-icon">\x3Cmeta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">\x3Cmeta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">\x3Cmeta name="keywords" content="">\x3Cmeta name="description" content="">\x3Cmeta name="renderer" content="webkit">\x3Cmeta name="robots" content="index, follow">\x3Cmeta name="format-detection" content="telephone=no">\x3Cscript>this.globalThis || (this.globalThis = this)\x3C/script>\x3Cscript src=" ../../assets/public/third-libs/vue.js">\x3C/script>\x3Cscript src=" ../../assets/public/third-libs/vconsole.js">\x3C/script>\x3Clink rel="stylesheet" href=" ../../assets/public/third-libs/animate.min.css">\x3Clink rel="stylesheet" href=" ../../assets/public/third-libs/weatherfont/qweather-icons.css">\x3Clink rel="stylesheet" href=" ../../assets/public/third-libs/swiper.min.css">\x3Cscript src=" ../../assets/public/third-libs/swiper.min.js">\x3C/script>\x3C!--引入模板-->\x3Cscript src=" ../../assets/public/engine_libs/h5-swiper/page-engine.umd.js">\x3C/script>\x3Clink rel="stylesheet" href=" ../../assets/public/engine_libs/h5-swiper/page-engine.css">\x3Cstyle>* {padding: 0;margin: 0;box-sizing: border-box;}html, body, #app{position: relative;width: 100%;height: 100%;}\x3C/style>\x3Cscript>window._pageData = '
 			let endHtmls = '\x3C/script>\x3C/head>\x3Cbody>\x3Cdiv id="app">\x3Cengine-h5-swiper  />\x3C/div>\x3Cscript>new Vue({el:"#app"})\x3C/script>\x3Cscript>eval(window._pageData.script);\x3C/script>\x3Cscript>var vConsole = new VConsole();\x3C/script>\x3C/body>\x3C/html>'
 			let theProjectData = JSON.parse(JSON.stringify(this.projectData))
@@ -426,10 +469,12 @@ export default {
 			let jsonAfter = JSON.stringify(theProjectData)
 			let niceHtml = startHtml + jsonProject + endHtmls
 			/**
-			 * get资源主键
-			 * @propsValue ==>图，视频，音频
-			 * @qkImageCarousel ==>轮播图
-			 * @linkLoacl ==>节目
+			 * 获取拼接 资源主键 地区code
+			 * @postIds 资源主键
+			 * @propsValue ==>图，视频，音频，文档
+			 * @qkImageCarousel ==>混播
+			 * @linkLoacl &openApp ==>跳转节目与应用
+			 * @losId 地区code
 			 */
 			let postIds = []
 			let losId = []

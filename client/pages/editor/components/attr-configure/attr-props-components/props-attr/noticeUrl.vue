@@ -34,16 +34,16 @@ export default {
 			tempSport: '',
 			sportTypeArr: [{
 				value: 'left',
-				label: '从左到右'
-			}, {
-				value: 'right',
 				label: '从右到左'
 			}, {
+				value: 'right',
+				label: '从左到右'
+			}, {
 				value: 'top',
-				label: '从上到下'
+				label: '从下到上'
 			}, {
 				value: 'bottom',
-				label: '从下到上'
+				label: '从上到下'
 			}]
 		}
 	},
@@ -74,8 +74,8 @@ export default {
 	},
 	methods: {
 		isURL(str_url) {
-			var strRegex = "((http|ftp|https)://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\&%_\./-~-]*)?"
-			var re = new RegExp(strRegex);
+			let strRegex = "((http|ftp|https)://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\&%_\./-~-]*)?"
+			let re = new RegExp(strRegex);
 			return re.test(str_url);
 		},
 		changeValue(){

@@ -27,7 +27,7 @@
 <script>
 import { todayWeather } from '../../../api/modules/eleBus'
 export default {
-	name: 'QkWeather',
+	name: 'QkWeather',//天气
 	props: {
 		weatherArea: {
 			type: Object,
@@ -59,9 +59,11 @@ export default {
 		}
 	},
 	created(){
-		console.log("weather In created");
 	},
 	mounted() {
+		/**
+		 * 检测是否为终端环境，避免资源浪费，实际终端才获取真实天气数据
+		 */
 		if(!window.location.href.includes('http')){
 			todayWeather(this.weatherArea.locationId).then(response => {
 				console.log("weather In request",response);

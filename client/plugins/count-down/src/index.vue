@@ -31,21 +31,6 @@ export default {
 			type: [String, Number,Object,Array,Date,Function],
 			default: () => new Date().getTime() + 86400000
 		},
-		// 时间格式，DD-日，HH-时，mm-分，ss-秒，SSS-毫秒
-		// format: {
-		//     type: String,
-		//     default: 'HH:mm:ss'
-		// },
-		// 是否自动开始倒计时 
-		// autoStart: {
-		//     type: Boolean,
-		//     default: true
-		// },
-		// 是否展示毫秒倒计时
-		// millisecond: {
-		//     type: Boolean,
-		//     default: false
-		// }
 	},
 	data() {
 		return {
@@ -64,7 +49,7 @@ export default {
 		}
 	},
 	watch: {
-		countDownTime(n) {
+		countDownTime() {
 			this.reset()
 		}
 	},
@@ -72,6 +57,7 @@ export default {
 		this.init()
 	},
 	methods: {
+		// 初始化
 		init() {
 			this.reset()
 		},
@@ -162,6 +148,7 @@ export default {
 			this.timer = null
 		}
 	},
+	// 页面销毁时销毁定时器任务
 	beforeDestroy() {
 		this.clearTimeout()
 	}
