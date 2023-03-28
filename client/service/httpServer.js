@@ -21,7 +21,10 @@ const webHttp = axios.create({
 })
 //请求拦截器
 webHttp.interceptors.request.use(config => {
-	if(config.url.includes('content/program/download')) config.timeout = 300000;
+	if(config.url.includes('content/program/download')) config.timeout = 21600000;
+	if(config.url.includes('content/resource')) config.timeout = 21600000;
+	if(config.url.includes('file/multipart/tasks')) config.timeout = 21600000;
+	
 	if (getToken()) {
 		// 有token则携带token
 		config.headers['Authorization'] = 'Bearer ' + getToken()
@@ -29,7 +32,7 @@ webHttp.interceptors.request.use(config => {
 	// config.headers['x-csrf-token'] = Cookie.get('x-csrf-token');
 	return config
 }, error => {
-	return Promise.reject(error)
+	return Promise.resolve(error)
 });
 
 //响应拦截器即异常处理  status==200为blob数据类型
@@ -44,7 +47,7 @@ webHttp.interceptors.response.use(response => {
 			type: 'error',
 			data: response.data.message || response.data.msg || response.data.errMsg
 		});
-		return Promise.reject(response.data)
+		return Promise.resolve(response.data)
 	}
 
 }, err => {
@@ -94,7 +97,7 @@ webHttp.interceptors.response.use(response => {
 		type: 'error',
 		data: err.message || err.response.msg
 	});
-	return Promise.reject(err.response)
+	return Promise.resolve(err.response)
 });
 /**
  * 下载文件

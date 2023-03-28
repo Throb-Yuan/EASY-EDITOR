@@ -21,7 +21,6 @@ const actions = {
 	 * @param msg
 	 */
 	showMassage(store, msg) {
-		console.log(msg)
 		Message.closeAll()
 		Message({
 			type: msg.type,

@@ -159,8 +159,6 @@ export default {
   methods: {
     handleResourceList(row)
     {
-      console.log(row)
-      console.log(row.resourceTypeId)
       this.$router.push({ path: '/home/resource-list?id=' + row.resourceTypeId });
     },
     /** 查询资源类型列表 */

@@ -148,8 +148,7 @@
 				}
 			},
 			handleClickCanvas(e) {
-				if (!e.target.classList.contains('element-on-edit-pane') && !e.target.classList.contains('menu-item-on-edit-panel')) {
-					console.log("空白区域重置");					
+				if (!e.target.classList.contains('element-on-edit-pane') && !e.target.classList.contains('menu-item-on-edit-panel')) {					
 					this.$store.dispatch('setActiveElementUUID', '');
 				}
 			},
@@ -158,13 +157,6 @@
 			 */
 			handleElementCommand(command) {
 				this.$store.dispatch('elementCommand', command)
-			},
-			/**
-			 * 监听键盘事件
-			 * @param e
-			 */
-			handleKeyup(e) {
-				console.log(1111, e);
 			},
 			/**
 			 * 提供截屏作为项目主图

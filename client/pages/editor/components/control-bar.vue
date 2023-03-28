@@ -165,11 +165,6 @@ export default {
      * 自定义画板大小
      */
     confirms(){
-      console.log("this.screenRatio",this.screenRatio);
-      // if (this.screenRatio[3].toWidth/this.screenRatio[3].toHeight>4||this.screenRatio[3].toHeight/this.screenRatio[3].toWidth>4) {
-      //   this.$message.warning('比例不协调，最大比例为1:4')
-      //   return false;
-      // }
       let objTwow = {
           e:'自定义',
           arr: this.screenRatio

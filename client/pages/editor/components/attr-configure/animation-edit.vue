@@ -37,8 +37,8 @@
                 <div class="attr-item-edit-wrapper">
                   <p class="attr-item-title">循环次数：</p>
                   <div class="col-2 attr-item-edit-input">
-                    <el-input-number size="mini" v-model="item.interationCount" controls-position="right"/>
-                    <div class="attr-item-edit-input-des">次数</div>
+                    <el-input-number size="mini" :disabled="item.infinite" v-model="item.interationCount" controls-position="right"/>
+                    <!-- <div class="attr-item-edit-input-des">次数</div> -->
                   </div>
                   <div class="col-2 attr-item-edit-input">
                     <el-checkbox v-model="item.infinite" label="infinite" border size="small">循环播放</el-checkbox>

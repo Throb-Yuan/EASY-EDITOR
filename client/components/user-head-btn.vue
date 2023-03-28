@@ -69,7 +69,6 @@
     },
 		methods: {
       changeImg(e) {
-        console.log("改变父组件");
 				this.userHeadImage = e
 			},
 			doLogout() {

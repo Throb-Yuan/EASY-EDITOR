@@ -101,11 +101,11 @@ export default {
 				shareConfig: {
 					coverImage: '',
 					title: '慧集互联',
-					description: '这是慧集互联智屏的节目'
+					description: ''
 				},
 				title: '未命名节目',
 				coverImage: '',
-				description: '慧集互联的可视化节目制作，快来看看吧。',
+				description: '',
 				script: '',
 				width: 800,
 				height: 450,
@@ -246,9 +246,7 @@ export default {
 			if (objs.e == '自定义') {
 				if (checkData.toWidth * 1 >= checkData.toHeight * 1) {
 					// 宽>高,以宽比例缩小 800*800
-					console.log("checkData2", checkData)
 					if (checkData.toWidth >= 800) {
-						console.log("checkData3", checkData)
 						rate = checkData.toWidth / 800
 						checkData.toWidth = 800
 						checkData.toHeight = checkData.toHeight / rate < 1 ? 1 : checkData.toHeight / rate
@@ -289,7 +287,6 @@ export default {
 			* @param ev 承载node节点数据
 			*/
 		allowDrop(ev) {
-			// console.log("allowDrop函数移动时", ev);
 			ev.preventDefault();
 		},
 		drop(ev) {
@@ -389,7 +386,6 @@ export default {
 				a.elName = "qk-button"
 				a.title = "按钮"
 			}else {
-				console.log("暂未支持的文件==>", nodeData);
 				this.$message.warning('暂未支持的文件格式')
 				return false;
 			}
@@ -432,7 +428,6 @@ export default {
 				let jsonProjects = JSON.parse(res.data.afterHtml)
 				jsonProjects.notDevs = false
 				this.putProjects = res.data
-				console.log("res.body==", jsonProjects);
 				this.$store.dispatch('setPrjectData', {
 					...jsonProjects
 				})
@@ -459,10 +454,11 @@ export default {
 		 * 保存 生成节目
 		 * @niceHtml 拼接完整的html字符串
 		 * @postIds 资源主键集合
+		 * \x3Cscript>var vConsole = new VConsole();\x3C/script> 打开调试endHtmls 插入
 		 */
 		async publishFn() {
 			let startHtml = '\x3C!DOCTYPE html>\x3Chtml lang="en">\x3Chead>\x3Cmeta charset="UTF-8">\x3Ctitle>\x3C/title>\x3Clink rel="shortcut icon" href=" ../../assets/public/favicon.ico" type="image/x-icon">\x3Cmeta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">\x3Cmeta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">\x3Cmeta name="keywords" content="">\x3Cmeta name="description" content="">\x3Cmeta name="renderer" content="webkit">\x3Cmeta name="robots" content="index, follow">\x3Cmeta name="format-detection" content="telephone=no">\x3Cscript>this.globalThis || (this.globalThis = this)\x3C/script>\x3Cscript src=" ../../assets/public/third-libs/vue.js">\x3C/script>\x3Cscript src=" ../../assets/public/third-libs/vconsole.js">\x3C/script>\x3Clink rel="stylesheet" href=" ../../assets/public/third-libs/animate.min.css">\x3Clink rel="stylesheet" href=" ../../assets/public/third-libs/weatherfont/qweather-icons.css">\x3Clink rel="stylesheet" href=" ../../assets/public/third-libs/swiper.min.css">\x3Cscript src=" ../../assets/public/third-libs/swiper.min.js">\x3C/script>\x3C!--引入模板-->\x3Cscript src=" ../../assets/public/engine_libs/h5-swiper/page-engine.umd.js">\x3C/script>\x3Clink rel="stylesheet" href=" ../../assets/public/engine_libs/h5-swiper/page-engine.css">\x3Cstyle>* {padding: 0;margin: 0;box-sizing: border-box;}html, body, #app{position: relative;width: 100%;height: 100%;}\x3C/style>\x3Cscript>window._pageData = '
-			let endHtmls = '\x3C/script>\x3C/head>\x3Cbody>\x3Cdiv id="app">\x3Cengine-h5-swiper  />\x3C/div>\x3Cscript>new Vue({el:"#app"})\x3C/script>\x3Cscript>eval(window._pageData.script);\x3C/script>\x3Cscript>var vConsole = new VConsole();\x3C/script>\x3C/body>\x3C/html>'
+			let endHtmls = '\x3C/script>\x3C/head>\x3Cbody>\x3Cdiv id="app">\x3Cengine-h5-swiper  />\x3C/div>\x3Cscript>new Vue({el:"#app"})\x3C/script>\x3Cscript>eval(window._pageData.script);\x3C/script>\x3C/body>\x3C/html>'
 			let theProjectData = JSON.parse(JSON.stringify(this.projectData))
 			theProjectData.notDevs = true
 			let jsonProject = JSON.stringify(theProjectData)
@@ -508,7 +504,6 @@ export default {
 			// if(theProjectData.pages[0].coverResourceId) postIds.push(theProjectData.pages[0].coverResourceId)
 			let audioEle = document.getElementById('video-play-audio')
 			if (audioEle) audioEle.remove()
-			console.log("theEndProjectData==", theProjectData, postIds);
 			if (!this.putProjects.programId) {
 				let a = {
 					html: niceHtml,//节目html拼接字符串
@@ -544,7 +539,6 @@ export default {
 
 		},
 		async showPreviewFn() {
-			console.log("将提交数据===", this.projectData);
 			// await this.screenshots()
 			// 提交数据再预览
 			this.showPreview = true

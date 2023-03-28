@@ -2,47 +2,49 @@
   <div class="custom-tree-container" style="min-width:160px;">
     <p class="page-title text-center">媒体资源列表</p>
     <el-scrollbar class="scroll-wrapper page-list-wrapper" style="height: 1000px;padding-bottom: 120px;">
-      <el-collapse  v-model="activeName" accordion @change="getResoureList">
+      <el-collapse v-model="activeName" accordion @change="getResoureList">
         <el-collapse-item v-for="(item, index) in resourcetypeList" :key="index" :name="item.dictValue">
           <template slot="title">
             <div style="padding-left: 12px;">{{ item.dictLabel }} <span style="font-size: 12px;color:#999;"></span></div>
           </template>
           <div v-if="item.children">
-            <div class="custom-tree-node" v-for="(node,idx) in item.children" >
-            <!-- 自定义节点信息start -->
-            <el-tooltip v-if="node.fileType == 'I'" draggable="true" id=""
-              class="item" effect="dark" :content="node.resourceName" placement="top-start">
-
-              <div class="fl_line" style="justify-content: start;" draggable="true" @dragstart="drag($event, node)">
-                <img style="width: 120px;height: 80px;object-fit:cover;padding-top: 5px;" v-lazy="node.fileUrl"
-                  :key="node.fileUrl" alt="">
-                <div class="fl_rei fl_line_img" style="margin-left: 10px;"><i class="el-icon-edit hoverb" @click="handleUpdate(node)"></i> <i
-                    class="el-icon-delete hoverb" @click="handleDelete(node, data)"></i>
-                </div>
-              </div>
-            </el-tooltip>
-            <div v-else>
-              <el-tooltip v-if="node.resourceName && node.resourceName.length > 8" class="item" effect="dark"
+            <div class="custom-tree-node" v-for="(node, idx) in item.children" :key="idx">
+              <!-- 自定义节点信息start -->
+              <el-tooltip v-if="node.fileType == 'I'" draggable="true" id="" class="item" effect="dark"
                 :content="node.resourceName" placement="top-start">
-                <div class="fl_line" draggable="true" @dragstart="drag($event, node)">
-                  <span class="fl_lef">{{ node.resourceName.substring(0, 7) }}...</span>
-                  <div class="fl_rei"><i class="el-icon-edit hoverb" @click="handleUpdate(node)"></i> <i class="el-icon-delete hoverb"
-                      style="margin-left: 6px;" @click="handleDelete(node, data)"></i> </div>
+
+                <div class="fl_line" style="justify-content: start;" draggable="true" @dragstart="drag($event, node)">
+                  <img style="width: 120px;height: 80px;object-fit:cover;padding-top: 5px;" v-lazy="node.fileUrl"
+                    :key="node.fileUrl" alt="">
+                  <div class="fl_rei fl_line_img" style="margin-left: 10px;"><i class="el-icon-edit hoverb"
+                      @click="handleUpdate(node)"></i> <i class="el-icon-delete hoverb"
+                      @click="handleDelete(node, item)"></i>
+                  </div>
                 </div>
               </el-tooltip>
+              <div v-else>
+                <el-tooltip v-if="node.resourceName && node.resourceName.length > 8" class="item" effect="dark"
+                  :content="node.resourceName" placement="top-start">
+                  <div class="fl_line">
+                    <span draggable="true" @dragstart="drag($event, node)" class="fl_lef">{{
+                      node.resourceName.substring(0, 7) }}...</span>
+                    <div class="fl_rei"><i class="el-icon-edit hoverb" @click="handleUpdate(node)"></i> <i
+                        class="el-icon-delete hoverb" style="margin-left: 6px;" @click="handleDelete(node,item)"></i> </div>
+                  </div>
+                </el-tooltip>
 
-              <div class="fl_line" v-else-if="node.resourceName" draggable="true" @dragstart="drag($event, node)">
-                <span class="fl_lef">{{ node.resourceName }}</span>
-                <div class="fl_rei"><i class="el-icon-edit hoverb" @click="handleUpdate(node)"></i> <i class="el-icon-delete hoverb"
-                    style="margin-left: 6px;" @click="handleDelete(node, data)"></i> </div>
+                <div class="fl_line" v-else-if="node.resourceName">
+                  <span draggable="true" @dragstart="drag($event, node)" class="fl_lef">{{ node.resourceName }}</span>
+                  <div class="fl_rei"><i class="el-icon-edit hoverb" @click="handleUpdate(node)"></i> <i
+                      class="el-icon-delete hoverb" style="margin-left: 6px;" @click="handleDelete(node,item)"></i> </div>
+                </div>
+
+                <span v-else style="font-size: 14px;color: #888;">{{ node.dictLabel }}</span>
               </div>
-
-              <span v-else style="font-size: 14px;color: #888;">{{ node.dictLabel }}</span>
             </div>
-          </div>
-          <div class="show-more" v-if="item.children.length<item.totalNum" @click="getListResource(index)">
-            <span>查看更多</span> <i class="el-icon-arrow-down"></i>
-          </div>
+            <div class="show-more" v-if="item.children.length < item.totalNum" @click="getListResource(index)">
+              <span>查看更多</span> <i class="el-icon-arrow-down"></i>
+            </div>
           </div>
           <div v-else>
             暂无数据
@@ -56,7 +58,7 @@
     <el-dialog :title="title" :visible.sync="addOpen" width="410px" append-to-body @close="resetPage">
       <el-form ref="form">
         <el-form-item>
-          <uploadBreakpoint v-if="addOpen" />
+          <uploadBreakpoint @completion="uploadFinsh" v-if="addOpen" />
         </el-form-item>
         <el-form-item style="text-align: right;width:360px;">
           <el-button @click="addOpen = false">取消</el-button>
@@ -91,8 +93,6 @@
 <script>
 import uploadBreakpoint from '@/components/upload-breakpoint'
 const baseURL = process.env.VUE_APP_BASE_API
-let idx = 1;
-
 export default {
   components: {
     uploadBreakpoint
@@ -101,9 +101,9 @@ export default {
     return {
       resourcetypeList: [
         {
-          page:0,
-          isGet:false,
-          children:[],
+          page: 0,
+          isGet: false,
+          children: [],
           totalNum: 1
         }
       ],
@@ -117,16 +117,17 @@ export default {
       title: "上传资源文件",
       // 是否显示弹出层
       open: false,
-      activeName:'0'
+      activeName: '0'
     }
   },
   created() {
     this.getList();
-    // this.$axios.get('https://www.zhihu.com/rss').then(res => {
-    //   console.log("zhihu", res);
-    // })
   },
   methods: {
+    // 断点续传组件通讯--是否已上传文件
+    uploadFinsh() {
+      this.activeName != '0' ? this.activeName = '0' : ''
+    },
     resetPage() {
       // this.queryParams = this.$options.data().queryParams
       this.getList()
@@ -140,7 +141,7 @@ export default {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.form = this.$options.data.call(this).form
-
+              this.activeName != '0' ? this.activeName = '0' : ''
               this.getList();
             });
           }
@@ -204,11 +205,13 @@ export default {
         this.title = "修改资源";
       });
     },
-    /** 删除按钮操作 */
-    handleDelete(node, data) {
-      let row = node
-      const resourceIds = row.resourceId;
-      let message = row.resourceName ? '是否确认删除资源为"' + row.resourceName + '"的数据项？' : '是否确认删除资源列表编号为"' + resourceIds + '"的数据项？';
+    /** 删除按钮操作
+     * @node 节点本身
+     * @item 父节点
+     */
+    handleDelete(node, item) {
+      const resourceIds = node.resourceId;
+      let message = node.resourceName ? '是否确认删除资源为"' + node.resourceName + '"的数据项？' : '是否确认删除资源列表编号为"' + resourceIds + '"的数据项？';
       this.$alert(message, '操作提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -216,12 +219,11 @@ export default {
         type: 'warning',
       }).then(() => {
         this.$API.delResource(resourceIds).then(() => {
+          //成功后找到对应节点操作数组删除，不必重新拉取数据
+          let indexs = item.children.findIndex(d => d.resourceId === resourceIds)
+          item.children.splice(indexs, 1);
           this.$message.success('删除成功！');
-          // this.getList();
-          // const parent = node.parent;
-          // const children = parent.data.children || parent.data;
-          // const index = children.findIndex(d => d.id === data.id);
-          // children.splice(index, 1);
+          item.totalNum--//减去对应总数，否则会出现查看更多框
         })
       })
     },
@@ -231,41 +233,35 @@ export default {
     * @param child 节点对应的 Node
     * @param self 节点组件本身
     */
-    getResoureList(code){
-      if(!code || this.resourcetypeList[code-1].isGet) return false;
-      this.getListResource(code-1)
+    getResoureList(code) {
+      if (!code || this.resourcetypeList[code - 1].isGet) return false;
+      this.getListResource(code - 1)
     },
-    getListResource(idx){
-        // 获取对应资源文件列表
+    getListResource(idx) {
+      // 获取对应资源文件列表
       this.$API.listResource({ resourceTypeId: this.resourcetypeList[idx].dictValue, pageNum: this.resourcetypeList[idx].page, pageSize: 20 }).then(response => {
-          if (response.rows.length) {
-            // if (response.rows.length < response.rows.total) {
-            //   response.rows.push({
-            //     dictLabel: '查看更多',
-            //     resourceId: 'I9550B4E98972426BA8D2F54E52D',
-            //     dictCode: 'I9550B4E98972426BA8D2F54E52D'
-            //   })
-            // }
-            this.resourcetypeList[idx].totalNum = response.total
-            this.resourcetypeList[idx].children = this.resourcetypeList[idx].children.concat(response.rows) 
-            this.resourcetypeList[idx].isGet = true
-            this.resourcetypeList[idx].page++
-            this.$nextTick(() => {
-              // this.$refs["tree"].updateKeyChildren(me.dictCode, response.rows);
-            })
-          } else {
-            this.resourcetypeList[idx].children = [{
-              dictLabel: '暂无资源',
-            }]
-          }
+        if (response.rows.length) {
+          // if (response.rows.length < response.rows.total) {
+          //   response.rows.push({
+          //     dictLabel: '查看更多',
+          //     resourceId: 'I9550B4E98972426BA8D2F54E52D',
+          //     dictCode: 'I9550B4E98972426BA8D2F54E52D'
+          //   })
+          // }
+          this.resourcetypeList[idx].totalNum = response.total
+          this.resourcetypeList[idx].children = this.resourcetypeList[idx].children.concat(response.rows)
+          this.resourcetypeList[idx].isGet = true
+          this.resourcetypeList[idx].page++
+          this.$nextTick(() => {
+            // this.$refs["tree"].updateKeyChildren(me.dictCode, response.rows);
+          })
+        } else {
+          this.resourcetypeList[idx].children = [{
+            dictLabel: '暂无资源',
+          }]
+        }
 
-        });
-    },
-    openNodes(me, child, self) {
-      if (me.children && me.children.length == 1 && me.children[0].dictLabel.includes('加载中')) {
-      
-
-      }
+      });
     },
     /**
     * 获取获取资源类型列表转为tree结构
@@ -281,7 +277,6 @@ export default {
 
         let resourcetypeList = response.rows
         resourcetypeList.forEach(cur => {
-          // idx++
           cur.children = []
           cur.page = 1
           cur.isGet = false
@@ -294,8 +289,7 @@ export default {
     * @param ev event信息，可传递node数据
     * @param node 节点数据
     */
-    drag(ev, node, data) {
-      console.log("drag====", data, node);
+    drag(ev, node) {
       let nodeStr = JSON.stringify(node)
       ev.dataTransfer.setData("node", nodeStr);
     },
@@ -307,23 +301,6 @@ export default {
     },
     submitUpload() {
       this.$refs.upload.submit();
-    },
-    beforeAvatarUpload(file) {
-      return new Promise(resolve => {
-        this.loading = true;
-        let isLt2M = file.size / 1024 / 1024 < 1 // 判定图片大小是否小于1MB  
-        const isJPG = file.type.includes('image')
-        const isGif = file.type.includes('gif')
-        if (isLt2M || !isJPG || isGif) {
-          resolve(file)
-        } else {
-          // 可自定义kb
-          let toSize = Math.round(file.size / 1024 / 6);
-          imageConversion.compressAccurately(file, toSize).then(res => { // console.log(res)
-            resolve(res)
-          })
-        }
-      })
     },
     handleSuccess(res) {
       let response = res.data
@@ -389,7 +366,8 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  cursor:pointer;
+  cursor: pointer;
+
   &:hover .fl_rei {
     display: inline-block;
   }
@@ -439,7 +417,8 @@ export default {
     opacity: 1;
   }
 }
-.show-more{
+
+.show-more {
   width: 100%;
   margin-top: 12px;
   display: flex;

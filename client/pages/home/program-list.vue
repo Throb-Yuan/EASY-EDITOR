@@ -267,14 +267,6 @@ export default {
       this.$modal.msgSuccess("正在生成节目，请勿关闭页面");
       this.$API.programDownload(row.programId).then(
         response => {
-          console.log(response)
-          // if (!response.data.size) {
-          //   this.$message({
-          //     message: "没有可下载文件",
-          //     type: "warning"
-          //   })
-          //   return
-          // }
           const url = window.URL.createObjectURL(new Blob([response.data]))
           const link = window.document.createElement("a")
           link.style.display = "none"

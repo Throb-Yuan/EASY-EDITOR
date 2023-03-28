@@ -214,7 +214,7 @@ const actions = {
 		let animateDefaultData = {
 			type: animationName,
 			duration: 1,
-			infinite: '',
+			infinite: false,//Boolean值，循环播放以及是否禁用循环次数
 			interationCount: 1,
 			delay: 0
 		}

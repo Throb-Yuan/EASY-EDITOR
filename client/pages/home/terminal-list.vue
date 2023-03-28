@@ -8,7 +8,7 @@
         </el-form-item>
         <el-form-item label="终端创建时间：">
           <el-date-picker v-model="timeOptions" type="daterange" unlink-panels :picker-options="pickerOptions"
-            range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd"
+            range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :clearable="false" value-format="yyyy-MM-dd"
             @change="getGroupList">
           </el-date-picker>
         </el-form-item>
@@ -997,11 +997,9 @@ export default {
     },
     /**提交新增/编辑终端操作*/
     submitTerminalForm() {
-      console.log(this.terminalForm)
       this.$refs.terminalForm.validate(valid => {
         if (valid) {
           const { terminalId, terminalGroupId, terminalName, pwd } = this.terminalForm
-          console.log(this.terminalForm)
           let param = {
             terminalName: terminalName,
           }

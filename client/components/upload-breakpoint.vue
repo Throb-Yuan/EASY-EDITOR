@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-upload class="upload-demo" drag action="/" :multiple="multiple" :http-request="handleHttpRequest" :on-success="successFuns"
+    <el-upload class="upload-demo" ref="breakpoints" drag action="/" :file-list="fileList" :on-change="handleChange" :multiple="multiple" :http-request="handleHttpRequest" :on-success="successFuns"
       :on-remove="handleRemoveFile">
       <i class="el-icon-upload"></i>
       <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -16,6 +16,7 @@ import Queue from 'promise-queue-plus';
 import axios from 'axios'
 import { ref } from 'vue'
 const axiosReq = axios.create()
+axiosReq.defaults.timeout = 21600000
 // 文件上传分块任务的队列（用于移除文件时，停止该文件的上传队列） key：fileUid value： queue object
 const fileUploadChunkQueue = ref({}).value
 let loadingBox = null
@@ -29,11 +30,15 @@ export default {
   },
   data() {
     return {
+      fileList: [],
       successNum:0,
       successAll:false
     }
   },
   methods: {
+    handleChange(file, fileList) {
+        this.fileList = fileList
+      },
     successFuns(response, file, fileList){
       this.successNum++
       this.successNum == fileList.length ? this.successAll = true : ''
@@ -46,11 +51,11 @@ export default {
       this.successAll = false
     },
     async getTaskInfo(file) {
-      console.log("getTaskInfo is two", 22222);
       let task;
       const fileMd5 = await md5(file)
-      const { code, data, msg } = await taskInfo(fileMd5)
-      if (code === 200) {
+      const { code, data, msg,status } = await taskInfo(fileMd5)
+      // return false
+      if (code === 200||status === 200) {
         task = data
         if (!task) {
           const initTaskData = {
@@ -61,10 +66,8 @@ export default {
           }
           const { code, data, msg } = await initTask(initTaskData)
           if (code === 200) {
-            console.log("getTaskInfo===21", data);
             task = data
           } else {
-            console.log("getTaskInfo===22", data);
             Notification.error({
               title: '文件上传错误',
               message: msg
@@ -72,16 +75,15 @@ export default {
           }
         }
       } else {
-        console.log("getTaskInfo===23", data);
-        Notification.error({
-          title: '文件上传错误',
-          message: msg
-        })
+        // handleHttpRequest函数处理提示
+        // Notification.error({
+        //   title: '文件上传错误',
+        //   message: msg
+        // })
       }
       return task
     },
     handleUpload(file, taskRecord, options) {
-      console.log("handleUpload is three 333", file, taskRecord, options);
       let lastUploadedSize = 0; // 上次断点续传时上传的总大小
       let uploadedSize = 0 // 已上传的大小
       const totalSize = file.size || 0 // 文件总大小
@@ -134,9 +136,6 @@ export default {
 
         const speed = getSpeed();
         const remainingTime = speed != 0 ? Math.ceil((totalSize - uploadedSize) / speed) + 's' : '未知'
-        console.log('剩余大小：', (totalSize - uploadedSize) / 1024 / 1024, 'mb');
-        console.log('当前速度：', (speed / 1024 / 1024).toFixed(2), 'mbps');
-        console.log('预计完成：', remainingTime);
       }
 
 
@@ -145,10 +144,10 @@ export default {
         const queue = Queue(5, {
           "retry": 3,               //Number of retries
           "retryIsJump": false,     //retry now?
-          "workReject": function (reason, queue) {
+          "workReject": function (reason) {
             failArr.push(reason)
           },
-          "queueEnd": function (queue) {
+          "queueEnd": function () {
             resolve(failArr);
           }
         })
@@ -169,14 +168,12 @@ export default {
         if (queue.getLength() == 0) {
           // 所有分片都上传完，但未合并，直接return出去，进行合并操作
           resolve(failArr);
-          console.log("handleUpload12", failArr);
           return;
         }
         queue.start()
       })
     },
-    handleRemoveFile(uploadFile, uploadFiles) {
-      console.log("handleRemoveFile44", file, taskRecord, options);
+    handleRemoveFile(uploadFile) {
       const queueObject = fileUploadChunkQueue[uploadFile.uid]
       if (queueObject) {
         queueObject.stop()
@@ -184,7 +181,6 @@ export default {
       }
     },
     async handleHttpRequest(options) {
-      console.log("handleHttpRequest is one",options);
       const file = options.file
       loadingBox = Loading.service({
         lock: true,
@@ -223,6 +219,9 @@ export default {
           }
         }
       } else {
+        setTimeout(() => {
+          if(this.fileList.length==1) this.$refs['breakpoints'].clearFiles()
+        }, 500);
         this.resetLoading(true)
         Notification.error({
           title: '文件上传错误',

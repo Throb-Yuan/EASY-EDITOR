@@ -19,6 +19,7 @@
             range-separator="至"
             start-placeholder="开始日期"
             @change="handleQuery"
+            :clearable="false"
             end-placeholder="结束日期"  value-format="yyyy-MM-dd">
         </el-date-picker>
       </el-form-item>
@@ -416,7 +417,7 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.date.length ? this.data = [] : ''
+      this.date.length ? this.date = [] : ''
       this.queryParams.beginDat ?  this.queryParams.beginDat = '' : ''
       this.queryParams.endDate ?  this.queryParams.endDate = '' : ''
       this.resetForm("queryForm");
@@ -565,8 +566,6 @@ export default {
         }
       }
       let param = {subtitleId: this.subtitleId, terminalIds: terminalIds}
-      console.log(param)
-      /
       this.$API.batchAddSubtitlTerminal(param).then(() => {
         this.$modal.msgSuccess("下发紧急字幕到终端成功");
         this.openPull = false;

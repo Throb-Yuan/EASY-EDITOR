@@ -67,7 +67,7 @@
         <el-table-column label="上传时间" align="center" prop="createTime" :formatter="createTimeFormat" />
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template slot-scope="scope">
-            <el-button size="mini" type="text" icon="el-icon-download" @click="openUrl(scope.row)">下载</el-button>
+            <el-button size="mini" type="text" icon="el-icon-download" @click="openUrl(scope.row,true)">下载</el-button>
             <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
             <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
           </template>
@@ -201,7 +201,6 @@ export default {
   methods: {
     // 断点续传组件通讯--是否已上传文件
     uploadFinsh(booleans) {
-      console.log('uploadFinsh', booleans);
       this.isUpload ? '' : this.isUpload = booleans
     },
     // 重置搜索条件
@@ -216,8 +215,11 @@ export default {
     /** 文件下载、预览方法
      * @row 单行数据
      */
-    openUrl(row) {
-      if (row.resourceTypeId == 2 || row.resourceTypeId == 3) {
+    openUrl(row,isDownload) {
+      if(isDownload){
+        window.open(row.fileUrl, "_blank");
+        return false
+      }else if (row.resourceTypeId == 2 || row.resourceTypeId == 3) {
         this.videoSrc = row.fileUrl
         this.openMeaia = true
       } else if ( row.resourceTypeId == 4) {
@@ -367,7 +369,6 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      console.log(this.ids);
       const resourceIds = row.resourceId || this.ids;
       let message = row.resourceName ? '是否确认删除资源为"' + row.resourceName + '"的数据项？' : '是否确认删除已选中的' + resourceIds.length + '个资源项？';
       this.$alert(message, '操作提示', {

@@ -55,7 +55,6 @@ export default {
 			return re.test(str_url);
 		},
 		changeValue(event){
-			console.log("event",event);
 			let isurls = this.isURL(this.tempValueNow)
 			if(!this.tempValueNow||isurls){
 				this.tempValue = this.tempValueNow

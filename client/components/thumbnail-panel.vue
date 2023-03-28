@@ -116,7 +116,7 @@ export default {
 		return {
 			baseURL,
 			loading: true,
-			defaultCoverImage: require('@/common/images/quark--pagecover-image.png'),
+			defaultCoverImage: require('@/common/images/defaultposter.jpg'),
 			operationDataList: [{
 				title: '导出节目',
 				eventType: 'exports',

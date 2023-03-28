@@ -131,7 +131,6 @@ export default {
     };
   },
   created() {
-    console.log('userInfo',this.$store.getters.userInfo);
     this.getList();
   },
   methods: {
@@ -253,7 +252,6 @@ export default {
       const tplId = row.tplId || this.ids
       this.$API.getVersion(tplId).then(response => {
         this.form = response.data;
-        console.log(this.form)
         this.open = true;
         this.title = "修改模板版本信息";
       });

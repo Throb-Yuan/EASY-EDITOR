@@ -2,7 +2,7 @@
 	<div @drop="drop($event)" @dragover="allowDrop($event)" @dragenter="dragenter($event)">
 		<div class="tip-drop">可将本地文件或媒体资源拖至下方替换<span @click="changeSide"> 查看资源库</span></div>
 		<el-upload ref="upload" drag style="height: 100px;" :action="uploadAction" accept="video/*" :auto-upload="true" :on-success="handleSuccess" :show-file-list="false" :multiple="false">
-			<div :class="activeCss ? 'drag-info-box active-css' : 'drag-info-box'">
+			<div class="drag-info-box">
 				<div class="inline-block cropper-res-img">
 					<div class="cropper-res-imgs">
 						<img v-if="tempValue" src="../../../../../../common/images/myicons/videosss.jpg" alt="">
@@ -76,7 +76,6 @@ export default {
 	methods: {
 		handleSuccess(res) {
 			let response = res.data
-			console.log("file1==", response);
 			let param = {
 				resourceId: response.fileId,
 				resourceName: response.fileName,
@@ -88,7 +87,6 @@ export default {
 			}
 
 			this.$API.addResource(param).then(() => {
-				console.log("file2==", response);
 				this.$modal.msgSuccess("上传成功");
 				this.open = false;
 				this.tempValue = baseURL + '/file/download/' + response.fileId

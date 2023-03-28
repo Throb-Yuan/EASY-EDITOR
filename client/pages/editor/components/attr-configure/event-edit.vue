@@ -114,7 +114,6 @@ export default {
   },
   watch: {
     activeElement() {
-      console.log("activeElementIndex",this.activeElementIndex);
       if (!this.activeElement) return false;
       let a = JSON.parse(JSON.stringify(this.activeElement))
       if (a.events.length && a.events[0].type == 'linkLoacl') {
@@ -122,7 +121,6 @@ export default {
         !this.programList.length ? this.getList() : ''
       }else if (a.events.length && a.events[0].type == 'openApp') {
        this.apkValue == a.events[0].resourceId ? '' : this.apkValue = a.events[0].resourceId||''
-       console.log("this.apkValue",this.apkValue,a.events[0]);
        !this.programList.length ? this.getApkList() : ''
       }else{
         this.value ? this.value = '' : ''

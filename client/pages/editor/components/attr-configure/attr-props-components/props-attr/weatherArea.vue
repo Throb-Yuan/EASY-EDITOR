@@ -60,7 +60,6 @@ export default {
 	},
 	methods: {
 		checkCity(e) {
-			console.log("checkCity", e);
 			let newDatas = {
 				cityZh: e.cityZh,
 				locationId: e.locationId

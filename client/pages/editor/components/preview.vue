@@ -4,11 +4,20 @@
     <div class="preview-info-wrapper">
       <div class="page-info">
         <div class="page-cover">
-          <el-upload ref="upload" :action="uploadAction" :show-file-list="false" :on-success="handleSuccess"
+          <el-upload ref="upload" :action="uploadAction" accept="image/*" :show-file-list="false" :on-success="handleSuccess"
             :multiple="false"
-            style="border:1px dashed #909399;width: 122px;height: 122px;border-radius: 6px;box-sizing: border-box;">
-            <img v-if="!coverImage" src="../../../common/images/quark--pagecover-image.png" alt="">
-            <img v-else :src="coverImage" alt="">
+            style="">
+            <!-- <img v-if="!coverImage" src="../../../common/images/quark--pagecover-image.png" alt=""> -->
+            <!-- <img v-if="coverImage" :src="coverImage" alt=""> -->
+            <div class="inline-block cropper-res-img isposter">
+					<div class="cropper-res-imgs" style="width: 120px;height:120px;">
+						<img v-if="coverImage" :src="coverImage" alt="">
+						<div v-else>
+							<i class="el-icon-plus" style="font-size: 20px;"></i>
+						</div>
+						<p v-show="!coverImage" class="cropper-res-img-title">上传封面</p>
+					</div>
+				</div>
           </el-upload>
         </div>
         <div class="page-title-des">
@@ -25,7 +34,7 @@
                 <el-option v-for="(dict, index) in sceneList" :key="index" :label="dict.sceneName"
                   :value="dict.sceneId" />
               </el-select>
-              <el-button icon="el-icon-plus" type="text" style="margin-left: 12px;" @click="addScenes">新增场景</el-button>
+              <el-button icon="el-icon-plus" v-show="!pageId" type="text" style="margin-left: 12px;" @click="addScenes">新增场景</el-button>
             </div>
             <div class="info-form-r" v-show="addScene">
               <el-input :maxlength="10" v-focus ref="sceneName" v-model="newScene" style="width:210px;" />
@@ -38,7 +47,7 @@
           <div class="info-form-wrapper">
             <div class="info-form-l">节目描述：</div>
             <div class="info-form-r">
-              <el-input type="textarea" :rows="3" :maxlength="200" v-model="pageData.description" />
+              <el-input type="textarea" :rows="3" :maxlength="200" v-model="pageData.description" placeholder="请输入节目描述（可选）" />
             </div>
           </div>
         </div>
@@ -222,5 +231,20 @@ export default {
   margin-top: 14px;
   padding: 12px;
   background-color: #f0f3f4;
+}
+.isposter{
+  // width: 120px;
+  // height: 120px;
+  border:1px dashed #909399;width: 122px;height: 122px;border-radius: 6px;box-sizing: border-box;
+  display: flex;
+  &:hover {
+			color: $primary;
+			border-color: $primary;
+		}
+}
+.cropper-res-img .cropper-res-img-title {
+  width: 120px;
+  left: 0;
+  padding: 4px;
 }
 </style>

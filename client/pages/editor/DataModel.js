@@ -57,7 +57,7 @@ let pageConfig = {
 let projectConfig = {
 	name: '',
 	title: '未命名场景',
-	description: '慧集互联的节目，快来看看吧。',
+	description: '',
 	coverImage: '',
 	auther: '',
 	script: '',
@@ -85,7 +85,9 @@ let getElementConfig = function (element, extendStyle = {}) {
 		elName: elementData.elName,
 		propsValue: deepClone(elementData.needProps || {}),
 		// 增加事件数据
-		events:elementData.events
+	}
+	if(elementData.events){
+		config.events = elementData.events
 	}
 	// 样式
 	config.commonStyle = merge(config.commonStyle, elementData.defaultStyle)

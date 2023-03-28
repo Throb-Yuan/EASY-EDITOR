@@ -57,7 +57,7 @@ export default {
   },
   data() {
     return {
-      defaultImg:require('@client/common/images/defpdf.png'),
+      defaultImg:require('@client/common/images/defoffice.png'),
       notDevs: false,
       pageNum: 1,
       pageTotalNum: 1,

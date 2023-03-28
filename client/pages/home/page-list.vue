@@ -168,10 +168,8 @@ export default {
     handleScroll() {
       let high = this.$refs.celia.$refs.wrap.scrollTop;//距离顶部的距离
       let contentHeight = this.$refs.yrjccc.offsetHeight
-      console.log("handleScroll==",high + window.innerHeight,contentHeight);
       //.clientHeight - 滚动条外容器的高度
       //.scrollHeight - 滚动条高度
-      // console.log("滚动监听==", high + window.innerHeight - 200, contentHeight);
       if (high + window.innerHeight - 180 > contentHeight && this.loadStatus == 0 && this.myCount > this.pageList.length) {
         this.queryParams.pageNum++
         this.getList()
@@ -182,9 +180,9 @@ export default {
     getTreeData() {
       this.$API.terminalTreeListGet({}).then(response => {
         // 解决无id导致el-tree报错
-        response.data[0].id = '123456'
-        response.data[1].id = '1234567'
-        response.data[2].id = '12345678'
+        response.data.forEach((it,idx) => {
+          it.id = "1000000"+idx
+        });
         this.treeData = response.data;
       });
     },
@@ -197,7 +195,6 @@ export default {
       if (ev==2) this.queryParams.pageNum++
       this.$API.listProgram(this.queryParams).then(response => {
         this.myCount ? '' : this.myCount = response.total;
-        console.log('this.myCount', this.pageList.length);
         if (response.rows.length < 20) {
           setTimeout(() => {
             this.queryParams.pageNum == 1 ? this.pageList = response.rows || [] : this.pageList = this.pageList.concat(response.rows)

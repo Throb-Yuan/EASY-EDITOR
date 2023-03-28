@@ -80,7 +80,6 @@ export default {
 			getRssUrl({
 				url: this.noticeUrl
 			}).then(response => {
-				console.log("weather In request", response);
 				if (!response.data) return false
 				let rssData = response.data
 				this.noticeText = rssData.replace(/<[^>]+>/g, " ")
@@ -131,7 +130,6 @@ export default {
 				//设置位移
 				this.interFuns = setInterval(() => {
 					disx--; // disx-=1; 滚动步长
-					// console.log("disx==",disx);
 					if (-disx >= width * 5) {
 						disx = 0; // 如果位移超过文字宽度，则回到起点  marquee-list的margin值
 					}

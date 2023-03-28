@@ -366,7 +366,6 @@
 			 * 纪录一条历史纪录
 			 * */
 			addHistory() {
-				// console.log('common style change addHistoryCache')
 				this.$store.dispatch('addHistoryCache')
 			},
 			/**

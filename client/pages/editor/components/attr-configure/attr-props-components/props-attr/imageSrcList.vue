@@ -18,7 +18,7 @@
 			<el-upload ref="upload" drag style="height: 100px;" :action="uploadAction" :auto-upload="true"
 				:on-error="errors" :on-success="handleSuccess.bind(null, { 'index': index, 'item': item })"
 				accept="image/*,video/*" :show-file-list="false" :multiple="false">
-				<div :class="item.activeCss ? 'drag-info-box active-css' : 'drag-info-box'">
+				<div class="drag-info-box">
 					<div class="inline-block cropper-res-img">
 						<div class="cropper-res-imgs">
 							<img v-if="item.urls && item.fileType == 'I'" :src="item.urls" alt="">
@@ -121,7 +121,6 @@ export default {
 		errors(res) {
 		},
 		handleSuccess(obj, res) {
-			// console.log("");
 			let imgTypes = ['BMP', 'JPG', 'JPEG', 'PNG', 'GIF', 'WEBP', 'png', 'jpeg', 'jpg', 'gif', 'bmp', 'webp']
 			let response = res.data
 			let suffix = res.data.fileName.split('.')
@@ -136,7 +135,6 @@ export default {
 			}
 
 			this.$API.addResource(param).then(() => {
-				console.log("file2==", res);
 				this.$modal.msgSuccess("上传成功");
 				this.open = false;
 				let deepTemp = deepClone(this.tempValue)
@@ -149,7 +147,6 @@ export default {
 					localPath: '../../resource/' + response.fileHash + '.' + suffix[suffix.length - 1]
 				}
 				this.tempValue = deepTemp
-				console.log("this.tempValue ", this.tempValue);
 			});
 			this.loading = false;
 		},
@@ -197,7 +194,6 @@ export default {
 			* @param ev 承载node节点数据
 			*/
 		allowDrop(ev) {
-			// console.log("allowDrop函数移动时", ev);
 			ev.preventDefault();
 		},
 		drop(ev, item, index) {
@@ -220,7 +216,6 @@ export default {
 			eles[index].fileName = nodeData.resourceName
 			eles[index].fileType = nodeData.fileType
 			this.tempValue = eles
-			console.log("this.tempValue", this.tempValue);
 			ev.preventDefault();
 		},
 		dragenter(item) {

@@ -3,7 +3,7 @@
 		<div class="tip-drop">可将本地文件或媒体资源拖至下方替换<span @click="changeSide"> 查看资源库</span></div>
 		<el-upload ref="upload" drag style="height: 100px;" :action="uploadAction" accept="image/*" :auto-upload="false"
 			:on-change="beforePressUpload" :on-success="handleSuccess" :show-file-list="false" :multiple="false">
-			<div :class="activeCss ? 'drag-info-box active-css' : 'drag-info-box'">
+			<div class="drag-info-box">
 				<div class="inline-block cropper-res-img">
 					<div class="cropper-res-imgs">
 						<img v-if="tempValue" :src="tempValue" alt="">
@@ -54,15 +54,11 @@ export default {
 		this.tempFileSize = this.fileSize
 	},
 	methods: {
-		logs(e) {
-			console.log("这是", e);
-		},
 		/**
 		* 资源列表拖拽联动，将对应图片数据覆盖至拖拽的节点数据
 		* @param ev 承载node节点数据
 		*/
 		allowDrop(ev) {
-			// console.log("allowDrop函数移动时", ev);
 			ev.preventDefault();
 		},
 		drop(ev) {
@@ -91,7 +87,6 @@ export default {
 			if (nowSide != "resourceLibs") this.$store.commit('updateSideBar', "resourceLibs")
 		},
 		beforePressUpload(files) {
-			console.log("file==", files);
 			let file = files.raw
 			return new Promise(resolve => {
 				this.loading = true;
@@ -104,7 +99,7 @@ export default {
 				} else {
 					// 可自定义kb
 					let toSize = Math.round(file.size / 1024 / 6);
-					imageConversion.compressAccurately(file, toSize).then(res => { // console.log(res)
+					imageConversion.compressAccurately(file, toSize).then(res => {
 						this.$refs.upload.submit(res)
 						resolve(res)
 					})
@@ -113,7 +108,6 @@ export default {
 		},
 		handleSuccess(res) {
 			let response = res.data
-			console.log("file1==", response);
 			let param = {
 				resourceId: response.fileId,
 				resourceName: response.fileName,
@@ -125,7 +119,6 @@ export default {
 			}
 
 			this.$API.addResource(param).then(() => {
-				console.log("file2==", response);
 				this.$modal.msgSuccess("上传成功");
 				this.open = false;
 				this.tempValue = baseURL + '/file/download/' + response.fileId
