@@ -360,7 +360,7 @@ export default {
 			if (process.env.NODE_ENV == 'production') {
 				// 暂只支持测试环境
 				localStorage.setItem("previewPageData",afterHtml)
-				window.open('http://192.168.101.250:8887/previews/html/index/preview.html')
+				window.open(`${window.ipConfig.preViewUrl}/previews/html/index/preview.html`)
 			}else{
 				this.$message.warning('暂只支持在测试环境预览')
 			}

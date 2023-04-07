@@ -20,4 +20,3 @@ yarn-error.log*
 *.sln
 *.sw?
 /server/public/psd_static
-/server

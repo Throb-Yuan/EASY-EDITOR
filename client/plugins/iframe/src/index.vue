@@ -2,7 +2,11 @@
 <template>
 	<div class="qk-iframe" @mousedown="changeIframeDivStyle('')" @mouseup="changeIframeDivStyle('none')">
 		<div id="iframeDiv"></div>
-		<iframe :src="url" frameborder="0" style="background-color:transparent;width: 100%; min-height: 100%;"></iframe>
+		<div class="inner-if" style="width: 100%;height: 100%">
+			<iframe :src="url" v-show="showScroll"  frameborder="0" style="background-color:transparent;width: 100%; min-height: 100%;overflow: hidden;"></iframe>
+			<iframe :src="url" v-show="!showScroll" scrolling="no" frameborder="0" style="background-color:transparent;width: 100%; min-height: 100%;overflow: hidden;"></iframe>
+		</div>
+		
 	</div>
 </template>
 
@@ -13,6 +17,10 @@ export default {
 		url: {
 			type: String,
 			default: "http://m.baidu.com/"
+		},
+		showScroll:{
+			type: Boolean,
+			default:true
 		}
 	},
 	data() {
@@ -44,6 +52,28 @@ export default {
 	width: 100%;
 	height: 100%;
 }
+
+.inner-if::-webkit-scrollbar {
+            width: 1px;
+            height: 1px;
+        }
+        .inner-if::-webkit-scrollbar-thumb{
+            background-color: #999;
+            -webkit-border-radius: 1px;
+            border-radius: 1px;
+        }
+        .inner-if::-webkit-scrollbar-thumb:vertical:hover{
+            background-color: #666;
+        }
+        .inner-if::-webkit-scrollbar-thumb:vertical:active{
+            background-color: #333;
+        }
+        .inner-if::-webkit-scrollbar-button{
+            display: none;
+        }
+        .inner-if::-webkit-scrollbar-track{
+            background-color: #f1f1f1;
+		}
 
 #iframeDiv {
 	width: 100%;

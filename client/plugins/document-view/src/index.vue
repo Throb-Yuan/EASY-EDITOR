@@ -77,8 +77,8 @@ export default {
       let suffix = ''; // 后缀获取
       const flieArr = this.fileName.split('.'); // 根据.分割数组
       suffix = flieArr[flieArr.length - 1]; // 取最后一个
-      let baseUrl = `${process.env.VUE_APP_BASE_API}/file/download?fileId=${this.androidId}&fullfilename=${this.md5}.${suffix}`
-      this.openUrl = 'http://192.168.101.250:8012/onlinePreview?url=' + encodeURIComponent(base1.encode(baseUrl))
+      let baseUrl = `${window.ipConfig.baseUrl}/file/download?fileId=${this.androidId}&fullfilename=${this.md5}.${suffix}`
+      this.openUrl = `${window.ipConfig.baseUrl}/kkfileview/onlinePreview?url=` + encodeURIComponent(base1.encode(baseUrl))
       this.open = true
     },
   }

@@ -32,7 +32,7 @@ webHttp.interceptors.request.use(config => {
 	// config.headers['x-csrf-token'] = Cookie.get('x-csrf-token');
 	return config
 }, error => {
-	return Promise.resolve(error)
+	return Promise.reject(error)
 });
 
 //响应拦截器即异常处理  status==200为blob数据类型
@@ -47,7 +47,11 @@ webHttp.interceptors.response.use(response => {
 			type: 'error',
 			data: response.data.message || response.data.msg || response.data.errMsg
 		});
-		return Promise.resolve(response.data)
+		if(response.config.url.includes('file/multipart/tasks')){
+			return Promise.resolve(response.data)
+		}else{
+			return Promise.reject(response.data)
+		}
 	}
 
 }, err => {
@@ -97,7 +101,11 @@ webHttp.interceptors.response.use(response => {
 		type: 'error',
 		data: err.message || err.response.msg
 	});
-	return Promise.resolve(err.response)
+	if(err.response.config.url.includes('file/multipart/tasks')){
+		return Promise.resolve(err.response)
+	}else{
+		return Promise.reject(err.response)
+	}
 });
 /**
  * 下载文件

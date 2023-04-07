@@ -108,7 +108,7 @@
 				this.$API.getUserProfile().then(res => {
 					this.userInfo = res.data
           this.name = this.userInfo.nickName
-          this.userHeadImage =  `${process.env.VUE_APP_BASE_API}/file/download/${res.data.avatar}`
+          this.userHeadImage =  `${window.ipConfig.baseUrl}/file/download/${res.data.avatar}`
           this.$emit('changeImg',this.userHeadImage)
           res.data.avatars = this.userHeadImage
           this.$store.commit("UPDATE_USER_INFO", res.data)

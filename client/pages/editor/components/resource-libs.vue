@@ -92,7 +92,7 @@
 </template>
 <script>
 import uploadBreakpoint from '@/components/upload-breakpoint'
-const baseURL = process.env.VUE_APP_BASE_API
+const baseURL = window.ipConfig.baseUrl
 export default {
   components: {
     uploadBreakpoint

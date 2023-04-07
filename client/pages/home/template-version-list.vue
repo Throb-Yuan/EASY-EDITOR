@@ -95,7 +95,7 @@ export default {
     return {
       pageWindow:window,
       todayVersion: 0,
-      uploadAction: process.env.VUE_APP_BASE_API + '/file/upload',
+      uploadAction: window.ipConfig.baseUrl + '/file/upload',
       // 遮罩层
       loading: true,
       // 选中数组
@@ -165,7 +165,7 @@ export default {
     fileSizeFormat(row) {
       return this.changeFileSize(row.size)
     }, downloadUrlFormat(row) {
-      return process.env.VUE_APP_BASE_API + '/file/download/' + row.downloadUrl
+      return window.ipConfig.baseUrl + '/file/download/' + row.downloadUrl
     },
     changeFileSize(limit) {
       limit = parseInt(limit)

@@ -8,8 +8,8 @@
         </el-form-item>
         <el-form-item label="终端创建时间：">
           <el-date-picker v-model="timeOptions" type="daterange" unlink-panels :picker-options="pickerOptions"
-            range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :clearable="false" value-format="yyyy-MM-dd"
-            @change="getGroupList">
+            range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :clearable="false"
+            value-format="yyyy-MM-dd" @change="getGroupList">
           </el-date-picker>
         </el-form-item>
         <el-form-item>
@@ -730,12 +730,6 @@ export default {
               appIds: appIds
             }
           })
-          .catch(e => {
-            this.$message({
-              type: 'error',
-              message: e.msg
-            })
-          })
       } else {
         this.terminalGroupForm = {
           terminalGroupName: '',
@@ -750,12 +744,6 @@ export default {
       this.$API.appListGet()
         .then(res => {
           this.appList = res.data
-        })
-        .catch(e => {
-          this.$message({
-            type: 'error',
-            message: e.msg
-          })
         })
     },
     /**提交终端控制操作 */
@@ -920,12 +908,6 @@ export default {
         .then(res => {
           this.terminalGroupList = res.data
         })
-        .catch(e => {
-          this.$message({
-            type: 'error',
-            message: e.msg
-          })
-        })
     },
     /**提交修改终端组*/
     submitTerminalGroupForm() {
@@ -948,11 +930,7 @@ export default {
                 this.terminalGroupVisible = false
 
               })
-              .catch(e => {
-                this.$message({
-                  type: 'error',
-                  message: e.msg
-                })
+              .catch(() => {
                 this.terminalGroupVisible = false
 
               })
@@ -962,18 +940,18 @@ export default {
             }
             this.$API.terminalGroupAdd(param)
               .then(res => {
-                this.$message({
-                  type: 'success',
-                  message: '新增终端组成功'
-                })
-                this.terminalGroupVisible = false
-                this.addTerminalGroupApp(res.data.terminalGroupId, this.terminalGroupForm.appIds)
+                if (res.code == 200) {
+                  this.$message({
+                    type: 'success',
+                    message: '新增终端组成功'
+                  })
+                  this.terminalGroupVisible = false
+                  this.addTerminalGroupApp(res.data.terminalGroupId, this.terminalGroupForm.appIds)
+                }
+
+
               })
-              .catch(e => {
-                this.$message({
-                  type: 'error',
-                  message: e.msg
-                })
+              .catch(() => {
                 this.terminalGroupVisible = false
               })
           }
@@ -1018,11 +996,7 @@ export default {
                 this.getGroupList()
                 this.terminalVisible = false
               })
-              .catch(e => {
-                this.$message({
-                  type: 'error',
-                  message: e.msg
-                })
+              .catch(() => {
                 this.terminalVisible = false
               })
           } else {
@@ -1036,11 +1010,7 @@ export default {
                 this.getGroupList()
                 this.terminalVisible = false
               })
-              .catch(e => {
-                this.$message({
-                  type: 'error',
-                  message: e.msg
-                })
+              .catch(() => {
                 this.terminalVisible = false
               })
           }
@@ -1084,12 +1054,6 @@ export default {
           })
           this.getGroupList()
         })
-        .catch(e => {
-          this.$message({
-            type: 'error',
-            message: e.msg
-          })
-        })
     },
     /**删除单个终端操作.
      * @item 预删除项
@@ -1110,12 +1074,6 @@ export default {
               message: `删除【${terminalName}】终端成功!`
             })
             this.getGroupList()
-          })
-          .catch(e => {
-            this.$message({
-              type: 'error',
-              message: e.msg
-            })
           })
       })
     },
@@ -1163,12 +1121,6 @@ export default {
 
         this.tableData = res.data
       })
-        .catch(e => {
-          this.$message({
-            type: 'error',
-            message: e.msg
-          })
-        })
     },
     /** 提交新增/编辑开关机时间 */
     submitShutdownPlanForm() {
@@ -1215,12 +1167,6 @@ export default {
               message: `删除【${shutdownPlanName}】开关机时间成功!`
             })
             this.getShutdownPlanList();
-          })
-          .catch(e => {
-            this.$message({
-              type: 'error',
-              message: e.msg
-            })
           })
       })
     },

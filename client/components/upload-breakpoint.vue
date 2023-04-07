@@ -239,11 +239,11 @@ export default {
         resourceMd5: data.fileHash,
         fileSize: data.fileSize,
         fileType: fileTs.fileType,
-        fileUrl: process.env.VUE_APP_BASE_API + '/file/download/' + data.fileId
+        fileUrl: window.ipConfig.baseUrl + '/file/download/' + data.fileId
       }
       addResource(param).then(() => {
         if(fileTs.resourceTypeId == '4'){
-          let previewUrl = process.env.VUE_APP_BASE_API + '/addTask?url=' + encodeURIComponent(param.fileUrl)
+          let previewUrl = window.ipConfig.baseUrl + '/addTask?url=' + encodeURIComponent(param.fileUrl)
           axiosReq.request({
             url: previewUrl,
             method: 'GET'

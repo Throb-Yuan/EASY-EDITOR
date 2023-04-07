@@ -1,9 +1,9 @@
 <template>
   <div class="page page-login">
     <div class="login-page-inner">
-      <div class="title" style="display: flex;align-items: center;justify-content: center;">
-        <img src="../common/images/minilogo.png" style="width: 32px;" alt="">
-        <p class="" style="margin-left: 12px;">信息发布系统</p>
+      <div class="title" style="display: flex;align-items: center;justify-content: center;padding-bottom: 16px;">
+        <img src="../common/images/logg.svg" style="width: 140px;" alt="">
+        <!-- <p class="" style="margin-left: 12px;">数智云屏</p> -->
       </div>
       
       <el-form :model="loginForm" :rules="loginRules" ref="loginForm" label-width="0px">
@@ -33,7 +33,7 @@
           </el-button>
         </el-form-item>
       </el-form>
-      <p class="login-page-bottom">Copyright © 2022 <span class="primary">慧集互联版权所有</span></p>
+      <p class="login-page-bottom">Copyright © 2023 <span class="primary">数智云屏版权所有</span></p>
     </div>
     <div class="login-background">
       <loginBackground />
@@ -61,8 +61,8 @@ export default {
         rememberMe: false,
         grant_type: 'password',
         scope: 'server',
-        client_id: process.env.VUE_APP_CLIENT_ID,
-        client_secret: process.env.VUE_APP_CLIENT_SECRET,
+        client_id: window.ipConfig.clientId,
+        client_secret: window.ipConfig.clientSecret,
         uuid: ""
       },
       loginRules: {

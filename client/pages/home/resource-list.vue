@@ -90,7 +90,7 @@
     </el-dialog>
     <!-- 预览播放视频 -->
     <el-dialog title="媒体播放" :visible.sync="openMeaia" width="60%" append-to-body>
-      <video id="video" width="100%" height="100%" :src="videoSrc" :controls="true" autoplay muted>
+      <video v-if="openMeaia" id="video" width="100%" height="100%" :src="videoSrc" :controls="true" autoplay muted>
         <!-- <source :src="videoSrc" /> -->
       </video>
     </el-dialog>
@@ -134,7 +134,7 @@
 <script>
 import base from "@/common/js/base64Encode";
 import uploadBreakpoint from '@/components/upload-breakpoint'
-const baseURL = process.env.VUE_APP_BASE_API
+const baseURL = window.ipConfig.baseUrl
 
 export default {
   name: "Resource",
@@ -227,8 +227,8 @@ export default {
         let suffix = ''; // 后缀获取
         const flieArr = row.resourceName.split('.'); // 根据.分割数组
         suffix = flieArr[flieArr.length - 1]; // 取最后一个
-        let baseUrl = `${process.env.VUE_APP_BASE_API}/file/download?fileId=${row.resourceId}&fullfilename=${row.resourceMd5}.${suffix}`
-        this.openUrls = 'http://192.168.101.250:8012/onlinePreview?url=' + encodeURIComponent(base1.encode(baseUrl))
+        let baseUrl = `${window.ipConfig.baseUrl}/file/download?fileId=${row.resourceId}&fullfilename=${row.resourceMd5}.${suffix}`
+        this.openUrls = `${window.ipConfig.baseUrl}/kkfileview/onlinePreview?url=` + encodeURIComponent(base1.encode(baseUrl))
         this.openDoc = true
       } else {
         window.open(row.fileUrl, "_blank");

@@ -24,7 +24,7 @@
 
 <script>
 import * as imageConversion from 'image-conversion'
-const baseURL = process.env.VUE_APP_BASE_API
+const baseURL = window.ipConfig.baseUrl
 export default {
 	name: "attr-qk-imageSrc",
 	props: {

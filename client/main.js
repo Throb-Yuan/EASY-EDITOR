@@ -94,7 +94,7 @@ String.prototype.replaceAll = function (s1, s2) {
 }
 
 Vue.config.productionTip = false
-
+console.log("process.env.NODE_ENV==",process.env.NODE_ENV);
 store.commit('UPDATE_USER_FROM_LOCAL')
 
 new Vue({

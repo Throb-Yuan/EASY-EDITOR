@@ -100,7 +100,7 @@ export default {
 				programId: '',
 				shareConfig: {
 					coverImage: '',
-					title: '慧集互联',
+					title: '数智云屏',
 					description: ''
 				},
 				title: '未命名节目',
@@ -241,29 +241,32 @@ export default {
 		changeRatioFn(objs) {
 
 			let checkData = deepClone(objs.arr.find(v => v.value == objs.e))
-
+			// 获取中间可支撑宽度，总可是宽度-左侧栏210-右侧栏宽度380-边距80*2
+			let fixSideNum = 800
+			let beLeftWidth = window.innerWidth - 750
+			if(beLeftWidth>fixSideNum)  fixSideNum = beLeftWidth
 			let rate = 1
 			if (objs.e == '自定义') {
 				if (checkData.toWidth * 1 >= checkData.toHeight * 1) {
 					// 宽>高,以宽比例缩小 800*800
-					if (checkData.toWidth >= 800) {
-						rate = checkData.toWidth / 800
-						checkData.toWidth = 800
+					if (checkData.toWidth >= fixSideNum) {
+						rate = checkData.toWidth / fixSideNum
+						checkData.toWidth = fixSideNum
 						checkData.toHeight = checkData.toHeight / rate < 1 ? 1 : checkData.toHeight / rate
 					} else {
-						rate = 800 / checkData.toWidth
-						checkData.toWidth = 800
+						rate = fixSideNum / checkData.toWidth
+						checkData.toWidth = fixSideNum
 						checkData.toHeight = checkData.toHeight * rate < 1 ? 1 : checkData.toHeight * rate
 					}
 				} else {
-					// 宽<高,以高比例缩小 800*800
-					if (checkData.toHeight >= 800) {
-						rate = checkData.toHeight / 800
-						checkData.toHeight = 800
+					// 宽<高,以高比例缩小 fixSideNum*fixSideNum
+					if (checkData.toHeight >= fixSideNum) {
+						rate = checkData.toHeight / fixSideNum
+						checkData.toHeight = fixSideNum
 						checkData.toWidth = checkData.toWidth / rate < 1 ? 1 : checkData.toWidth / rate
 					} else {
-						rate = 800 / checkData.toHeight
-						checkData.toHeight = 800
+						rate = fixSideNum / checkData.toHeight
+						checkData.toHeight = fixSideNum
 						checkData.toWidth = checkData.toWidth * rate < 1 ? 1 : checkData.toWidth * rate
 					}
 				}
@@ -457,7 +460,7 @@ export default {
 		 * \x3Cscript>var vConsole = new VConsole();\x3C/script> 打开调试endHtmls 插入
 		 */
 		async publishFn() {
-			let startHtml = '\x3C!DOCTYPE html>\x3Chtml lang="en">\x3Chead>\x3Cmeta charset="UTF-8">\x3Ctitle>\x3C/title>\x3Clink rel="shortcut icon" href=" ../../assets/public/favicon.ico" type="image/x-icon">\x3Cmeta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">\x3Cmeta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">\x3Cmeta name="keywords" content="">\x3Cmeta name="description" content="">\x3Cmeta name="renderer" content="webkit">\x3Cmeta name="robots" content="index, follow">\x3Cmeta name="format-detection" content="telephone=no">\x3Cscript>this.globalThis || (this.globalThis = this)\x3C/script>\x3Cscript src=" ../../assets/public/third-libs/vue.js">\x3C/script>\x3Cscript src=" ../../assets/public/third-libs/vconsole.js">\x3C/script>\x3Clink rel="stylesheet" href=" ../../assets/public/third-libs/animate.min.css">\x3Clink rel="stylesheet" href=" ../../assets/public/third-libs/weatherfont/qweather-icons.css">\x3Clink rel="stylesheet" href=" ../../assets/public/third-libs/swiper.min.css">\x3Cscript src=" ../../assets/public/third-libs/swiper.min.js">\x3C/script>\x3C!--引入模板-->\x3Cscript src=" ../../assets/public/engine_libs/h5-swiper/page-engine.umd.js">\x3C/script>\x3Clink rel="stylesheet" href=" ../../assets/public/engine_libs/h5-swiper/page-engine.css">\x3Cstyle>* {padding: 0;margin: 0;box-sizing: border-box;}html, body, #app{position: relative;width: 100%;height: 100%;}\x3C/style>\x3Cscript>window._pageData = '
+			let startHtml = '\x3C!DOCTYPE html>\x3Chtml lang="en">\x3Chead>\x3Cmeta charset="UTF-8">\x3Ctitle>\x3C/title>\x3Clink rel="shortcut icon" href=" ../../assets/public/favicon.ico" type="image/x-icon">\x3Cmeta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">\x3Cmeta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">\x3Cmeta name="keywords" content="">\x3Cmeta name="description" content="">\x3Cmeta name="renderer" content="webkit">\x3Cmeta name="robots" content="index, follow">\x3Cmeta name="format-detection" content="telephone=no">\x3Cscript src=" ../../assets/public/ipConfig.js">\x3C/script>\x3Cscript>this.globalThis || (this.globalThis = this)\x3C/script>\x3Cscript src=" ../../assets/public/third-libs/vue.js">\x3C/script>\x3Cscript src=" ../../assets/public/third-libs/vconsole.js">\x3C/script>\x3Clink rel="stylesheet" href=" ../../assets/public/third-libs/animate.min.css">\x3Clink rel="stylesheet" href=" ../../assets/public/third-libs/weatherfont/qweather-icons.css">\x3Clink rel="stylesheet" href=" ../../assets/public/third-libs/swiper.min.css">\x3Cscript src=" ../../assets/public/third-libs/swiper.min.js">\x3C/script>\x3C!--引入模板-->\x3Cscript src=" ../../assets/public/engine_libs/h5-swiper/page-engine.umd.js">\x3C/script>\x3Clink rel="stylesheet" href=" ../../assets/public/engine_libs/h5-swiper/page-engine.css">\x3Cstyle>* {padding: 0;margin: 0;box-sizing: border-box;}html, body, #app{position: relative;width: 100%;height: 100%;}\x3C/style>\x3Cscript>window._pageData = '
 			let endHtmls = '\x3C/script>\x3C/head>\x3Cbody>\x3Cdiv id="app">\x3Cengine-h5-swiper  />\x3C/div>\x3Cscript>new Vue({el:"#app"})\x3C/script>\x3Cscript>eval(window._pageData.script);\x3C/script>\x3C/body>\x3C/html>'
 			let theProjectData = JSON.parse(JSON.stringify(this.projectData))
 			theProjectData.notDevs = true

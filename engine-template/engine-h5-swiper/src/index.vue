@@ -52,6 +52,16 @@
 			this.scalingRatio = document.body.clientWidth / pageData.width;
 			this.pageTop = (document.documentElement.clientHeight - pageData.height * this.scalingRatio) / 2
 			this.pageTop = Math.max(this.pageTop, 0);
+			setTimeout(() => {
+				console.log( " document.body.clientWidth===",document.body.clientWidth);
+				console.log( " document.body.clientHeight===",document.body.clientHeight);
+				console.log( " $config.canvasH5Width",$config.canvasH5Width);
+				console.log( " window.screen.availWidth===",window.screen.availWidth);
+				console.log( " window.screen.availHeight===",window.screen.availHeight);
+				console.log( " window.screen===",window.screen);
+				console.log( " document.body===",  document.body);
+				console.log( " $config===", $config);
+			}, 5000);
 			// 将组件加个状态标识 
 			pageData.pages.forEach((page, index) => {
 				page.elements.forEach(e => {

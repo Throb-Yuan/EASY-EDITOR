@@ -7,7 +7,6 @@
           <el-upload ref="upload" :action="uploadAction" accept="image/*" :show-file-list="false" :on-success="handleSuccess"
             :multiple="false"
             style="">
-            <!-- <img v-if="!coverImage" src="../../../common/images/quark--pagecover-image.png" alt=""> -->
             <!-- <img v-if="coverImage" :src="coverImage" alt=""> -->
             <div class="inline-block cropper-res-img isposter">
 					<div class="cropper-res-imgs" style="width: 120px;height:120px;">
@@ -63,7 +62,7 @@
 
 <script>
 import previewWrapper from '@client/components/preview-wrapper'
-const baseURL = process.env.VUE_APP_BASE_API
+const baseURL = window.ipConfig.baseUrl
 export default {
   components: {
     previewWrapper
@@ -133,7 +132,7 @@ export default {
       if (process.env.NODE_ENV == 'production') {
         // 暂只支持测试环境
         localStorage.setItem("previewPageData", JSON.stringify(this.pageData))
-        window.open('http://192.168.101.250:8887/previews/html/index/preview.html')
+        window.open(`${window.ipConfig.preViewUrl}/previews/html/index/preview.html`)
       } else {
         this.$message.warning('暂只支持在测试环境预览')
       }

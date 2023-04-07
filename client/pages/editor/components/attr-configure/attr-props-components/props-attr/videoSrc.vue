@@ -32,7 +32,7 @@
 </template>
 
 <script>
-const baseURL = process.env.VUE_APP_BASE_API
+const baseURL = window.ipConfig.baseUrl
 export default {
 	name: "attr-qk-videoSrc",
 	props: {

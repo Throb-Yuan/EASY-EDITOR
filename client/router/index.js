@@ -6,7 +6,8 @@ Vue.use(Router)
 
 /**  各个模块 */
 export default new Router({
-	mode: process.env.NODE_ENV == 'development' ? "hash" : 'history',
+	base: process.env.NODE_ENV === "production" ? "/web/" : "/",
+	mode: process.env.NODE_ENV === 'production' ? "history" : 'hash',
 	routes: [{
 		path: '/',
 		name: 'Layout',
@@ -62,6 +63,16 @@ export default new Router({
 		path: '/login',
 		name: 'Login',
 		component: () => import('@/pages/Login'),
+		meta: {
+			hideHeader: true,
+			trust: true,
+			noNeedLogin: true
+		}
+	},
+	{
+		path: '*',
+		name: 'NotFound',
+		component: () => import('@/pages/notfound'),
 		meta: {
 			hideHeader: true,
 			trust: true,

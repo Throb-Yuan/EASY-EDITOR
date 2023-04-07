@@ -15,7 +15,7 @@
 		props: {
 			qrCodeValue: {
 				type: String,
-				default: "慧集互联"
+				default: "数智云屏"
 			},
 			codeSize:{
 				type: Number,
