@@ -1,4 +1,6 @@
 import { callHandler, registerHandler } from '../common/js/appJsBridge'
+// import { getProgramPlus } from '../../../api/modules/eleBus'
+import { getProgramPlus } from '../api/modules/eleBus'
 /**
  *  元素点击事件相关方法添加事件
  * */
@@ -43,7 +45,18 @@ export default {
 			return new Promise((resolve) => {
 				if (eventData.url) {
 					if (window.location.href.includes('http')) {
-						window.alert('预览暂不支持节目与应用跳转')
+						let a = eventData.url.split('/')
+						let b = a[a.length-1]
+						let c = b.split('.')
+						let d = c[0]
+						// window.alert('预览暂不支持节目与应用跳转')
+						getProgramPlus(d).then(response => {
+							if(response&&response.data){
+								localStorage.setItem('previewPageData',response.data.afterHtml)
+								location.reload()
+							}
+							
+						});
 					} else {
 						window.location.href = eventData.url;
 					}

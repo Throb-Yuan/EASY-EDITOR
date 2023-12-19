@@ -11,3 +11,5 @@ export const weatherList = p => terminalServer.get('/content/weather/list/'+p, {
 export const todayWeather = p => terminalServer.get('/content/weather/today/get/'+p, {})
 // 获取rss内容
 export const getRssUrl = p => terminalServer.get('/content/resource/by/url/get', p)
+// 获取节目管理详细信息Plus
+export const getProgramPlus = p =>terminalServer.get('/content/program/'+p, {})
